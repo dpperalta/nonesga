@@ -1,0 +1,37 @@
+{
+  "name": "none",
+  "version": "1.0.0",
+  "description": "NoNe SGA",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js --exec babel-node",
+    "build": "babel src --out-dir dist",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "sga",
+    "none",
+    "academic",
+    "college",
+    "school"
+  ],
+  "author": "Necrosoft",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/polyfill": "^7.10.4",
+    "express": "^4.17.1",
+    "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
+    "morgan": "^1.10.0",
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.2.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.10.4",
+    "@babel/node": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "nodemon": "^2.0.4"
+  }
+}
