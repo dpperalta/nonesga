@@ -83,6 +83,8 @@ ALTER TABLE "user" ADD CONSTRAINT "idUser" UNIQUE ("userID")
 ALTER TABLE "user" ADD CONSTRAINT "email" UNIQUE ("email")
 ;
 
+ALTER TABLE "user" ADD CONSTRAINT "nick" UNIQUE ("nick");
+
 -- Table person
 
 CREATE TABLE "person"(
@@ -869,7 +871,7 @@ CREATE TABLE "college"(
  "collegeName" Character varying(500) NOT NULL,
  "collegeShowlName" Text,
  "collegeCode" Character varying(10) NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ --"registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
  "detail" Text,
  "flag" Character varying(500),
  "mainColour" Character varying(20),

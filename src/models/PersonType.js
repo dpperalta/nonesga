@@ -1,31 +1,23 @@
 import Sequelize from 'sequelize';
-import {sequelize} from '../database/database';
+import { sequelize } from '../database/database';
 
-const Role = sequelize.define('role', {
-    roleID: {
+const PersonType = sequelize.define('personType', {
+    personTypeID: {
         type: Sequelize.INTEGER,
         primaryKey: true
     },
-    roleCode: {
-        type: Sequelize.STRING(10),
+    type: {
+        type: Sequelize.SMALLINT,
         allowNull: false,
         unique: true
     },
-    roleName: {
-        type: Sequelize.STRING(100),
+    typeName: {
+        type: Sequelize.STRING(50),
         allowNull: false,
         unique: true
     },
-    privileges: {
-        type: Sequelize.SMALLINT
-    },
-    description: {
-        type: Sequelize.TEXT
-    },
-    isActive: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
+    details: {
+        type: Sequelize.STRING(500)
     },
     registeredDate: {
         type: Sequelize.DATE,
@@ -34,10 +26,15 @@ const Role = sequelize.define('role', {
     },
     unregisteredDate: {
         type: Sequelize.DATE
+    },
+    isActive: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 }, {
     timestamps: false,
     freezeTableName: true
 });
 
-export default Role;
+export default PersonType;
