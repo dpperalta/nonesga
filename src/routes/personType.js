@@ -1,16 +1,15 @@
 import { Router } from 'express';
+import { createPersonType, getPersonTypes, getActivePersonTypes } from '../controllers/personType.controller';
 
-import {
-    createRole,
-    getRoles,
-    getActiveRolesWitoutCounter,
-    updateRole,
-    getActiveRolesWithCounter,
-    inactivateRole,
-    activateRole,
-    deleteRole
-} from '../controllers/role.controller';
+const router = Router();
 
+router.post('/', createPersonType);
+router.get('/', getPersonTypes);
+router.get('/active', getActivePersonTypes);
+
+export default router;
+
+/*
 const router = Router();
 
 //Crete routes
@@ -26,3 +25,4 @@ router.put('/activate/:roleID', activateRole);
 router.delete('/:roleID', deleteRole);
 
 export default router;
+*/

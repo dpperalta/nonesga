@@ -157,7 +157,7 @@ ALTER TABLE "person" ADD CONSTRAINT "dni" UNIQUE ("dni")
 CREATE TABLE "personType"(
  "personTypeID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
- "type" Smallint NOT NULL,
+ "personType" Smallint NOT NULL,
  "typeName" Character varying(50) NOT NULL,
  "details" Character varying(500),
  "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
@@ -170,7 +170,7 @@ WITH (
 COMMENT ON COLUMN "personType"."personTypeID" IS 'Unique autoincremental identification for a person type
 '
 ;
-COMMENT ON COLUMN "personType"."type" IS 'Types of person
+COMMENT ON COLUMN "personType"."personType" IS 'Types of person
 1: Natural
 2: Juridic
 3: Agent
@@ -200,7 +200,7 @@ ALTER TABLE "personType" ADD CONSTRAINT "PK_personType" PRIMARY KEY ("personType
 ALTER TABLE "personType" ADD CONSTRAINT "idPerson" UNIQUE ("personTypeID")
 ;
 
-ALTER TABLE "personType" ADD CONSTRAINT "type" UNIQUE ("type")
+ALTER TABLE "personType" ADD CONSTRAINT "personType" UNIQUE ("personType")
 ;
 
 ALTER TABLE "personType" ADD CONSTRAINT "typeName" UNIQUE ("typeName")
@@ -898,8 +898,8 @@ COMMENT ON COLUMN "college"."collegeShowlName" IS 'Show name for the college or 
 ;
 COMMENT ON COLUMN "college"."collegeCode" IS 'Code for a college or academic institution'
 ;
-COMMENT ON COLUMN "college"."registeredDate" IS 'Timestamp for registration date'
-;
+--COMMENT ON COLUMN "college"."registeredDate" IS 'Timestamp for registration date'
+--;
 COMMENT ON COLUMN "college"."detail" IS 'Tescription or detail for the college'
 ;
 COMMENT ON COLUMN "college"."flag" IS 'Selection for a flag file'

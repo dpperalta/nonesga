@@ -6,7 +6,7 @@ const PersonType = sequelize.define('personType', {
         type: Sequelize.INTEGER,
         primaryKey: true
     },
-    type: {
+    personType: {
         type: Sequelize.SMALLINT,
         allowNull: false,
         unique: true
