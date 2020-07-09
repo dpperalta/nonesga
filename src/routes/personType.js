@@ -1,28 +1,23 @@
 import { Router } from 'express';
-import { createPersonType, getPersonTypes, getActivePersonTypes } from '../controllers/personType.controller';
+import { createPersonType, 
+         getPersonTypes, 
+         getActivePersonTypes, 
+         updatePersonType,
+         inactivatePersonType,
+         activatePersonType,
+         deletePersonType } from '../controllers/personType.controller';
 
 const router = Router();
 
+// Routes without params 
 router.post('/', createPersonType);
 router.get('/', getPersonTypes);
 router.get('/active', getActivePersonTypes);
 
-export default router;
-
-/*
-const router = Router();
-
-//Crete routes
-router.post('/', createRole);
-router.get('/', getRoles);
-router.get('/number', getActiveRolesWithCounter);
-router.get('/active', getActiveRolesWitoutCounter);
-
 // Routes with params
-router.put('/:roleID', updateRole);
-router.put('/inactivate/:roleID', inactivateRole);
-router.put('/activate/:roleID', activateRole);
-router.delete('/:roleID', deleteRole);
+router.put('/:personTypeID', updatePersonType);
+router.put('/inactivate/:personTypeID', inactivatePersonType);
+router.put('/activate/:personTypeID', activatePersonType);
+router.delete('/:personTypeID', deletePersonType);
 
 export default router;
-*/
