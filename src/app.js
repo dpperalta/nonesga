@@ -2,12 +2,9 @@ import express, { json } from 'express';
 import morgan from 'morgan';
 
 // Import routes
-/*
-import projectRoutes from './routes/project';
-import taskRoutes from './routes/task';
-*/
 import roleRoutes from './routes/role';
 import personTypeRoutes from './routes/personType';
+import person from './routes/person';
 
 // Starts application
 const app = express();
@@ -19,7 +16,6 @@ app.use(json()); // Para no utilizar el body parser, si hay errores instalar bod
 // Routes
 app.use('/api/v0.1/role', roleRoutes);
 app.use('/api/v0.1/personType', personTypeRoutes);
-//app.use('/api/project', projectRoutes); //Sugerencia utilizar versión de API '/api/v0.1/project'
-//app.use('/api/task', taskRoutes);
+app.use('/api/v0.1/person', person);
 
 export default app;

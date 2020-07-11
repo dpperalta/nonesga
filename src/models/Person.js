@@ -51,14 +51,22 @@ const Person = sequelize.define('person', {
         type: Sequelize.INTEGER
     },
     personTypeID: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'personType',
+            key: 'personTypeID'
+        }
     }
 }, {
     timestamps: false,
     freezeTableName: true
 });
 
-Person.belongsTo(PersonType, { foreingKey: 'personTypeID', sourceKey: 'personTypeID' });
-PersonType.hasMany(Person, { foreingKey: 'personTypeID', sourceKey: 'personTypeID' });
+//PersonType.hasMany(Person, { foreingKey: 'personTypeID', sourceKey: 'personTypeID' });
+//PersonType.hasMany(Person, { foreingKey: 'per_has_typ_fk', targetKey: 'personTypeID' });
+PersonType.hasMany(Person, { foreingKey: { name: 'personTypeID', allowNull: true, targetKey: 'personTypeID' } });
+//Person.belongsTo(PersonType, { foreingKey: 'per_has_typ_fk', targetKey: 'personTypeID' });
+//Person.belongsTo(PersonType, { foreingKey: 'personTypeID', sourceKey: 'personTypeID' });
+Person.belongsTo(PersonType, { foreingKey: { name: 'personTypeID', allowNull: true, targetKey: 'personTypeID' } });
 
 export default Person;
