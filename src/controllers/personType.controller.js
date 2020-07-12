@@ -1,6 +1,6 @@
 import PersonType from '../models/PersonType';
-import ErrorLog from '../models/ErrorLog';
 import { sequelize } from '../database/database';
+import { returnError, returnNotFound } from './errors';
 
 // Function to create a person type
 export async function createPersonType(req, res) {
@@ -77,22 +77,22 @@ export async function getActivePersonTypes(req, res) {
 }
 
 // Update a Person Type providing personTypeID
-export async function updatePersonType(req, res){
+export async function updatePersonType(req, res) {
     const { personTypeID } = req.params;
     const {
         personType,
         typeName,
         details
     } = req.body;
-    try{
+    try {
         const dbPersonType = await PersonType.findOne({
-            attributes: [ 'personType', 'typeName', 'details' ],
+            attributes: ['personType', 'typeName', 'details'],
             where: {
                 personTypeID
             },
             returning: ['personTypeID', 'personType', 'typeName', 'details', 'registeredDate', 'unregisteredDate', 'isActive']
         });
-        if(dbPersonType){
+        if (dbPersonType) {
             const updatePersonType = await PersonType.update({
                 personType,
                 typeName,
@@ -102,35 +102,35 @@ export async function updatePersonType(req, res){
                     personTypeID
                 }
             });
-            if(updatePersonType){
+            if (updatePersonType) {
                 res.status(200).json({
                     ok: true,
                     message: 'Person Type updated successfully',
                     count: updatePersonType
                 });
             }
-        }else{
+        } else {
             returnNotFound(res, 'Person Type ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Update Person Type');
     }
 }
 
 // Inactive a Person Type
-export async function inactivatePersonType(req, res){
+export async function inactivatePersonType(req, res) {
     const { personTypeID } = req.params;
     const isActive = false;
-    try{
+    try {
         const dbPersonType = await PersonType.findOne({
             attributes: ['personType', 'typeName', 'details', 'isActive', 'unregisteredDate'],
             where: {
                 personTypeID
             },
-            returning: [ 'personTypeID', 'personType', 'typeName', 'details', 'isActive', 'regsiteredDate', 'unregisteredDate' ]
+            returning: ['personTypeID', 'personType', 'typeName', 'details', 'isActive', 'regsiteredDate', 'unregisteredDate']
         });
-        if(dbPersonType){
+        if (dbPersonType) {
             const inactivatePersonType = await PersonType.update({
                 isActive,
                 unregisteredDate: sequelize.fn('NOW')
@@ -140,40 +140,40 @@ export async function inactivatePersonType(req, res){
                     isActive: true
                 }
             });
-            if(inactivatePersonType > 0){
+            if (inactivatePersonType > 0) {
                 return res.status(200).json({
                     ok: true,
                     message: 'Person Type inactivated successfully'
                 });
-            }else{
+            } else {
                 return res.status(400).json({
                     ok: false,
                     message: 'Error while inactivating a Person Type or Person Type already inactive',
                     error: 'Error 0'
                 });
             }
-        }else{
+        } else {
             returnNotFound(res, 'Active Person Type');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error', e);
         returnError(res, e, 'Inactivate Person Type');
     }
 }
 
 // Activate a Person Type
-export async function activatePersonType(req, res){
+export async function activatePersonType(req, res) {
     const { personTypeID } = req.params;
     const isActive = true;
-    try{
+    try {
         const dbPersonType = await PersonType.findOne({
             attributes: ['personType', 'typeName', 'details', 'isActive', 'unregisteredDate'],
             where: {
                 personTypeID
             },
-            returning: [ 'personTypeID', 'personType', 'typeName', 'details', 'isActive', 'regsiteredDate', 'unregisteredDate' ]
+            returning: ['personTypeID', 'personType', 'typeName', 'details', 'isActive', 'regsiteredDate', 'unregisteredDate']
         });
-        if(dbPersonType){
+        if (dbPersonType) {
             const activatePersonType = await PersonType.update({
                 isActive
             }, {
@@ -182,50 +182,50 @@ export async function activatePersonType(req, res){
                     isActive: false
                 }
             });
-            if(activatePersonType > 0){
+            if (activatePersonType > 0) {
                 return res.status(200).json({
                     ok: true,
                     message: 'Person Type activated successfully'
                 });
-            }else{
+            } else {
                 return res.status(400).json({
                     ok: false,
                     message: 'Error while activating a Person Type or Person Type already active',
                     error: 'Error 0'
                 });
             }
-        }else{
+        } else {
             returnNotFound(res, 'Inactivate Person Type');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error', e);
         returnError(res, e, 'Activate Person Type');
     }
 }
 
-export async function deletePersonType(req, res){
+export async function deletePersonType(req, res) {
     const { personTypeID } = req.params;
-    try{
+    try {
         const countDeleted = await PersonType.destroy({
             where: {
                 personTypeID
             }
         });
-        if(countDeleted > 0){
+        if (countDeleted > 0) {
             return res.status(200).json({
                 ok: true,
                 message: 'Person Type deleted successfully'
             });
-        }else{
+        } else {
             returnNotFound(res, 'Person Type ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Delete Person Type');
     }
 }
 
-function returnError(res, e, module) {
+/*function returnError(res, e, module) {
     const error = e.original.hint || e.original.detail || 'Unknown error - maybe datatype';
     ErrorLog.create({
         errorDate: sequelize.fn('NOW'),
@@ -248,4 +248,4 @@ function returnNotFound(res, value) {
         ok: false,
         message: value
     });
-}
+}*/

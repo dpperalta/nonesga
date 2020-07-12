@@ -869,7 +869,7 @@ CREATE TABLE "college"(
  "collegeID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "collegeName" Character varying(500) NOT NULL,
- "collegeShowlName" Text,
+ "collegeShowName" Text,
  "collegeCode" Character varying(10) NOT NULL,
  --"registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
  "detail" Text,
@@ -894,7 +894,7 @@ COMMENT ON COLUMN "college"."collegeID" IS 'Unique autoincremental identificatio
 ;
 COMMENT ON COLUMN "college"."collegeName" IS 'Name for the college or academic institution'
 ;
-COMMENT ON COLUMN "college"."collegeShowlName" IS 'Show name for the college or academic institution (in case of acronyms, sucursal, or long names)'
+COMMENT ON COLUMN "college"."collegeShowName" IS 'Show name for the college or academic institution (in case of acronyms, sucursal, or long names)'
 ;
 COMMENT ON COLUMN "college"."collegeCode" IS 'Code for a college or academic institution'
 ;

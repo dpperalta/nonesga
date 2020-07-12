@@ -1,16 +1,17 @@
 import { Router } from 'express';
+
+
 import {
-    createPerson,
-    getPeople,
-    getActivePeople,
-    getInactivePeople,
-    getActivePeopleType,
-    updatePerson,
-    inactivatePerson,
-    activatePerson,
-    deletePerson,
-    getPerson
-} from '../controllers/person.controller';
+    createCollege
+} from '../controllers/college.controller';
+
+const router = Router();
+
+// Routes without params
+router.post('/', createCollege);
+
+export default router;
+/*
 
 const router = Router();
 
@@ -29,3 +30,4 @@ router.delete('/:personID', deletePerson);
 router.get('/:personID', getPerson);
 
 export default router;
+*/

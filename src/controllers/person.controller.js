@@ -86,6 +86,44 @@ export async function getActivePeople(req, res) {
     }
 }
 
+// Get information of a person by ID
+export async function getPerson(req, res) {
+    const { personID } = req.params;
+    try {
+        const person = await sequelize.query(`
+        SELECT 	pe."personID" id, 
+                pe."dni" cedula, 
+                pe."birthdate" fechaNacimiento, 
+                pe."names" nombres, 
+                pe."lastNames" apellidos,
+                pe."completeName" nombreCompleto,
+                pe."image" foto,
+                pe."details" detalles,
+                pe."registeredDate" fechaAlta,
+                pe."unregisteredDate" fechaBaja,
+                pe."isActive" activo,
+                pe."bio" biografia,
+                pe."votes" votos,
+                pt."personTypeID" idTipoPersona,
+                pt."typeName" tipoPersona
+        FROM "person" pe, "personType" pt
+        WHERE pe."personTypeID" = pt."personTypeID"
+            AND pe."personID" = ${personID}`);
+        if (person) {
+            return res.status(200).json({
+                ok: true,
+                person: person[0],
+                counter: person[1].rowCount
+            });
+        } else {
+            returnNotFound(res, 'Person ID');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        returnError(res, e, 'Get Person');
+    }
+}
+
 // Get all inactive people
 export async function getInactivePeople(req, res) {
     try {
@@ -141,7 +179,8 @@ export async function getActivePeopleType(req, res) {
         if (people) {
             return res.status(200).json({
                 ok: true,
-                people
+                people: people[0],
+                counter: people[1].rowCount
             });
         } else {
             returnNotFound(res, 'Active with Type');
