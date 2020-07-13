@@ -5,6 +5,7 @@ import { returnNotFound, returnError } from './errors';
 
 // Create a person
 export async function createPerson(req, res) {
+
     const {
         dni,
         birthdate,
@@ -13,8 +14,21 @@ export async function createPerson(req, res) {
         details,
         bio,
         image,
+        sex,
         personTypeID
     } = req.body;
+
+    let sexToCreate = '';
+    let sexToRead = sex.toLowerCase();
+    if(sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones'){
+        sexToCreate = 'Male'
+    }else {
+        if(sexToRead = 'femenino' || sexToRead === 'femeninas' || sexToRead === 'mujer' || sexToRead === 'mujeres' || sexToRead === 'dama' || sexToRead === 'damas'){
+            sexToCreate = 'Female'
+        }else{
+            sexToCreate = 'Unknown'
+        }
+    }
     try {
         let newPerson = await Person.create({
             dni,
@@ -25,10 +39,11 @@ export async function createPerson(req, res) {
             details,
             bio,
             image,
+            sex: sexToCreate,
             personTypeID
         }, {
-            fields: ['dni', 'birthdate', 'names', 'lastNames', 'completeName', 'image', 'details', 'bio', 'personTypeID'],
-            returning: ['personID', 'dni', 'birthdate', 'names', 'lastNames', 'completeName', 'image', 'details', 'bio', 'isActive', 'registeredDate', 'unregisteredDate', 'votes', 'personTypeID']
+            fields: ['dni', 'birthdate', 'names', 'lastNames', 'completeName', 'image', 'details', 'bio', 'sex', 'personTypeID'],
+            returning: ['personID', 'dni', 'birthdate', 'names', 'lastNames', 'completeName', 'image', 'details', 'bio', 'isActive', 'registeredDate', 'unregisteredDate', 'votes', 'sex', 'personTypeID']
         });
         if (newPerson) {
             return res.status(200).json({
@@ -47,7 +62,7 @@ export async function createPerson(req, res) {
 export async function getPeople(req, res) {
     try {
         const people = await Person.findAndCountAll({
-            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'unregisteredDate', 'personTypeID']
+            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID']
         });
         if (people.count > 0) {
             return res.status(200).json({
@@ -67,7 +82,7 @@ export async function getPeople(req, res) {
 export async function getActivePeople(req, res) {
     try {
         const people = await Person.findAndCountAll({
-            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'unregisteredDate', 'personTypeID'],
+            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
             where: {
                 isActive: true
             }
@@ -104,6 +119,7 @@ export async function getPerson(req, res) {
                 pe."isActive" activo,
                 pe."bio" biografia,
                 pe."votes" votos,
+                pe."sex" sexo,
                 pt."personTypeID" idTipoPersona,
                 pt."typeName" tipoPersona
         FROM "person" pe, "personType" pt
@@ -128,7 +144,7 @@ export async function getPerson(req, res) {
 export async function getInactivePeople(req, res) {
     try {
         const people = await Person.findAndCountAll({
-            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'unregisteredDate', 'personTypeID'],
+            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
             where: {
                 isActive: false
             }
@@ -171,7 +187,7 @@ export async function getActivePeopleType(req, res) {
     }*/
     try {
         const people = await sequelize.query(`
-                SELECT "person"."completeName",  "person"."isActive", "person"."birthdate", "person"."bio", "personType"."typeName"
+                SELECT "person"."completeName",  "person"."isActive", "person"."birthdate", "person"."bio", "person"."sex", "personType"."typeName"
                 FROM "person", "personType" 
                 WHERE "person"."personTypeID" = "personType"."personTypeID"
                     AND "person"."isActive" = true`);
@@ -203,11 +219,25 @@ export async function updatePerson(req, res) {
         image,
         details,
         bio,
+        sex,
         personTypeID
     } = req.body;
+
+    let sexToCreate = '';
+    let sexToRead = sex.toLowerCase();
+    if(sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones'){
+        sexToCreate = 'Male'
+    }else {
+        if(sexToRead = 'femenino' || sexToRead === 'femeninas' || sexToRead === 'mujer' || sexToRead === 'mujeres' || sexToRead === 'dama' || sexToRead === 'damas'){
+            sexToCreate = 'Female'
+        }else{
+            sexToCreate = 'Unknown'
+        }
+    }
+
     try {
         const dbPerson = await Person.findOne({
-            attributes: ['dni', 'names', 'lastNames', 'completeName', 'image', 'birthdate', 'details', 'bio', 'personTypeID'],
+            attributes: ['dni', 'names', 'lastNames', 'completeName', 'image', 'birthdate', 'details', 'bio', 'sex', 'personTypeID'],
             where: {
                 personID
             }
@@ -221,6 +251,7 @@ export async function updatePerson(req, res) {
                 birthdate,
                 details,
                 bio,
+                sex: sexToCreate,
                 image,
                 personTypeID
             }, {
@@ -250,7 +281,7 @@ export async function inactivatePerson(req, res) {
     const isActive = false;
     try {
         const dbPerson = await Person.findOne({
-            attributes: ['dni', 'completeName', 'birthdate', 'isActive', 'image', 'bio', 'details'],
+            attributes: ['dni', 'completeName', 'birthdate', 'isActive', 'image', 'bio', 'sex', 'details'],
             where: {
                 personID
             }

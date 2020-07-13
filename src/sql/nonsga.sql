@@ -102,6 +102,7 @@ CREATE TABLE "person"(
  "isActive" Boolean DEFAULT true,
  "bio" Text,
  "votes" Integer,
+ "sex" Character varying(50) NOT NULL,
  "personTypeID" Integer
 )
 WITH (
@@ -137,6 +138,8 @@ A person shouldn''t deleted from the database'
 COMMENT ON COLUMN "person"."bio" IS 'The bio that''s writed by the person, to show in his profile'
 ;
 COMMENT ON COLUMN "person"."votes" IS 'A simply evaluation field to set a popularity level for a person'
+;
+COMMENT ON COLUMN "person"."sex" IS 'Selection of the sex for a person, it must be Male or Female'
 ;
 
 -- Create indexes for table person

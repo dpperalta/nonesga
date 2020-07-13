@@ -50,6 +50,10 @@ const Person = sequelize.define('person', {
     votes: {
         type: Sequelize.INTEGER
     },
+    sex: {
+        type: Sequelize.STRING(50),
+        allowNull: false
+    },
     personTypeID: {
         type: Sequelize.INTEGER,
         references: {
