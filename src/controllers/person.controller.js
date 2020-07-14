@@ -20,12 +20,12 @@ export async function createPerson(req, res) {
 
     let sexToCreate = '';
     let sexToRead = sex.toLowerCase();
-    if(sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones'){
+    if (sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones') {
         sexToCreate = 'Male'
-    }else {
-        if(sexToRead = 'femenino' || sexToRead === 'femeninas' || sexToRead === 'mujer' || sexToRead === 'mujeres' || sexToRead === 'dama' || sexToRead === 'damas'){
+    } else {
+        if (sexToRead = 'femenino' || sexToRead === 'femeninas' || sexToRead === 'mujer' || sexToRead === 'mujeres' || sexToRead === 'dama' || sexToRead === 'damas') {
             sexToCreate = 'Female'
-        }else{
+        } else {
             sexToCreate = 'Unknown'
         }
     }
@@ -203,8 +203,7 @@ export async function getActivePeopleType(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
-        return res.status(500).json({ error: e });
-        //returnError(res, e, 'Get Active People');
+        returnError(res, e, 'Get Active People');
     }
 }
 
@@ -225,12 +224,12 @@ export async function updatePerson(req, res) {
 
     let sexToCreate = '';
     let sexToRead = sex.toLowerCase();
-    if(sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones'){
+    if (sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones') {
         sexToCreate = 'Male'
-    }else {
-        if(sexToRead = 'femenino' || sexToRead === 'femeninas' || sexToRead === 'mujer' || sexToRead === 'mujeres' || sexToRead === 'dama' || sexToRead === 'damas'){
+    } else {
+        if (sexToRead = 'femenino' || sexToRead === 'femeninas' || sexToRead === 'mujer' || sexToRead === 'mujeres' || sexToRead === 'dama' || sexToRead === 'damas') {
             sexToCreate = 'Female'
-        }else{
+        } else {
             sexToCreate = 'Unknown'
         }
     }

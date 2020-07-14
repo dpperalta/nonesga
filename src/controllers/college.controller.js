@@ -45,28 +45,29 @@ export async function createCollege(req, res) {
 }
 
 // Get all colleges
-export async function getColleges(req, res){
-    try{
+export async function getColleges(req, res) {
+    try {
         const colleges = await College.findAndCountAll({
             attributes: ['collegeID', 'collegeName', 'collegeShowName', 'collegeCode', 'detail', 'flag', 'mainColour', 'secondaryColour',
-                         'status', 'isActive', 'image', 'logo', 'description', 'registratedDate', 'unregistratedDate', 'lastChangeDate', 'changeDetail', 'lastChangeUser']
+                'status', 'isActive', 'image', 'logo', 'description', 'registratedDate', 'unregistratedDate', 'lastChangeDate', 'changeDetail', 'lastChangeUser'
+            ]
         });
-        if(colleges.count > 0){
+        if (colleges.count > 0) {
             return res.status(200).json({
                 ok: true,
                 colleges
             })
-        }else{
+        } else {
             returnNotFound(res, 'All Colleges');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get Colleges');
     }
 }
 
 // Change to active or inactive a college
-export async function changeActivationCollege(req, res){
+export async function changeActivationCollege(req, res) {
     const { collegeID } = req.params;
     const type = req.query.type;
     let value;
@@ -74,7 +75,7 @@ export async function changeActivationCollege(req, res){
     let afirmation = '';
     let negation = '';
     let changeActivationJSON;
-    if(type === 'Activate' || type === 'activate' || type === 'ACTIVATE'){
+    if (type === 'Activate' || type === 'activate' || type === 'ACTIVATE') {
         value = true;
         action = 'Activating';
         negation = 'inactive';
@@ -85,7 +86,7 @@ export async function changeActivationCollege(req, res){
             changeDetail: 'Set ' + afirmation
         }
     }
-    if(type === 'Inactivate' || type === 'inactivate' || type === 'INACTIVATE'){
+    if (type === 'Inactivate' || type === 'inactivate' || type === 'INACTIVATE') {
         value = false;
         action = 'Inactivating';
         negation = 'active';
@@ -97,14 +98,14 @@ export async function changeActivationCollege(req, res){
             changeDetail: 'Set ' + afirmation
         }
     }
-    try{
+    try {
         const dbCollege = await College.findOne({
             attributes: ['collegeName', 'isActive', 'unregistratedDate', 'lastChangeDate', 'changeDetail', 'collegeID'],
             where: {
                 collegeID
             }
         });
-        if(dbCollege){
+        if (dbCollege) {
             const changeActivation = await College.update(changeActivationJSON, {
                 where: {
                     collegeID,
@@ -112,87 +113,148 @@ export async function changeActivationCollege(req, res){
                 }
             });
             console.log("change activation:", changeActivation);
-            if(changeActivation > 0){
+            if (changeActivation > 0) {
                 return res.status(200).json({
                     ok: true,
                     message: 'College ' + type + ' successfully'
                 });
-            }else{
+            } else {
                 return res.status(400).json({
                     ok: false,
                     message: 'Error while ' + action + ' a College or College already ' + afirmation,
                     error: 'Error 0'
                 });
             }
-        }else{
+        } else {
             returnNotFound(res, negation + " College");
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error');
         returnError(res, e, "Activating/Inactivating College");
     }
 }
 
 // Get all active or inactive college
-export async function getStatusColleges(req, res){
+export async function getStatusColleges(req, res) {
     let { type } = req.params;
-    let value; 
+    let value;
     console.log('Type:', type);
-    if(type === 'active'){
+    if (type === 'active') {
         value = true;
-    }else{
-        if(type === 'inactive'){
+    } else {
+        if (type === 'inactive') {
             value = false;
-        }else{
+        } else {
             return res.status(300).json({
                 ok: false,
                 message: 'The type is not correct, pealse validate'
             });
         }
     }
-    try{
+    try {
         const colleges = await College.findAndCountAll({
             attributes: ['collegeID', 'collegeName', 'collegeShowName', 'collegeCode', 'detail', 'flag', 'mainColour', 'secondaryColour',
-                         'status', 'isActive', 'image', 'logo', 'description', 'registratedDate', 'unregistratedDate', 'lastChangeDate', 'changeDetail', 'lastChangeUser'],
+                'status', 'isActive', 'image', 'logo', 'description', 'registratedDate', 'unregistratedDate', 'lastChangeDate', 'changeDetail', 'lastChangeUser'
+            ],
             where: {
                 isActive: value
-            }             
+            }
         });
-        if(colleges.count > 0){
+        if (colleges.count > 0) {
             return res.status(200).json({
                 ok: true,
                 colleges
             });
-        }else{
+        } else {
             returnNotFound(res, type + ' colleges')
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get Active/Inactive Colleges');
     }
 }
 
 // Get a college by ID
-export async function getCollege(req, res){
+export async function getCollege(req, res) {
     const { collegeID } = req.params;
-    try{
+    try {
         const college = await College.findOne({
             attributes: ['collegeID', 'collegeName', 'collegeShowName', 'collegeCode', 'detail', 'flag', 'logo', 'status', 'isActive', 'image',
-                        'registratedDate', 'unregistratedDate', 'mainColour', 'secondaryColour', 'description', 'changeDetail', 'lastChangeDate', 'lastChangeUser'],
+                'registratedDate', 'unregistratedDate', 'mainColour', 'secondaryColour', 'description', 'changeDetail', 'lastChangeDate', 'lastChangeUser'
+            ],
             where: {
                 collegeID
             }
         });
-        if(college){
+        if (college) {
             return res.status(200).json({
                 ok: true,
                 college
             });
-        }else{
+        } else {
             returnNotFound(res, 'College ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get College ' + collegeID);
+    }
+}
+
+// Update a College by collegeID
+export async function updateCollege(req, res) {
+    const { collegeID } = req.params;
+    const {
+        collegeName,
+        collegeShowName,
+        collegeCode,
+        detail,
+        flag,
+        mainColour,
+        secondaryColour,
+        status,
+        image,
+        logo,
+        description
+    } = req.body;
+    try {
+        const dbCollege = await College.findOne({
+            attributes: ['collegeName', 'collegeShowName', 'collegeCode', 'detail', 'flag', 'mainColour', 'secondaryColour', 'status', 'image', 'logo', 'description'],
+            where: {
+                collegeID
+            }
+        });
+        if (dbCollege) {
+            const updateCollege = await College.update({
+                collegeName,
+                collegeShowName,
+                collegeCode,
+                detail,
+                flag,
+                mainColour,
+                secondaryColour,
+                status,
+                image,
+                logo,
+                description,
+                lastChangeDate: sequelize.literal('CURRENT_TIMESTAMP'),
+                changeDetail: 'Update College'
+            }, {
+                where: {
+                    collegeID
+                }
+            });
+            if (updateCollege) {
+                return res.status(200).json({
+                    ok: true,
+                    message: 'College updated successfully',
+                    count: updateCollege
+                });
+            }
+        } else {
+            returnNotFound(res, 'College ID');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        returnError(res, e, 'Update College');
     }
 }
