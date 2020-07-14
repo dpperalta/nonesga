@@ -7,7 +7,8 @@ import {
     changeActivationCollege,
     getStatusColleges,
     getCollege,
-    updateCollege
+    updateCollege,
+    deleteCollete
 } from '../controllers/college.controller';
 
 const router = Router();
@@ -21,5 +22,6 @@ router.post('/:collegeID', changeActivationCollege);
 router.get('/type/:type', getStatusColleges);
 router.get('/:collegeID', getCollege);
 router.put('/:collegeID', updateCollege);
+router.delete('/:collegeID', deleteCollete);
 
 export default router;

@@ -258,3 +258,26 @@ export async function updateCollege(req, res) {
         returnError(res, e, 'Update College');
     }
 }
+
+// Delete a college by college id
+export async function deleteCollete(req, res){
+    const { collegeID } = req.params;
+    try{
+        const countDeleted = await College.destroy({
+            where: {
+                collegeID
+            }
+        });
+        if(countDeleted > 0){
+            return res.status(200).json({
+                ok: true,
+                message: 'College deleted successfully'
+            });
+        }else{
+            returnNotFound(res, 'College ID');
+        }
+    }catch(e){
+        console.log('Error:', e);
+        returnError(res, e, 'Delete Collete');
+    }
+}
