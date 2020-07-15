@@ -1,5 +1,16 @@
 import { Router } from 'express';
 
+import { createDefaultUser } from '../controllers/user.controller';
+
+const router = Router();
+
+// Routes without params
+router.post('/', createDefaultUser);
+
+export default router;
+/*
+import { Router } from 'express';
+
 import {
     createCollege,
     getColleges,
@@ -24,3 +35,4 @@ router.put('/:collegeID', updateCollege);
 router.delete('/:collegeID', deleteCollete);
 
 export default router;
+*/
