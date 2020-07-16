@@ -8,6 +8,6 @@ const router = Router();
 
 // Routes without params
 router.post('/', login);
-router.get('/valida', [mAuth.tokenValidation, mAuth.superAdminValidation], validateUser);
+router.get('/valida', [mAuth.tokenValidation, mAuth.adminValidation], validateUser);
 
 export default router;

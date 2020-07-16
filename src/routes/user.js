@@ -1,11 +1,14 @@
 import { Router } from 'express';
 
-import { createDefaultUser } from '../controllers/user.controller';
+import { createDefaultUser, getUsers } from '../controllers/user.controller';
 
 const router = Router();
 
+const mAuth = require('../middlewares/authentication');
+
 // Routes without params
-router.post('/', createDefaultUser);
+router.post('/', mAuth.tokenValidation, createDefaultUser);
+router.get('/', getUsers);
 
 export default router;
 /*

@@ -8,6 +8,8 @@ import { returnNotFound, returnError } from '../controllers/errors';
             TOKEN VALIDATION
    ================================== */
 
+let roleName = '';
+
 let tokenValidation = function(req, res, next) {
     let token = req.query.token;
     jwt.verify(token, SEED, (error, decoded) => {
@@ -70,7 +72,6 @@ let superAdminValidation = async function(req, res, next) {
 /* ==================================
            ADMIN VALIDATION
    ================================== */
-
 let adminValidation = async function(req, res, next) {
     let user = req.user;
     let userID = user.userID;
@@ -94,7 +95,7 @@ let adminValidation = async function(req, res, next) {
             let name = role[0];
             roleName = name[0].nameofrole;
         }
-        if (roleName === 'Administrator') {
+        if (roleName === 'Super Administrator' || roleName === 'Administrator') {
             next();
         } else {
             return res.status(403).json({
@@ -114,7 +115,6 @@ let adminValidation = async function(req, res, next) {
 /* ==================================
            TEACHER VALIDATION
    ================================== */
-
 let teacherValidation = async function(req, res, next) {
     let user = req.user;
     let userID = user.userID;
@@ -138,7 +138,7 @@ let teacherValidation = async function(req, res, next) {
             let name = role[0];
             roleName = name[0].nameofrole;
         }
-        if (roleName === 'Teacher') {
+        if (roleName === 'Teacher' || roleName === 'Super Administrator' || roleName === 'Administrator') {
             next();
         } else {
             return res.status(403).json({
@@ -155,6 +155,9 @@ let teacherValidation = async function(req, res, next) {
     }
 }
 
+/* ==================================
+           OPERATIVE VALIDATION
+   ================================== */
 let operativeValidation = async function(req, res, next) {
     let user = req.user;
     let userID = user.userID;
@@ -178,7 +181,7 @@ let operativeValidation = async function(req, res, next) {
             let name = role[0];
             roleName = name[0].nameofrole;
         }
-        if (roleName === 'Operative') {
+        if (roleName === 'Operative' || roleName === 'Super Administrator' || roleName === 'Administrator') {
             next();
         } else {
             return res.status(403).json({

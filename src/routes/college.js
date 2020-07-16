@@ -12,15 +12,17 @@ import {
 
 const router = Router();
 
+const mAuth = require('../middlewares/authentication');
+
 // Routes without params
-router.post('/', createCollege);
-router.get('/', getColleges);
+router.post('/', [mAuth.tokenValidation, mAuth.adminValidation], createCollege);
+router.get('/', mAuth.tokenValidation, getColleges);
 
 // Routes with params
-router.post('/:collegeID', changeActivationCollege);
-router.get('/type/:type', getStatusColleges);
-router.get('/:collegeID', getCollege);
-router.put('/:collegeID', updateCollege);
-router.delete('/:collegeID', deleteCollete);
+router.post('/:collegeID', [mAuth.tokenValidation, mAuth.adminValidation], changeActivationCollege);
+router.get('/type/:type', mAuth.tokenValidation, getStatusColleges);
+router.get('/:collegeID', mAuth.tokenValidation, getCollege);
+router.put('/:collegeID', [mAuth.tokenValidation, mAuth.adminValidation], updateCollege);
+router.delete('/:collegeID', [mAuth.tokenValidation, mAuth.superAdminValidation], deleteCollete);
 
 export default router;

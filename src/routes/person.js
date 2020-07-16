@@ -12,20 +12,22 @@ import {
     getPerson
 } from '../controllers/person.controller';
 
+const mAuth = require('../middlewares/authentication');
+
 const router = Router();
 
 // Routes without params
-router.post('/', createPerson);
-router.get('/', getPeople);
-router.get('/active', getActivePeople);
-router.get('/inactive', getInactivePeople);
-router.get('/activeType', getActivePeopleType);
+router.post('/', mAuth.tokenValidation, createPerson);
+router.get('/', mAuth.tokenValidation, getPeople);
+router.get('/active', mAuth.tokenValidation, getActivePeople);
+router.get('/inactive', mAuth.tokenValidation, getInactivePeople);
+router.get('/activeType', mAuth.tokenValidation, getActivePeopleType);
 
 //Routes with params
-router.put('/:personID', updatePerson);
-router.put('/inactivate/:personID', inactivatePerson);
-router.put('/activate/:personID', activatePerson);
-router.delete('/:personID', deletePerson);
-router.get('/:personID', getPerson);
+router.put('/:personID', mAuth.tokenValidation, updatePerson);
+router.put('/inactivate/:personID', mAuth.tokenValidation, inactivatePerson);
+router.put('/activate/:personID', mAuth.tokenValidation, activatePerson);
+router.get('/:personID', mAuth.tokenValidation, getPerson);
+router.delete('/:personID', [mAuth.tokenValidation, mAuth.adminValidation], deletePerson);
 
 export default router;

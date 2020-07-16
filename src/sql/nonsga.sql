@@ -19,7 +19,7 @@ CREATE TABLE "user"(
  "email" Character varying(80) NOT NULL,
  "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
  "status" Smallint,
- "unregisteredlDate" Timestamp,
+ "unregisteredDate" Timestamp,
  "lastLogin" Timestamp,
  "isActive" Boolean DEFAULT true NOT NULL,
  "personID" Integer,
@@ -53,7 +53,7 @@ COMMENT ON COLUMN "user"."status" IS 'Stores a status code, the status is define
 9. Restricted access
 10. Need admin verification'
 ;
-COMMENT ON COLUMN "user"."unregisteredlDate" IS 'In case of cancellation, this field stores the timestamp of cancellation'
+COMMENT ON COLUMN "user"."unregisteredDate" IS 'In case of cancellation, this field stores the timestamp of cancellation'
 ;
 COMMENT ON COLUMN "user"."lastLogin" IS 'Timestamp for the last loggin in the application'
 ;
