@@ -116,7 +116,7 @@ export async function changeActivationCollege(req, res) {
             if (changeActivation > 0) {
                 return res.status(200).json({
                     ok: true,
-                    message: 'College ' + type + ' successfully'
+                    message: 'College ' + type + 'd successfully'
                 });
             } else {
                 return res.status(400).json({

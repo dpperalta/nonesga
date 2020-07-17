@@ -30,7 +30,7 @@ const User = sequelize.define('user', {
     status: {
         type: Sequelize.SMALLINT
     },
-    unregisteredlDate: {
+    unregisteredDate: {
         type: Sequelize.DATE
     },
     lastLogin: {
