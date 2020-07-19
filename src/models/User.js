@@ -7,7 +7,7 @@ import College from './College';
 const User = sequelize.define('user', {
     userID: {
         type: Sequelize.INTEGER,
-        primarikey: true
+        primarykey: true
     },
     nick: {
         type: Sequelize.STRING(100),

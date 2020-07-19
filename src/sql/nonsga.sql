@@ -2282,9 +2282,10 @@ COMMENT ON COLUMN "errorLog"."errorModule" IS 'Module that has the error';
 -- Table Session
 CREATE TABLE "session"
 (
-    "sessionID" integer NOT NULL,
+    "sessionID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+    (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
     "sessionRoom" integer,
-    "sessionDate" timestamp without time zone,
+    "sessionDate" timestamp without time zone DEFAULT current_timestamp,
     "sessionToken" text,
     "sessionExpiration" character varying(50),
     "sessionIP" character varying(20),
@@ -2297,7 +2298,7 @@ CREATE TABLE "session"
 COMMENT ON TABLE "session"
     IS 'Table for store the information for active users in a session of NoNe SGA';
 
-COMMENT ON COLUMN "session"."sessionID" IS 'Unique autoincremental ID for an session registration';
+COMMENT ON COLUMN "session"."sessionID" IS 'Unique autoincremental ID for a session registration';
 
 COMMENT ON COLUMN "session"."sessionRoom" IS 'Rooms for manage of sessions';
 
@@ -2315,4 +2316,52 @@ ALTER TABLE "session" ADD CONSTRAINT "userID" UNIQUE ("userID")
 ;
 
 ALTER TABLE "session" ADD CONSTRAINT "ses_has_usr_fk" FOREIGN KEY ("userID") REFERENCES "user" ("userID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+CREATE INDEX "session_user_ix" ON "session" ("userID")
+;
+
+-- Table Audit Session
+CREATE TABLE "auditSession"
+(
+    "auditID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+    (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+    "sessionID" integer NOT NULL,
+    "sessionRoom" integer,
+    "sessionDate" timestamp without time zone DEFAULT current_timestamp,
+    "sessionToken" text,
+    "sessionExpiration" character varying(50),
+    "sessionIP" character varying(20),
+    "sessionDevice" character varying(20),
+    "sessionCode" character varying(50),
+    "sessionDetail" text,
+    "userID" integer NOT NULL,
+    CONSTRAINT "auditSession_PK" PRIMARY KEY ("auditID")
+);
+
+COMMENT ON TABLE "auditSession"
+    IS 'Table for store the historical information for users that register a Login in NoNe SGA';
+
+COMMENT ON COLUMN "auditSession"."auditID" IS 'Unique autoincremental ID for a session registration';
+
+COMMENT ON COLUMN "auditSession"."sessionID" IS 'Value of sessionID to store in the audit table';
+
+COMMENT ON COLUMN "auditSession"."sessionRoom" IS 'Rooms for manage of sessions';
+
+COMMENT ON COLUMN "auditSession"."sessionDate" IS 'Timestamp for the date of session';
+
+COMMENT ON COLUMN "auditSession"."sessionToken" IS 'Information of generated token for the session';
+
+COMMENT ON COLUMN "auditSession"."sessionExpiration" IS 'Information for the expiration of session';
+
+COMMENT ON COLUMN "auditSession"."sessionDevice" IS 'Name or identifyer for the device of the conection';
+
+COMMENT ON COLUMN "auditSession"."sessionDetail" IS 'Detail or description of the operation in execution';
+
+COMMENT ON COLUMN "auditSession"."sessionCode" IS 'Unique code formed by date anda userID';
+
+ALTER TABLE "auditSession" ADD CONSTRAINT "aud_has_usr_fk" FOREIGN KEY ("userID") REFERENCES "user" ("userID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+CREATE INDEX "auditSession_user_ix" ON "auditSession" ("userID")
 ;
