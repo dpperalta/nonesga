@@ -2266,7 +2266,7 @@ ALTER TABLE "payment" ADD CONSTRAINT "col_reg_pay_fk" FOREIGN KEY ("collegeID") 
     CONSTRAINT "PK_errorLog" PRIMARY KEY ("errorLogID")
 );
 
-ALTER TABLE public."errorLog"
+ALTER TABLE "errorLog"
     OWNER to postgres;
 COMMENT ON TABLE public."errorLog"
     IS 'Table to store information about errors in NoNe SGA';
@@ -2278,3 +2278,41 @@ COMMENT ON COLUMN "errorLog"."errorDate" IS 'Timestamp for the date and time of 
 COMMENT ON COLUMN "errorLog"."errorDetail" IS 'Error detail and technical information for some error';
 
 COMMENT ON COLUMN "errorLog"."errorModule" IS 'Module that has the error';
+
+-- Table Session
+CREATE TABLE "session"
+(
+    "sessionID" integer NOT NULL,
+    "sessionRoom" integer,
+    "sessionDate" timestamp without time zone,
+    "sessionToken" text,
+    "sessionExpiration" character varying(50),
+    "sessionIP" character varying(20),
+    "sessionDevice" character varying(20),
+    "sessionCode" character varying(50),
+    "userID" integer NOT NULL,
+    CONSTRAINT "session_PK" PRIMARY KEY ("sessionID")
+);
+
+COMMENT ON TABLE "session"
+    IS 'Table for store the information for active users in a session of NoNe SGA';
+
+COMMENT ON COLUMN "session"."sessionID" IS 'Unique autoincremental ID for an session registration';
+
+COMMENT ON COLUMN "session"."sessionRoom" IS 'Rooms for manage of sessions';
+
+COMMENT ON COLUMN "session"."sessionDate" IS 'Timestamp for the date of session';
+
+COMMENT ON COLUMN "session"."sessionToken" IS 'Information of generated token for the session';
+
+COMMENT ON COLUMN "session"."sessionExpiration" IS 'Information for the expiration of session';
+
+COMMENT ON COLUMN "session"."sessionDevice" IS 'Name or identifyer for the device of the conection';
+
+COMMENT ON COLUMN "session"."sessionCode" IS 'Unique code formed by date anda userID';
+
+ALTER TABLE "session" ADD CONSTRAINT "userID" UNIQUE ("userID")
+;
+
+ALTER TABLE "session" ADD CONSTRAINT "ses_has_usr_fk" FOREIGN KEY ("userID") REFERENCES "user" ("userID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;

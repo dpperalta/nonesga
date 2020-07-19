@@ -60,9 +60,13 @@ export async function createPerson(req, res) {
 
 // Get all people
 export async function getPeople(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
     try {
         const people = await Person.findAndCountAll({
-            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID']
+            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
+            limit,
+            offset: from
         });
         if (people.count > 0) {
             return res.status(200).json({
@@ -80,12 +84,16 @@ export async function getPeople(req, res) {
 
 // Get only active people
 export async function getActivePeople(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
     try {
         const people = await Person.findAndCountAll({
             attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
             where: {
                 isActive: true
-            }
+            },
+            limit,
+            offset: from
         });
         if (people.count > 0) {
             return res.status(200).json({
@@ -142,12 +150,16 @@ export async function getPerson(req, res) {
 
 // Get all inactive people
 export async function getInactivePeople(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
     try {
         const people = await Person.findAndCountAll({
             attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
             where: {
                 isActive: false
-            }
+            },
+            limit,
+            offset: from
         });
         if (people.count > 0) {
             return res.status(200).json({
@@ -165,6 +177,8 @@ export async function getInactivePeople(req, res) {
 
 // Get all active people with people type description
 export async function getActivePeopleType(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
     /*try {
         const people = await Person.findAndCountAll({
             attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'unregisteredDate', 'personTypeID'],
@@ -190,7 +204,9 @@ export async function getActivePeopleType(req, res) {
                 SELECT "person"."completeName",  "person"."isActive", "person"."birthdate", "person"."bio", "person"."sex", "personType"."typeName"
                 FROM "person", "personType" 
                 WHERE "person"."personTypeID" = "personType"."personTypeID"
-                    AND "person"."isActive" = true`);
+                    AND "person"."isActive" = true
+                    limit: ${ limit }
+                    offset: ${ from };`);
 
         if (people) {
             return res.status(200).json({

@@ -6,7 +6,8 @@ import { createDefaultUser,
          updateUser,
          deleteUser,
          changeActivationUser,
-         createUser } from '../controllers/user.controller';
+         createUser,
+         getCollegeUser } from '../controllers/user.controller';
 
 const router = Router();
 
@@ -22,33 +23,6 @@ router.get('/:userID', mAuth.tokenValidation, getUser);
 router.put('/:userID', mAuth.tokenValidation, updateUser );
 router.delete('/:userID', [ mAuth.tokenValidation, mAuth.adminValidation ], deleteUser);
 router.post('/:userID?', [ mAuth.tokenValidation, mAuth.adminValidation ], changeActivationUser);
+router.get('/college/:collegeID', getCollegeUser);
 
 export default router;
-/*
-import { Router } from 'express';
-
-import {
-    createCollege,
-    getColleges,
-    changeActivationCollege,
-    getStatusColleges,
-    getCollege,
-    updateCollege,
-    deleteCollete
-} from '../controllers/college.controller';
-
-const router = Router();
-
-// Routes without params
-router.post('/', createCollege);
-router.get('/', getColleges);
-
-// Routes with params
-router.post('/:collegeID', changeActivationCollege);
-router.get('/type/:type', getStatusColleges);
-router.get('/:collegeID', getCollege);
-router.put('/:collegeID', updateCollege);
-router.delete('/:collegeID', deleteCollete);
-
-export default router;
-*/

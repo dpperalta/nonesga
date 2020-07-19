@@ -55,12 +55,16 @@ export async function getPersonTypes(req, res) {
 
 // Function to get only active person types
 export async function getActivePersonTypes(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
     try {
         const personTypes = await PersonType.findAndCountAll({
             attributes: ['personTypeID', 'personType', 'typeName', 'details', 'isActive', 'registeredDate'],
             where: {
                 'isActive': true
-            }
+            },
+            limit,
+            offset: from
         });
         if (personTypes.count > 0) {
             return res.status(200).json({
@@ -224,28 +228,3 @@ export async function deletePersonType(req, res) {
         returnError(res, e, 'Delete Person Type');
     }
 }
-
-/*function returnError(res, e, module) {
-    const error = e.original.hint || e.original.detail || 'Unknown error - maybe datatype';
-    ErrorLog.create({
-        errorDate: sequelize.fn('NOW'),
-        errorDetail: e,
-        errorModule: module
-    }, {
-        fields: ['errorDate', 'errorDetail', 'errorModule'],
-        returning: ['errorLogID', 'errorDate', 'errorDetail', 'errorModule'],
-    });
-    return res.status(500).json({
-        ok: false,
-        message: 'Database Error, see details for information',
-        error
-    });
-}
-
-function returnNotFound(res, value) {
-    value = 'Could not find any ' + value + ' with this searching parameter(s)';
-    return res.status(404).json({
-        ok: false,
-        message: value
-    });
-}*/

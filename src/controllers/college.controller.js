@@ -46,11 +46,15 @@ export async function createCollege(req, res) {
 
 // Get all colleges
 export async function getColleges(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
     try {
         const colleges = await College.findAndCountAll({
             attributes: ['collegeID', 'collegeName', 'collegeShowName', 'collegeCode', 'detail', 'flag', 'mainColour', 'secondaryColour',
                 'status', 'isActive', 'image', 'logo', 'description', 'registratedDate', 'unregistratedDate', 'lastChangeDate', 'changeDetail', 'lastChangeUser'
-            ]
+            ],
+            limit,
+            offset: from
         });
         if (colleges.count > 0) {
             return res.status(200).json({
@@ -138,6 +142,8 @@ export async function changeActivationCollege(req, res) {
 export async function getStatusColleges(req, res) {
     let { type } = req.params;
     let value;
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
     console.log('Type:', type);
     if (type === 'active') {
         value = true;
@@ -158,7 +164,9 @@ export async function getStatusColleges(req, res) {
             ],
             where: {
                 isActive: value
-            }
+            },
+            limit,
+            offset: from
         });
         if (colleges.count > 0) {
             return res.status(200).json({

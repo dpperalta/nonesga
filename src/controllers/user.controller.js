@@ -66,7 +66,21 @@ export async function createDefaultUser(req, res) {
 
 // Get information of all users
 export async function getUsers(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+    let rows;
+    let totalRows;
     try {
+        const total = await sequelize.query(`
+                select 	count(*)
+                from "user"
+                left join "role"  on "user"."roleID" = "role"."roleID"
+                left join "person" on "user"."personID" = "person"."personID"
+                left join "college" on "user"."collegeID" = "college"."collegeID"
+                    where "user"."isActive" = true;
+        `);
+        rows = total[0];
+        totalRows = parseInt(rows[0].count);
         const users = await sequelize.query(`
                     select 	"user"."userID" identificador,
                     "user"."nick" nick,
@@ -94,13 +108,17 @@ export async function getUsers(req, res) {
             left join "role"  on "user"."roleID" = "role"."roleID"
             left join "person" on "user"."personID" = "person"."personID"
             left join "college" on "user"."collegeID" = "college"."collegeID"
-                where "user"."isActive" = true;
+                where "user"."isActive" = true
+                order by "user"."userID"
+                limit ${ limit }
+                offset ${ from };;
         `);
         if (users) {
             return res.status(200).json({
                 ok: true,
                 users: users[0],
-                count: users[1].rowCount
+                count: users[1].rowCount,
+                total: totalRows
             });
         }else{
             return res.status(400).json({
@@ -146,7 +164,7 @@ export async function getUser(req, res){
                 left join "role"  on "user"."roleID" = "role"."roleID"
                 left join "person" on "user"."personID" = "person"."personID"
                 left join "college" on "user"."collegeID" = "college"."collegeID"
-                where "user"."userID" = ${userID};
+                where "user"."userID" = ${ userID };
         `);
         if(user){
             return res.status(200).json({
@@ -351,5 +369,73 @@ export async function createUser(req, res){
     }catch(e){
         console.log('Error:', e);
         returnError(res, e, 'Create User from Admin');
+    }
+}
+
+// Get users from college with pagination
+export async function getCollegeUser(req, res){
+    const { collegeID } = req.params;
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+    let rows;
+    let totalRows;
+    try{
+        const total = await sequelize.query(`
+                select count (*)
+                from "user"
+                left join "role"  on "user"."roleID" = "role"."roleID"
+                left join "person" on "user"."personID" = "person"."personID"
+                left join "college" on "user"."collegeID" = "college"."collegeID"
+                    where "user"."collegeID" = 5
+                    and "user"."isActive" = true;
+        `);
+        rows = total[0];
+        totalRows = parseInt(rows[0].count);
+        const users = await sequelize.query(`
+                            select 	"user"."userID" identificador,
+                            "user"."nick" nick,
+                            "user"."email" correo,
+                            "user"."registeredDate" alta,
+                            case when "user"."status" = 0 then 'Demo'
+                                when "user"."status" = 1 then 'Activo'
+                                when "user"."status" = 2 then 'Activo con solicitud de pago'
+                                when "user"."status" = 3 then 'Activo con pago verificado'
+                                when "user"."status" = 4 then 'Activo con pago retrasado'
+                                when "user"."status" = 5 then 'Activo con pago retrasado verificado'
+                                when "user"."status" = 6 then 'Activo sin acceso por pago'
+                                when "user"."status" = 7 then 'Activo sin acceso por prohibición'
+                                when "user"."status" = 8 then 'Accesso prohibido'
+                                when "user"."status" = 9 then 'Acceso restringido'
+                                when "user"."status" = 10 then 'Necesita Verificación ADM'
+                            end status,
+                            "user"."unregisteredDate" baja,
+                            "user"."lastLogin" ultimoLogin,
+                            "user"."isActive",
+                            "person"."completeName" nombre,
+                            "role"."roleName" rol,
+                            "college"."collegeShowName" colegio
+                        from "user"
+                        left join "role"  on "user"."roleID" = "role"."roleID"
+                        left join "person" on "user"."personID" = "person"."personID"
+                        left join "college" on "user"."collegeID" = "college"."collegeID"
+                        where "user"."collegeID" = ${ collegeID }
+                              and "user"."isActive" = true
+                        order by "user"."userID"
+                        limit ${ limit }
+                        offset ${ from };
+        `);
+        if(users){
+            return res.status(200).json({
+                ok: true,
+                users: users[0],
+                count: users[1].rowCount,
+                total: totalRows
+            });         
+        }else{
+            returnNotFound(res, 'College ID');
+        }
+    }catch(e){
+        console.log('Error:', e);
+        return res.status(500).json({ e });
     }
 }

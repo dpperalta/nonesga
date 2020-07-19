@@ -70,12 +70,16 @@ export async function getRoles(req, res) {
 }
 
 export async function getActiveRolesWithCounter(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
     try {
         const roles = await Role.findAndCountAll({
             attributes: ['roleID', 'roleCode', 'roleName', 'description', 'isActive'],
             where: {
                 'isActive': true
-            }
+            },
+            limit,
+            offset: from
         });
         if (roles.count > 0) {
             return res.status(200).json({
