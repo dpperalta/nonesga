@@ -1,14 +1,15 @@
 import { Router } from 'express';
 
-import { login, validateUser, logout } from '../controllers/login.controller';
+import { login, validateUser, logout, tokenRenew } from '../controllers/login.controller';
 
-const mAuth = require('../middlewares/authentication');
+import mAuth from '../middlewares/authentication';
+//const mAuth = require('../middlewares/authentication');
 
 const router = Router();
 
 // Routes without params
 router.post('/', login);
-router.get('/valida', [mAuth.tokenValidation, mAuth.adminValidation], validateUser);
+router.get('/renew', [mAuth.tokenValidation], tokenRenew);
 
 // Routes with params
 router.delete('/logout/:userID', mAuth.tokenValidation, logout);

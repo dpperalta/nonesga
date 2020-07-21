@@ -3,6 +3,7 @@ import { sequelize } from '../database/database';
 import { returnError, returnNotFound } from './errors';
 const bcrypt = require('bcryptjs');
 
+// Create a default user
 export async function createDefaultUser(req, res) {
     const {
         email,

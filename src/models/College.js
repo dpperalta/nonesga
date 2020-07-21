@@ -18,11 +18,6 @@ const College = sequelize.define('college', {
         allowNull: false,
         unique: true
     },
-    /*registeredDate: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-    },*/
     detail: {
         type: Sequelize.TEXT
     },

@@ -34,10 +34,7 @@ export async function login(req, res) {
                 message: 'Incorrect authentication information - email'
             })
         }
-        //console.log('loggedUser:', loggedUser);
-        //console.log('email: ', loggedUser.email);
-        //console.log('pass:', loggedUser.pass);
-        //console.log('userID:', loggedUser.userID);
+        
         if (!bcrypt.compareSync(pass, loggedUser.pass)) {
             return res.status(400).json({
                 ok: false,
@@ -102,13 +99,6 @@ export async function login(req, res) {
     }
 }
 
-export function validateUser(req, res) {
-    return res.status(200).json({
-        ok: true,
-        message: 'VALIDATED'
-    });
-}
-
 export async function logout(req, res){
     const { userID } = req.params;
     try{
@@ -142,6 +132,36 @@ export async function logout(req, res){
     }
 }
 
-/*export async function renewLogin(req, res){
-    const { userID } = req.params;
-}*/
+// Function to renew a token to refresh the login
+export async function tokenRenew(req, res){
+
+    let token = jwt.sign( { user: req.user }, SEED, { expiresIn: TOKEN_END } );
+    const { userID } = req.user;
+
+    const userUpdate = Session.findOne({
+        attributes: ['sessionID', 'sessionRoom', 'sessionDate', 'sessionToken', 'sessionExpiration', 'sessionCode', 'sessionDevice', 'sessionIP', 'userID'],
+        where: {
+            userID
+        }
+    });
+    
+    if(!userUpdate){
+        return res.status(400).json({
+            ok: false,
+            message: 'User not authenticated or session has ended, please login again'
+        })
+    }else{
+        Session.update({
+            sessionToken: token
+        }, {
+            where: {
+                userID
+            }
+        });
+    }
+
+    return res.status(200).json({
+        ok: true,
+        token
+    });
+}

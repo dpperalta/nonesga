@@ -11,3 +11,10 @@ create trigger deleteAuditSessionTrigger
 	on "session"
 	for each row
 	execute procedure fnDeleteAuditSession();
+
+-- Trigger to insert values into audit session when user is renewing the login
+create trigger updateAuditSessionTrigger
+	before update
+	on "session"
+	for each row
+	execute procedure fnUpdateAuditSession();

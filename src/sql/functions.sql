@@ -1,6 +1,6 @@
 -- Function to insert in audit after insert
-CREATE OR REPLACE FUNCTION fnInsertAuditSession()
-	RETURNS trigger AS
+create or replace function fnInsertAuditSession()
+	returns trigger as|
 $$
 begin
 	insert into "auditSession" ("sessionID", 
@@ -22,7 +22,7 @@ begin
 		new."sessionIP",
 		new."sessionDevice",
 		new."sessionCode",
-		'Insert',
+		'Logged in',
 		new."userID"
 	);
 	return new;
@@ -54,7 +54,39 @@ begin
 		old."sessionIP",
 		old."sessionDevice",
 		old."sessionCode",
-		'Delete',
+		'Logged out',
+		old."userID"
+	);
+	return new;
+end;
+$$
+language 'plpgsql';
+
+-- Function to insert in audit after update or renew the token
+create or replace function fnUpdateAuditSession()
+	returns trigger as
+$$
+begin
+	insert into "auditSession" ("sessionID", 
+							   "sessionRoom",
+							   "sessionDate",
+							   "sessionToken",
+							   "sessionExpiration",
+							   "sessionIP",
+							   "sessionDevice",
+							   "sessionCode",
+							   "sessionDetail",
+							   "userID")
+	values (
+		old."sessionID",
+		new."sessionRoom",
+		current_timestamp,
+		new."sessionToken",
+		new."sessionExpiration",
+		new."sessionIP",
+		new."sessionDevice",
+		old."sessionCode",
+		'Renew session',
 		old."userID"
 	);
 	return new;
