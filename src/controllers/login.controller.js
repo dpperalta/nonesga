@@ -152,7 +152,8 @@ export async function tokenRenew(req, res){
         })
     }else{
         Session.update({
-            sessionToken: token
+            sessionToken: token,
+            sessionDate: sequelize.literal('CURRENT_TIMESTAMP')
         }, {
             where: {
                 userID

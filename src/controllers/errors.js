@@ -25,3 +25,11 @@ export function returnNotFound(res, value) {
         message: value
     });
 }
+
+export function returnWrongError(res, argument, value){
+    let error = 'Wrong ' + argument + ' for the ' + value + ' please validate';
+    return res.status(400).json({
+        ok: false,
+        message: error
+    });
+}

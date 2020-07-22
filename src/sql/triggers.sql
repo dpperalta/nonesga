@@ -18,3 +18,11 @@ create trigger updateAuditSessionTrigger
 	on "session"
 	for each row
 	execute procedure fnUpdateAuditSession();
+
+-- Trigger to delete all inactive users from session table
+create trigger deleteInactiveSessions
+	after insert or update or delete
+	on "session"
+	for each row
+	execute procedure fnDeleteOldUsers();
+

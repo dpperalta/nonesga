@@ -1,6 +1,6 @@
 -- Function to insert in audit after insert
 create or replace function fnInsertAuditSession()
-	returns trigger as|
+	returns trigger as
 $$
 begin
 	insert into "auditSession" ("sessionID", 
@@ -89,6 +89,18 @@ begin
 		'Renew session',
 		old."userID"
 	);
+	return new;
+end;
+$$
+language 'plpgsql';
+
+-- Trigger to delete old or inactive users
+create or replace function fnDeleteOldUsers() 
+	returns trigger as
+$$
+begin
+	delete from "session" 
+	where "sessionDate" < now() - interval '4 hours';
 	return new;
 end;
 $$

@@ -17,10 +17,10 @@ CREATE TABLE "user"(
  "nick" Character varying(100),
  "pass" Character varying(400) NOT NULL,
  "email" Character varying(80) NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "status" Smallint,
- "unregisteredDate" Timestamp,
- "lastLogin" Timestamp,
+ "unregisteredDate" Timestamp with time zone,
+ "lastLogin" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "personID" Integer,
  "roleID" Integer,
@@ -97,8 +97,8 @@ CREATE TABLE "person"(
  "completeName" Character varying(200),
  "image" Character varying(500),
  "details" Text,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true,
  "bio" Text,
  "votes" Integer,
@@ -163,8 +163,8 @@ CREATE TABLE "personType"(
  "personType" Smallint NOT NULL,
  "typeName" Character varying(50) NOT NULL,
  "details" Character varying(500),
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL
 )
 WITH (
@@ -217,8 +217,8 @@ CREATE TABLE "city"(
  "cityCode" Character varying(10) NOT NULL,
  "cityName" Character varying(200) NOT NULL,
  "dityDetail" Text,
- "registrationDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registrationDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "provinceID" Integer
 )
@@ -262,8 +262,8 @@ CREATE TABLE "province"(
  "provinceCode" Character varying(10) NOT NULL,
  "provinceName" Character varying(200) NOT NULL,
  "details" Text,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "countryID" Integer
 )
@@ -312,8 +312,8 @@ CREATE TABLE "country"(
  "countryDetails" Text,
  "isActive" Boolean DEFAULT true NOT NULL,
  "callCode" Character varying(4) NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "currency" Character varying(100),
  "currencySymbol" Character varying(3),
  "longLanguage" Character varying(100),
@@ -384,8 +384,8 @@ CREATE TABLE "address"(
  "latitude" Double precision,
  "longitude" Double precision,
  "addressType" Smallint,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean,
  "isFavourite" Boolean,
  "cityID" Integer,
@@ -458,8 +458,8 @@ CREATE TABLE "role"(
  "privileges" Smallint,
  "description" Text,
  "isActive" Boolean DEFAULT true NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone
 )
 WITH (
  autovacuum_enabled=true)
@@ -504,8 +504,8 @@ CREATE TABLE "student"(
  "studentCode" Character varying(10) NOT NULL,
  "status" Smallint DEFAULT 1 NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "previousCourse" Integer,
  "actualCourse" Integer,
  "grade" Character varying(10),
@@ -575,8 +575,8 @@ CREATE TABLE "teacher"(
  "teacherCode" Character varying(10) NOT NULL,
  "status" Smallint,
  "isActive" Boolean DEFAULT true NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "details" Text,
  "bio" Text,
  "ratting" Smallint,
@@ -637,9 +637,9 @@ CREATE TABLE "enrrollment"(
  "enrollmentID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "enrollmentCode" Character varying(10),
- "registrationDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registrationDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
- "statusChangeDate" Timestamp,
+ "statusChangeDate" Timestamp with time zone,
  "statusID" Integer,
  "studentID" Integer,
  "userID" Integer,
@@ -736,8 +736,8 @@ CREATE TABLE "academicPeriod"(
  "endPeriod" Date,
  "periodName" Character varying(150) NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "detail" Text
 )
 WITH (
@@ -778,8 +778,8 @@ CREATE TABLE "course"(
  "courseCode" Character varying(10) NOT NULL,
  "courseName" Character varying(500) NOT NULL,
  "description" Text,
- "registratedDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregistratedDate" Timestamp
+ "registratedDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregistratedDate" Timestamp with time zone
 )
 WITH (
  autovacuum_enabled=true)
@@ -814,8 +814,8 @@ CREATE TABLE "subject"(
  "subjectName" Character varying(250) NOT NULL,
  "description" Text NOT NULL,
  "details" Text,
- "registrationDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregistrationDate" Timestamp,
+ "registrationDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregistrationDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "gradeNeeded" Smallint,
  "gradeHomologation" Character varying(2),
@@ -884,9 +884,9 @@ CREATE TABLE "college"(
  "image" Character varying(500),
  "logo" Character varying(500),
  "description" Text,
- "registratedDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregistratedDate" Timestamp,
- "lastChangeDate" Timestamp,
+ "registratedDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregistratedDate" Timestamp with time zone,
+ "lastChangeDate" Timestamp with time zone,
  "changeDetail" Text NOT NULL,
  "lastChangeUser" Integer
 )
@@ -955,8 +955,8 @@ CREATE TABLE "content"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "contedCode" Character varying(10) NOT NULL,
  "contendDetail" Text,
- "registratedDate" Timestamp NOT NULL,
- "unregisteradDate" Timestamp,
+ "registratedDate" Timestamp with time zone NOT NULL,
+ "unregisteradDate" Timestamp with time zone,
  "status" Boolean DEFAULT true NOT NULL,
  "image" Character varying(500)
 )
@@ -982,13 +982,13 @@ CREATE TABLE "assistenceRegister"(
  "period" Character varying(20),
  "detail" Text,
  "present" Boolean NOT NULL,
- "registrationDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registrationDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "studentDetail" Text,
  "agentDetail" Text,
  "isJustified" Boolean DEFAULT false NOT NULL,
  "requiereAgentNotification" Boolean,
- "justifiedDate" Timestamp,
- "editedDate" Timestamp,
+ "justifiedDate" Timestamp with time zone,
+ "editedDate" Timestamp with time zone,
  "editedUser" Integer,
  "subjectID" Integer,
  "studentID" Integer
@@ -1047,13 +1047,13 @@ CREATE TABLE "task"(
  "taskID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "taskCode" Character varying(10) NOT NULL,
- "startDate" Timestamp NOT NULL,
- "endDate" Timestamp NOT NULL,
+ "startDate" Timestamp with time zone NOT NULL,
+ "endDate" Timestamp with time zone NOT NULL,
  "taskName" Character varying(300) NOT NULL,
  "taskDetail" Text NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "permitsDelay" Boolean,
- "maxDelay" Timestamp,
+ "maxDelay" Timestamp with time zone,
  "image" Character varying(500),
  "subjectID" Integer
 )
@@ -1103,8 +1103,8 @@ CREATE TABLE "taskEvaluation"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "taskScore" Double precision NOT NULL,
  "scoreHomolation" Character varying(5),
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "taskEvaluationDate" Timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "taskEvaluationDate" Timestamp with time zone NOT NULL,
  "studentDetail" Text,
  "isActive" Boolean DEFAULT true,
  "agentDetail" Text,
@@ -1155,8 +1155,8 @@ CREATE TABLE "taskResource"(
  "resourceDetail" Text NOT NULL,
  "image" Character varying(500),
  "isActive" Boolean,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "taskID" Integer
 )
 WITH (
@@ -1205,9 +1205,9 @@ CREATE TABLE "exam"(
  "isDelayed" Boolean,
  "minDelayed" Smallint,
  "maxDelayed" Smallint,
- "delayedDate" Timestamp,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisterdDate" Timestamp,
+ "delayedDate" Timestamp with time zone,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisterdDate" Timestamp with time zone,
  "isPartial" Boolean,
  "isFinal" Boolean,
  "isActive" Boolean DEFAULT true NOT NULL,
@@ -1278,11 +1278,11 @@ CREATE TABLE "examGrade"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "grade" Smallint DEFAULT 0 NOT NULL,
  "homologatedGrade" Character varying(5),
- "gadeDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "gadeDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "gradeDetail" Text,
  "isGraded" Boolean DEFAULT false NOT NULL,
  "isModified" Boolean,
- "modificationDate" Timestamp,
+ "modificationDate" Timestamp with time zone,
  "modificacionUser" Integer,
  "previousGrade" Smallint,
  "studentID" Integer,
@@ -1336,13 +1336,13 @@ ALTER TABLE "examGrade" ADD CONSTRAINT "PK_examGrade" PRIMARY KEY ("examGradeID"
 CREATE TABLE "examRegister"(
  "registerID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "registeredUser" Integer NOT NULL,
  "status" Smallint NOT NULL,
  "reviewNumber" Smallint NOT NULL,
  "isReviewed" Boolean DEFAULT false NOT NULL,
  "lastStatus" Smallint,
- "lastStatusDate" Timestamp,
+ "lastStatusDate" Timestamp with time zone,
  "lastStatusUser" Integer,
  "reviewDetail" Text,
  "generalDetail" Text,
@@ -1408,7 +1408,7 @@ CREATE TABLE "examQuestion"(
  "minGrade" Smallint,
  "maxGrade" Smallint,
  "image" Character varying(500),
- "registratedDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registratedDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "status" Smallint NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "examID" Integer
@@ -1458,7 +1458,7 @@ CREATE TABLE "examAnswers"(
  "grade" Smallint NOT NULL,
  "homologatedGrade" Character varying(5),
  "isCorrect" Boolean DEFAULT false NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "status" Smallint,
  "detail" Text,
@@ -1507,7 +1507,7 @@ ALTER TABLE "examAnswers" ADD CONSTRAINT "PK_examAnswers" PRIMARY KEY ("answerID
 CREATE TABLE "studentAnswer"(
  "studentAnswerID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
- "selectedDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "selectedDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "grade" Smallint,
  "teacherDetails" Text,
  "agentDetails" Text,
@@ -1559,14 +1559,14 @@ CREATE TABLE "calificationAverange"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "averangeCalification" Double precision NOT NULL,
  "calificationHomologated" Character varying(5),
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "status" Smallint NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "isModified" Boolean DEFAULT false,
- "lastModified" Timestamp DEFAULT current_timestamp,
+ "lastModified" Timestamp with time zone DEFAULT current_timestamp,
  "lastCalification" Double precision,
  "userModifies" Integer,
- "modificationDate" Timestamp,
+ "modificationDate" Timestamp with time zone,
  "studentDetail" Text,
  "agentDetail" Text,
  "averangelDetail" Text,
@@ -1639,7 +1639,7 @@ ALTER TABLE "calificationAverange" ADD CONSTRAINT "PK_calificationAverange" PRIM
 CREATE TABLE "partial"(
  "patialID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
- "partialDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "partialDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "isReview" Boolean DEFAULT false,
  "isActive" Boolean DEFAULT true NOT NULL,
  "isModified" Boolean DEFAULT false,
@@ -1702,8 +1702,8 @@ CREATE TABLE "telephone"(
  "isFavourite" Boolean DEFAULT false NOT NULL,
  "isWork" Boolean,
  "phoneType" Smallint,
- "registerdDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registerdDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "operatorID" Integer,
  "personID" Integer
@@ -1769,8 +1769,8 @@ CREATE TABLE "phoneOperator"(
  "smsNumber" Character varying(15),
  "cost" Double precision,
  "observations" Text,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean NOT NULL
 )
 WITH (
@@ -1811,7 +1811,7 @@ CREATE TABLE "rating"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "rate" Smallint DEFAULT 3 NOT NULL,
  "comment" Text,
- "ratingDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "ratingDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "ratedStudentID" Integer,
  "ratedTeacherID" Integer,
  "studentRatesID" Integer,
@@ -1860,12 +1860,12 @@ CREATE TABLE "payment"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "value" Double precision NOT NULL,
  "currency" Character varying(10),
- "paymentDate" Timestamp NOT NULL,
- "paymentMaxDate" Timestamp,
+ "paymentDate" Timestamp with time zone NOT NULL,
+ "paymentMaxDate" Timestamp with time zone,
  "status" Smallint DEFAULT 1 NOT NULL,
  "isActive" Boolean DEFAULT true,
  "isDelayed" Boolean,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "details" Text,
  "isWithTaxes" Boolean,
  "idPaymentMethod" Integer,
@@ -1953,8 +1953,8 @@ CREATE TABLE "paymentMethod"(
  "methodName" Character varying(100) NOT NULL,
  "detail" Text,
  "isActive" Boolean DEFAULT true NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone
 )
 WITH (
  autovacuum_enabled=true)
@@ -1990,10 +1990,10 @@ CREATE TABLE "paymentDetail"(
  "quantity" Smallint NOT NULL,
  "cost" Double precision NOT NULL,
  "detail" Text,
- "registrationDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registrationDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "isModified" Boolean,
- "unregisteredDate" Timestamp,
+ "unregisteredDate" Timestamp with time zone,
  "paymentID" Integer
 )
 WITH (
@@ -2045,8 +2045,8 @@ CREATE TABLE "paymentType"(
  "isTaxed" Boolean DEFAULT false NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "observation" Text,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isRecurrent" Boolean DEFAULT false NOT NULL,
  "recurrentType" Smallint DEFAULT 0
 )
@@ -2260,7 +2260,7 @@ ALTER TABLE "payment" ADD CONSTRAINT "col_reg_pay_fk" FOREIGN KEY ("collegeID") 
 (
     "errorLogID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
     (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
-    "errorDate" Timestamp DEFAULT current_timestamp NOT NULL,
+    "errorDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
     "errorDetail" json NOT NULL,
     "errorModule" character varying(100) NOT NULL,
     CONSTRAINT "PK_errorLog" PRIMARY KEY ("errorLogID")
@@ -2285,7 +2285,7 @@ CREATE TABLE "session"
     "sessionID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
     (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
     "sessionRoom" integer,
-    "sessionDate" timestamp without time zone DEFAULT current_timestamp,
+    "sessionDate" timestamp with time zone DEFAULT current_timestamp,
     "sessionToken" text,
     "sessionExpiration" character varying(50),
     "sessionIP" character varying(20),
@@ -2328,7 +2328,7 @@ CREATE TABLE "auditSession"
     (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
     "sessionID" integer NOT NULL,
     "sessionRoom" integer,
-    "sessionDate" timestamp without time zone DEFAULT current_timestamp,
+    "sessionDate" timestamp with time zone DEFAULT current_timestamp,
     "sessionToken" text,
     "sessionExpiration" character varying(50),
     "sessionIP" character varying(20),
