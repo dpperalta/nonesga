@@ -3,7 +3,7 @@ import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
 
 // Create a new Country
-export async function createCountry(req, res){
+export async function createCountry(req, res) {
     const {
         countryCode,
         countryName,
@@ -13,9 +13,9 @@ export async function createCountry(req, res){
         currencySymbol,
         shortLanguage,
         longLanguage
-     } = req.body;
-     let status = 1;
-     try{
+    } = req.body;
+    let status = 1;
+    try {
         let newCountry = await Country.create({
             countryCode,
             countryName,
@@ -27,55 +27,54 @@ export async function createCountry(req, res){
             shortLanguage,
             status
         }, {
-            fields: [ 'countryCode', 'countryName', 'countryDetails', 'callCode', 'currency', 'currencySymbol', 'longLanguage', 'shortLanguage', 'status'],
+            fields: ['countryCode', 'countryName', 'countryDetails', 'callCode', 'currency', 'currencySymbol', 'longLanguage', 'shortLanguage', 'status'],
             returning: ['countryID', 'countryCode', 'countryName', 'countryDetails', 'callCode', 'isActive', 'registeredDate', 'unregisteredDate', 'currency', 'currencySymbol', 'shortLanguage', 'longLanguage', 'status']
         });
-        if(newCountry){
+        if (newCountry) {
             return res.status(200).json({
                 ok: true,
                 message: 'Country created successfully',
                 country: newCountry
-            })          
+            })
         }
-     }catch(e){
-         console.log('Error:', e);
-         returnError(res, e, 'Create Country');
-     }
+    } catch (e) {
+        console.log('Error:', e);
+        returnError(res, e, 'Create Country');
+    }
 }
 
 // Get all active countries
-export async function getCountries(req, res){
+export async function getCountries(req, res) {
     const limit = req.query.limit || 25;
     const from = req.query.from || 0;
-    try{
+    try {
         const countries = await Country.findAndCountAll({
             attributes: ['countryID', 'countryCode', 'countryName', 'countryDetails', 'isActive', 'registeredDate', 'unregisteredDate', 'currency', 'currencySymbol', 'shortLanguage', 'longLanguage', 'status'],
-            order: [ 
-                ['countryName', 'ASC'] 
-            ], 
+            order: [
+                ['countryName', 'ASC']
+            ],
             where: {
                 isActive: true
             },
             limit,
             offset: from
         });
-        if(countries){
+        if (countries) {
             return res.status(200).json({
                 ok: true,
                 countries
             });
-        }
-        else{
+        } else {
             returnNotFound(res, 'Any Country');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         return res.status(500).json({ e });
     }
 }
 
 // Change to active or inactive to a country
-export async function changeActivationCountry(req, res){
+export async function changeActivationCountry(req, res) {
     const { countryID } = req.params;
     const type = req.query.type;
     let value;
@@ -83,7 +82,7 @@ export async function changeActivationCountry(req, res){
     let afirmation = '';
     let negation = '';
     let changeActivationJSON;
-    if(type.toLowerCase() === 'activate'){
+    if (type.toLowerCase() === 'activate') {
         value = true;
         action = 'Activating';
         afirmation = 'active';
@@ -92,8 +91,8 @@ export async function changeActivationCountry(req, res){
             isActive: value,
             unregisteredDate: null
         };
-    }else{
-        if(type.toLowerCase() === 'inactivate'){
+    } else {
+        if (type.toLowerCase() === 'inactivate') {
             value = false;
             action = 'Inactivating';
             afirmation = 'inactive';
@@ -102,18 +101,18 @@ export async function changeActivationCountry(req, res){
                 isActive: value,
                 unregisteredDate: sequelize.literal('CURRENT_TIMESTAMP')
             };
-        }else{
+        } else {
             returnWrongError(res, 'type', 'request');
         }
     }
-    try{
+    try {
         const dbCountry = await Country.findOne({
-            attributes: [ 'countryID', 'countryCode', 'countryName', 'isActive', 'registeredDate', 'unregisteredDate', 'shortLanguage'  ],
+            attributes: ['countryID', 'countryCode', 'countryName', 'isActive', 'registeredDate', 'unregisteredDate', 'shortLanguage'],
             where: {
                 countryID
             }
         });
-        if(dbCountry){
+        if (dbCountry) {
             const changeActivation = await Country.update(
                 changeActivationJSON, {
                     where: {
@@ -122,29 +121,29 @@ export async function changeActivationCountry(req, res){
                     }
                 }
             );
-            if(changeActivation > 0){
+            if (changeActivation > 0) {
                 return res.status(200).json({
                     ok: true,
                     message: 'Country ' + type.toLowerCase() + 'd successfully'
                 });
-            }else{
+            } else {
                 return res.status(404).json({
                     ok: false,
                     message: 'Error while ' + action + ' a Country or Country already ' + afirmation,
                     error: 'Error 0'
                 });
             }
-        }else{
+        } else {
             returnNotFound(res, 'Country ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Change Activation Country');
     }
 }
 
 // Update a country
-export async function updateCountry(req, res){
+export async function updateCountry(req, res) {
     const { countryID } = req.params;
     const {
         countryCode,
@@ -157,14 +156,14 @@ export async function updateCountry(req, res){
         longLanguage,
         status
     } = req.body;
-    try{
+    try {
         const dbCountry = await Country.findOne({
-            attributes: [ 'countryID', 'countryName', 'countryCode', 'countryDetails', 'callCode', 'currency', 'currencySymbol', 'shortLanguage', 'longLanguage', 'status' ],
+            attributes: ['countryID', 'countryName', 'countryCode', 'countryDetails', 'callCode', 'currency', 'currencySymbol', 'shortLanguage', 'longLanguage', 'status'],
             where: {
                 countryID
             }
         });
-        if(dbCountry){
+        if (dbCountry) {
             const updateCountry = await Country.update({
                 countryCode,
                 countryName,
@@ -180,91 +179,66 @@ export async function updateCountry(req, res){
                     countryID
                 }
             });
-            if(updateCountry){
+            if (updateCountry) {
                 return res.status(200).json({
                     ok: true,
                     message: 'Country updated successfully'
                 });
-            }else{
+            } else {
                 returnNotFound(res, 'Country ID');
             }
-        }else{
+        } else {
             returnNotFound(res, 'Country ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Update Country');
     }
 }
 
 // Get information of a country by ID
-export async function getCountry(req, res){
+export async function getCountry(req, res) {
     const { countryID } = req.params;
-    try{
+    try {
         const country = await Country.findOne({
             attributes: ['countryID', 'countryCode', 'countryName', 'countryDetails', 'isActive', 'registeredDate', 'unregisteredDate', 'currency', 'currencySymbol', 'shortLanguage', 'longLanguage', 'status'],
             where: {
                 countryID
             }
         });
-        if(country){
+        if (country) {
             return res.status(200).json({
                 ok: true,
                 country
             });
-        }
-        else{
+        } else {
             returnNotFound(res, 'Country ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         return res.status(500).json({ e });
     }
 }
 
 // Delete a country
-export async function deleteCountry(req, res){
+export async function deleteCountry(req, res) {
     const { countryID } = req.params;
-    try{
+    try {
         const countDeleted = await Country.destroy({
             where: {
                 countryID
             }
         });
-        if(countDeleted > 0){
+        if (countDeleted > 0) {
             return res.status(200).json({
                 ok: true,
                 message: 'Country deleted successfully'
             });
-        }else{
+        } else {
             returnNotFound(res, 'Country ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Delete Country');
     }
 }
-
-/*
-export async function deleteUser(req, res){
-    const { userID } = req.params;
-    try{
-        const countDeleted = await User.destroy({
-            where: {
-                userID
-            }
-        });
-        if(countDeleted > 0){
-            return res.status(200).json({
-                ok: true,
-                message: 'User deleted successfully'
-            });
-        }else{
-            returnNotFound(res, 'User ID');
-        }
-    }catch(e){
-        console.log('Error:', e);
-        returnError(res, e, 'Delete User');
-    }
-}
-*/

@@ -9,6 +9,7 @@ import collegeRoutes from './college';
 import userRoutes from './user';
 import loginRoutes from './login';
 import countryRoutes from './country';
+import provinceRoutes from './province';
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.use(url + '/college', collegeRoutes);
 app.use(url + '/user', userRoutes);
 app.use(url + '/login', loginRoutes);
 app.use(url + '/country', countryRoutes);
+app.use(url + '/province', provinceRoutes);
 
 module.exports = app;
