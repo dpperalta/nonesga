@@ -45,9 +45,7 @@ const Province = sequelize.define('province', {
     freezeTableName: true
 });
 
-Country.hasMany(Province, { foreignKey: { name: 'prv_isIn_cit_fk', targetKey: 'countryID' } });
-//Country.hasMany(Province, { foreignKey: { name: 'countryID', targetKey: 'countryID' } });
-Province.belongsTo(Country, { foreignKey: { name: 'prv_isIn_cit_fk', targetKey: 'countryID' } });
-//Province.belongsTo(Country, { foreignKey: { name: 'countryID', targetKey: 'countryID' } });
+Country.hasMany(Province, { foreignKey: { name: 'countryID', targetKey: 'countryID' } });
+Province.belongsTo(Country, { foreignKey: { name: 'countryID', targetKey: 'countryID' } });
 
 export default Province;
