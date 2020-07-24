@@ -107,7 +107,9 @@ export async function updateProvince(req, res){
                 provinceID
             }
         });
-        if(dbProvince){
+        if(dbProvince === null || dbProvince === undefined){
+            returnNotFound(res, 'Province ID');
+        }else{
             const updateProvince = await Province.update({
                 provinceCode,
                 provinceName,
@@ -126,8 +128,6 @@ export async function updateProvince(req, res){
             }else{
                 returnNotFound(res, 'ProvinceID');
             }
-        }else{
-            returnError(res, 'Province ID');
         }
     }catch(e){
         console.log('Error:', e);
@@ -224,5 +224,38 @@ export async function deleteProvince(req, res){
     }catch(e){
         console.log('Error:', e);
         returnError(res, e, 'Delete Province');
+    }
+}
+
+// Get all provinces of a country
+export async function getProvincesCountry(req, res){
+    const { countryID } = req.params;
+    //const limit = req.query.limit || 25;
+    //const from = req.query.from || 0;
+    try{
+        const provinces = await Province.findAndCountAll({
+            attributes: ['provinceID', 'provinceCode', 'provinceName'],
+            where: {
+                isActive: true,
+                countryID
+            },
+            include: [{
+                model: Country,
+                attributes: [ 'countryID', 'countryName' ]
+            }]//,
+            //limit,
+            //offset: from
+        });
+        if(provinces){
+            return res.status(200).json({
+                ok: true,
+                provinces
+            })
+        }else{
+            returnNotFound(res, 'Country ID');
+        }
+    }catch(e){
+        console.log('Error:', e);
+        returnError(res, e, 'Get Provinces of Contry');
     }
 }

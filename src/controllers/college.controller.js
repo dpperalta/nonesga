@@ -231,7 +231,9 @@ export async function updateCollege(req, res) {
                 collegeID
             }
         });
-        if (dbCollege) {
+        if(dbCollege === null || dbCollege === undefined){
+            returnNotFound(res, 'College ID');
+        }else{
             const updateCollege = await College.update({
                 collegeName,
                 collegeShowName,
@@ -258,8 +260,6 @@ export async function updateCollege(req, res) {
                     count: updateCollege
                 });
             }
-        } else {
-            returnNotFound(res, 'College ID');
         }
     } catch (e) {
         console.log('Error:', e);

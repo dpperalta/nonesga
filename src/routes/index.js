@@ -10,6 +10,7 @@ import userRoutes from './user';
 import loginRoutes from './login';
 import countryRoutes from './country';
 import provinceRoutes from './province';
+import cityRoutes from './city';
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.use(url + '/user', userRoutes);
 app.use(url + '/login', loginRoutes);
 app.use(url + '/country', countryRoutes);
 app.use(url + '/province', provinceRoutes);
+app.use(url + '/city', cityRoutes);
 
 module.exports = app;

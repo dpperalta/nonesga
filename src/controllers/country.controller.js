@@ -163,7 +163,9 @@ export async function updateCountry(req, res) {
                 countryID
             }
         });
-        if (dbCountry) {
+        if(dbCountry === null || dbCountry === undefined){
+            returnNotFound(res, 'Country ID');
+        }else{
             const updateCountry = await Country.update({
                 countryCode,
                 countryName,
@@ -187,8 +189,6 @@ export async function updateCountry(req, res) {
             } else {
                 returnNotFound(res, 'Country ID');
             }
-        } else {
-            returnNotFound(res, 'Country ID');
         }
     } catch (e) {
         console.log('Error:', e);

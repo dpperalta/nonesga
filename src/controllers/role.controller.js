@@ -147,7 +147,9 @@ export async function updateRole(req, res) {
             },
             returning: ['roleID', 'roleCode', 'roleName', 'descirption', 'privileges', 'isActive', 'unregisteredDate']
         });
-        if (role) {
+        if(role === null || role === undefined){
+            returnNotFound(res, 'Role ID');
+        }else{
             const updatedRole = await Role.update({
                 roleCode,
                 roleName,
@@ -167,18 +169,10 @@ export async function updateRole(req, res) {
                     count: updatedRole
                 });
             }
-        } else {
-            //No se ha encontrado el roleID
-            returnNotFound(res, 'Role');
         }
     } catch (e) {
         console.log('Error:', e);
         returnError(res, e);
-        /*return res.status(500).json({
-            ok: false,
-            message: 'A Database error occurrs',
-            error: e
-        });*/
     }
 }
 

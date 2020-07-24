@@ -96,7 +96,10 @@ export async function updatePersonType(req, res) {
             },
             returning: ['personTypeID', 'personType', 'typeName', 'details', 'registeredDate', 'unregisteredDate', 'isActive']
         });
-        if (dbPersonType) {
+
+        if(dbPersonType === null || dbPersonType === undefined){
+            returnNotFound(res, 'Person Type ID');
+        }else{
             const updatePersonType = await PersonType.update({
                 personType,
                 typeName,
@@ -113,8 +116,6 @@ export async function updatePersonType(req, res) {
                     count: updatePersonType
                 });
             }
-        } else {
-            returnNotFound(res, 'Person Type ID');
         }
     } catch (e) {
         console.log('Error:', e);

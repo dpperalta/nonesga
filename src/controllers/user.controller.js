@@ -199,7 +199,9 @@ export async function updateUser(req, res){
                 userID
             }
         });
-        if(dbUser){
+        if(dbUser === null || dbUser === undefined){
+            returnNotFound(res, 'User ID');
+        }else{
             const updateUser = await User.update({
                 nick,
                 email,
@@ -220,13 +222,10 @@ export async function updateUser(req, res){
             }else{
                 returnNotFound(res, 'User ID');
             }
-        }else{
-            returnNotFound(res, 'User ID');
         }
     }catch(e){
         console.log('Error:', e);
-        return res.status(500).json({ e });
-        //returnError(res, e, 'Update User');
+        returnError(res, e, 'Update User');
     }
 }
 

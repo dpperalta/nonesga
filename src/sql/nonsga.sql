@@ -216,8 +216,8 @@ CREATE TABLE "city"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "cityCode" Character varying(10) NOT NULL,
  "cityName" Character varying(200) NOT NULL,
- "dityDetail" Text,
- "registrationDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "cityDetail" Text,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "provinceID" Integer

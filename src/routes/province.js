@@ -9,7 +9,8 @@ import {createProvince,
         getProvince,
         updateProvince,
         changeActivationProvince,
-        deleteProvince } from '../controllers/province.controller';
+        deleteProvince,
+        getProvincesCountry } from '../controllers/province.controller';
 
 // Routes without params
 router.post('/', [mAuth.tokenValidation, mAuth.adminValidation], createProvince);
@@ -20,5 +21,6 @@ router.get('/:provinceID', mAuth.tokenValidation, getProvince);
 router.put('/:provinceID', [ mAuth.tokenValidation, mAuth.adminValidation ], updateProvince);
 router.post('/:provinceID', [ mAuth.tokenValidation, mAuth.adminValidation ], changeActivationProvince);
 router.delete('/:provinceID', [ mAuth.tokenValidation, mAuth.superAdminValidation ], deleteProvince);
+router.get('/country/:countryID', mAuth.tokenValidation, getProvincesCountry);
 
 export default router;
