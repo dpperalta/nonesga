@@ -377,17 +377,17 @@ CREATE TABLE "address"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "addressName" Character varying(200),
  "mainStreet" Character varying(100) NOT NULL,
- "number" Character varying(5) NOT NULL,
+ "number" Character varying(5) NOT NULL DEFAULT 'N/A',
  "secondStreet" Character varying(100) NOT NULL,
  "references" Text,
  "zipCode" Character varying(8),
  "latitude" Double precision,
  "longitude" Double precision,
- "addressType" Smallint,
+ "addressType" Smallint DEFAULT 10,
  "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "unregisteredDate" Timestamp with time zone,
- "isActive" Boolean,
- "isFavourite" Boolean,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "isFavourite" Boolean DEFAULT false,
  "cityID" Integer,
  "personID" Integer
 )
@@ -420,7 +420,8 @@ COMMENT ON COLUMN "address"."addressType" IS '1: Main address
 6: Familiar address
 7: Friend or relative address
 8: Trusted Neighbor address
-9: Trusted address'
+9: Trusted address
+10: Other address'
 ;
 COMMENT ON COLUMN "address"."registeredDate" IS 'Timestamp for date of registred address'
 ;

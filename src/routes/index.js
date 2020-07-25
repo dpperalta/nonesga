@@ -11,6 +11,7 @@ import loginRoutes from './login';
 import countryRoutes from './country';
 import provinceRoutes from './province';
 import cityRoutes from './city';
+import addressRoutes from './address';
 
 const app = express();
 
@@ -28,5 +29,6 @@ app.use(url + '/login', loginRoutes);
 app.use(url + '/country', countryRoutes);
 app.use(url + '/province', provinceRoutes);
 app.use(url + '/city', cityRoutes);
+app.use(url + '/address', addressRoutes);
 
 module.exports = app;
