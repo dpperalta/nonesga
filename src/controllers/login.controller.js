@@ -18,8 +18,8 @@ export async function login(req, res) {
     } = req.body;
     let roleName = '';
     let room;
-    let ip;
-    let device = 'Web Application';
+    let ip = req.connection.remoteAddress.toString();
+    let device = req.query.device || 'Web Application';
     let code;
     try {
         const loggedUser = await User.findOne({
@@ -34,7 +34,7 @@ export async function login(req, res) {
                 message: 'Incorrect authentication information - email'
             })
         }
-        
+
         if (!bcrypt.compareSync(pass, loggedUser.pass)) {
             return res.status(400).json({
                 ok: false,
@@ -68,12 +68,12 @@ export async function login(req, res) {
             }
         });
 
-        if(isLogged){
+        if (isLogged) {
             return res.status(400).json({
                 ok: false,
-                message: 'User is already logged in since ' + isLogged.sessionDate  + ' from ' + isLogged.sessionDevice 
+                message: 'User is already logged in since ' + isLogged.sessionDate + ' from ' + isLogged.sessionDevice
             });
-        }else {
+        } else {
             Session.create({
                 sessionRoom: room,
                 sessionToken: token,
@@ -99,43 +99,43 @@ export async function login(req, res) {
     }
 }
 
-export async function logout(req, res){
+export async function logout(req, res) {
     const { userID } = req.params;
-    try{
+    try {
         const isLogged = await Session.findOne({
             attributes: ['sessionID', 'sessionRoom', 'sessionDate', 'sessionToken', 'sessionExpiration', 'sessionCode', 'sessionDevice', 'sessionIP', 'userID'],
             where: {
                 userID
             }
         });
-        if(isLogged){
+        if (isLogged) {
             const logout = await Session.destroy({
-                where:{
+                where: {
                     userID
                 }
             });
-            if(logout > 0){
+            if (logout > 0) {
                 return res.status(200).json({
                     ok: true,
                     message: 'User logged out successfully'
                 });
             }
-        }else{
+        } else {
             return res.status(400).json({
                 ok: false,
                 message: 'User is not logged yet'
             });
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Logout');
     }
 }
 
 // Function to renew a token to refresh the login
-export async function tokenRenew(req, res){
+export async function tokenRenew(req, res) {
 
-    let token = jwt.sign( { user: req.user }, SEED, { expiresIn: TOKEN_END } );
+    let token = jwt.sign({ user: req.user }, SEED, { expiresIn: TOKEN_END });
     const { userID } = req.user;
 
     const userUpdate = Session.findOne({
@@ -144,13 +144,13 @@ export async function tokenRenew(req, res){
             userID
         }
     });
-    
-    if(!userUpdate){
+
+    if (!userUpdate) {
         return res.status(400).json({
             ok: false,
             message: 'User not authenticated or session has ended, please login again'
         })
-    }else{
+    } else {
         Session.update({
             sessionToken: token,
             sessionDate: sequelize.literal('CURRENT_TIMESTAMP')

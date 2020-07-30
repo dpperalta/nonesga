@@ -1772,7 +1772,7 @@ CREATE TABLE "phoneOperator"(
  "observations" Text,
  "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "unregisteredDate" Timestamp with time zone,
- "isActive" Boolean NOT NULL
+ "isActive" Boolean NOT NULL DEFAULT true
 )
 WITH (
  autovacuum_enabled=true)

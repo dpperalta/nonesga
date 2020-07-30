@@ -12,6 +12,7 @@ import countryRoutes from './country';
 import provinceRoutes from './province';
 import cityRoutes from './city';
 import addressRoutes from './address';
+import phoneOperatorRoutes from './phoneOperator';
 
 const app = express();
 
@@ -30,5 +31,6 @@ app.use(url + '/country', countryRoutes);
 app.use(url + '/province', provinceRoutes);
 app.use(url + '/city', cityRoutes);
 app.use(url + '/address', addressRoutes);
+app.use(url + '/phoneOperator', phoneOperatorRoutes);
 
 module.exports = app;
