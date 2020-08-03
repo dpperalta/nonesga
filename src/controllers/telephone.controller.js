@@ -120,7 +120,7 @@ export async function updateTelephone(req, res) {
     } = req.body;
     try {
         const dbTelephone = await Telephone.findOne({
-            attributes: ['telephoneID', 'number', 'phoneName', 'detail', 'isFavourite', 'isWork', 'phoneType', 'registeredDate', 'unregisteredDate'],
+            attributes: ['telephoneID', 'number', 'phoneName', 'detail', 'isFavourite', 'isWork', 'phoneType', 'registeredDate', 'unregisteredDate', 'operatorID', 'personID'],
             where: {
                 telephoneID
             }
@@ -132,7 +132,7 @@ export async function updateTelephone(req, res) {
                 const favourite = await sequelize.query(`
                     update "telephone"
                         set "isFavourite" = false
-                        where "telephoneID" = ${ dbTelephone.telephoneID }
+                        where "personID" = ${ dbTelephone.personID }
                             and "telephoneID" != ${ telephoneID };
                 `);
             }
@@ -164,7 +164,6 @@ export async function updateTelephone(req, res) {
         returnError(res, e, 'Update Telephone');
     }
 }
-
 
 // Change to active or inactive a telephone
 export async function changeActivationTelephone(req, res) {
@@ -234,73 +233,26 @@ export async function changeActivationTelephone(req, res) {
         returnError(res, e, 'Change Activation Telephone');
     }
 }
-/*
-// Change to active or inactive a city
-export async function changeActivationCity(req, res){
-    const { cityID } = req.params;
-    const type = req.query.type;
-    let value;
-    let action = '';
-    let afirmation = '';
-    let negation = '';
-    let changeActivationJSON;
-    if(type.toLowerCase() === 'activate'){
-        value = true;
-        action = 'Activating';
-        afirmation = 'active';
-        negation = 'inactive';
-        changeActivationJSON = {
-            isActive: true,
-            unregisteredDate: null
-        };
-    }else{
-        if(type.toLowerCase() === 'inactivate'){
-            value = false;
-            action = 'Inactivating';
-            afirmation = 'inactive';
-            negation = 'active';
-            changeActivationJSON = {
-                isActive: false,
-                unregisteredDate: sequelize.literal('CURRENT_TIMESTAMP')
-            };
-        }else{
-            returnWrongError(res, 'type', 'request');
-        }
-    }
+
+// Physical Delete a telephone
+export async function deleteTelephone(req, res){
+    const { telephoneID } = req.params;
     try{
-        const dbCity = await City.findOne({
-            attributes: ['cityID', 'cityCode', 'cityName', 'isActive', 'registeredDate'],
+        const countDeleted = await Telephone.destroy({
             where: {
-                cityID
+                telephoneID
             }
         });
-        if(dbCity){
-            const changeActivation = await City.update(
-                changeActivationJSON, {
-                    where: {
-                        cityID,
-                        isActive: !value
-                    }
-                }
-            );
-            if(changeActivation > 0){
-                return res.status(200).json({
-                    ok: true,
-                    message: 'City ' + type.toLowerCase() + 'd successfully'
-                });
-            }else{
-                return res.status(400).json({
-                    ok: false,
-                    message: 'Error while ' + action + ' a City or City already ' + afirmation,
-                    error: 'Error 0'
-                });
-            }
+        if(countDeleted > 0){
+            return res.status(200).json({
+                ok: true,
+                message: 'Telephone deleted successfully'
+            }); 
         }else{
-            returnNotFound(res, 'City ID');
+            returnNotFound(res, 'Telephone ID');
         }
     }catch(e){
         console.log('Error:', e);
-        returnError(res, e, 'Change Activation City');
+        returnError(res, e, 'Telephone ID');
     }
 }
-*/

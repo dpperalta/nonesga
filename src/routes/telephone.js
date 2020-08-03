@@ -8,7 +8,9 @@ import {
     createTelephone,
     getTelephones,
     getTelephone,
-    updateTelephone
+    updateTelephone,
+    deleteTelephone,
+    changeActivationTelephone
 } from '../controllers/telephone.controller';
 
 
@@ -19,6 +21,8 @@ router.get('/', mAuth.tokenValidation, getTelephones);
 // Routes with params
 router.get('/:telephoneID', mAuth.tokenValidation, getTelephone);
 router.put('/:telephoneID', mAuth.tokenValidation, updateTelephone);
+router.delete('/:telephoneID', [mAuth.tokenValidation, mAuth.superAdminValidation], deleteTelephone);
+router.post('/:telephoneID', mAuth.tokenValidation, changeActivationTelephone);
 
 
 export default router;
