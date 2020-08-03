@@ -1703,7 +1703,7 @@ CREATE TABLE "telephone"(
  "isFavourite" Boolean DEFAULT false NOT NULL,
  "isWork" Boolean,
  "phoneType" Smallint,
- "registerdDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "operatorID" Integer,

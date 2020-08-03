@@ -257,9 +257,9 @@ export async function updatePerson(req, res) {
                 personID
             }
         });
-        if(dbPerson === null || dbPerson === undefined){
+        if (dbPerson === null || dbPerson === undefined) {
             returnNotFound(res, 'Person ID');
-        }else{
+        } else {
             const updatedPerson = await Person.update({
                 dni,
                 names,
