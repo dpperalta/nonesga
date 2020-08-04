@@ -2,7 +2,7 @@ import Telephone from '../models/Telephone';
 import PhoneOperator from '../models/PhoneOperator';
 import Person from '../models/Person';
 import { sequelize } from '../database/database';
-import { returnError, returnNotFound } from './errors';
+import { returnError, returnNotFound, returnWrongError } from './errors';
 
 // Create a new Telephone
 export async function createTelephone(req, res) {
@@ -235,24 +235,82 @@ export async function changeActivationTelephone(req, res) {
 }
 
 // Physical Delete a telephone
-export async function deleteTelephone(req, res){
+export async function deleteTelephone(req, res) {
     const { telephoneID } = req.params;
-    try{
+    try {
         const countDeleted = await Telephone.destroy({
             where: {
                 telephoneID
             }
         });
-        if(countDeleted > 0){
+        if (countDeleted > 0) {
             return res.status(200).json({
                 ok: true,
                 message: 'Telephone deleted successfully'
-            }); 
-        }else{
+            });
+        } else {
             returnNotFound(res, 'Telephone ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Telephone ID');
+    }
+}
+
+// Get phone information of a person
+export async function getPersonTelephones(req, res) {
+    const { personID } = req.params;
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+    let rows;
+    let totalRows;
+    try {
+        const total = await sequelize.query(`
+        select count(*) 
+        from "telephone", "phoneOperator", "person", "user"
+        where "telephone"."operatorID" = "phoneOperator"."operatorID"
+            and "telephone"."personID" = "person"."personID"
+            and "person"."personID" = "user"."personID"
+            and "person"."personID" = ${ personID }
+            and "telephone"."isActive" = true;
+        `);
+        rows = total[0];
+        totalRows = parseInt(rows[0].count);
+        const telephones = await sequelize.query(`
+            select "telephone"."telephoneID" tid,
+                    "telephone"."number" tnumber,
+                    "telephone"."phoneName" tname,
+                    "telephone"."detail" tdetail,
+                    "telephone"."isFavourite" tfav,
+                    "telephone"."isWork" twork,
+                    "telephone"."isActive" tactive,
+                    "person"."completeName" pname,
+                    "phoneOperator"."operatorName" oname
+            from "telephone", "phoneOperator", "person", "user"
+            where "telephone"."operatorID" = "phoneOperator"."operatorID"
+                and "telephone"."personID" = "person"."personID"
+                and "person"."personID" = "user"."personID"
+                and "person"."personID" = ${ personID }
+                and "telephone"."isActive" = true
+                order by "telephone"."isFavourite" DESC
+                limit ${ limit }
+                offset ${ from };
+        `);
+        if (telephones) {
+            if (totalRows > 0) {
+                return res.status(200).json({
+                    ok: true,
+                    telephones: telephones[0],
+                    total: totalRows
+                });
+            } else {
+                returnNotFound(res, 'Person ID', 'Telephone search');
+            }
+        } else {
+            returnWrongError(res, 'Person ID')
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        returnError(res, e, 'Get Telephones of Person');
     }
 }
