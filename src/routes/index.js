@@ -14,6 +14,7 @@ import cityRoutes from './city';
 import addressRoutes from './address';
 import phoneOperatorRoutes from './phoneOperator';
 import telephoneRoutes from './telephone';
+import teacherRoutes from './teacher';
 
 const app = express();
 
@@ -34,5 +35,6 @@ app.use(url + '/city', cityRoutes);
 app.use(url + '/address', addressRoutes);
 app.use(url + '/phoneOperator', phoneOperatorRoutes);
 app.use(url + '/telephone', telephoneRoutes);
+app.use(url + '/teacher', teacherRoutes);
 
 module.exports = app;
