@@ -233,3 +233,46 @@ export async function deleteTeacher(req, res) {
         returnError(res, e, 'Delete Teacher');
     }
 }
+
+// Get teacher by college
+export async function getTeacherByCollege(req, res){
+    const { collegeID } = req.params;
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+    let total;
+    try {
+         const teachers = await sequelize.query(`
+            select 	"person"."personID" persona,
+                    "user"."userID" usuario,
+                    "college"."collegeID" colegio,
+                    "teacher"."teacherID" profesor,
+                    "person"."names" nombres,
+                    "person"."lastNames" apellidos,
+                    "person"."completeName" completo,
+                    "person"."dni" cedula,
+                    "college"."collegeName" colegio,
+                    "user"."email"
+            from "teacher", "college", "person", "user"
+            where "teacher"."personID" = "person"."personID"
+                and "user"."personID" = "person"."personID"
+                and "user"."collegeID" = "college"."collegeID"
+                and "college"."collegeID" = ${ collegeID }
+                order by "person"."lastNames"
+                limit ${ limit }
+                offset ${ from };
+        `);
+        total = parseInt(teachers[1].rowCount)
+        if(total > 0){
+            return res.status(200).json({
+                ok: true,
+                teachers: teachers[0],
+                total
+            });
+        }else{
+            returnNotFound(res, 'Any Teacher for this College');
+        }
+    }catch(e){
+        console.log('Error:', e);
+        returnError(res, e, "Get Teacher by College");
+    }
+}

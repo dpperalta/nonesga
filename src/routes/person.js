@@ -9,7 +9,8 @@ import {
     inactivatePerson,
     activatePerson,
     deletePerson,
-    getPerson
+    getPerson,
+    findPerson
 } from '../controllers/person.controller';
 
 const mAuth = require('../middlewares/authentication');
@@ -29,5 +30,6 @@ router.put('/inactivate/:personID', mAuth.tokenValidation, inactivatePerson);
 router.put('/activate/:personID', mAuth.tokenValidation, activatePerson);
 router.get('/:personID', mAuth.tokenValidation, getPerson);
 router.delete('/:personID', [mAuth.tokenValidation, mAuth.adminValidation], deletePerson);
+router.get('/people/find', mAuth.tokenValidation, findPerson);
 
 export default router;

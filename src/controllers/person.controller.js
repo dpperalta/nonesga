@@ -397,3 +397,63 @@ export async function deletePerson(req, res) {
         returnError(res, e, 'Delete Person');
     }
 }
+
+// Find a Person by DNI or Names
+export async function findPerson(req, res){
+    let dni = req.query.dni;
+    let names = req.query.names;
+
+    if(dni.length === 0 && names.length === 0){
+        return res.status(400).json({
+            ok: false,
+            message: 'You must provide at least one searching parameter'
+        });
+    }
+
+    if(dni.length > 0 && dni.length > 10){
+        return res.status(400).json({
+            ok: false,
+            message: 'DNI information is incorrect'
+        });
+    }
+    if(names.length === 0 || dni.length === 10){
+        names = 'NN';
+    }
+    try{
+        const people = await sequelize.query(`
+            SELECT	"person"."personID" idPersona,
+                    "person"."dni" cedula,
+                    "person"."birthdate" nacimiento,
+                    "person"."names" nombres,
+                    "person"."lastNames" apellidos,
+                    "person"."completeName" nombreCompleto,
+                    "person"."image" foto,
+                    "person"."details" detalles,
+                    "person"."registeredDate" fechaRegistro,
+                    "person"."isActive" activo,
+                    "person"."bio" biografia,
+                    "person"."votes" votos,
+                    "person"."personTypeID" tipoPersonaID,
+                    "person"."sex" sexo,
+                    "personType"."typeName" tipoPersona
+            FROM "person", "personType"
+            WHERE "person"."personTypeID" = "personType"."personTypeID"
+                AND ("person"."dni" = '${ dni }'
+                OR upper("person"."completeName") like upper('%${ names }%'))
+                AND "person"."isActive" = true
+                ORDER BY apellidos, nombres;
+        `);
+        if(people){
+            return res.status(200).json({
+                ok: true,
+                people: people[0],
+                total: people[1].rowCount
+            });
+        }else{
+            returnNotFound(res, 'People with provided DNI or Names');
+        }
+    }catch(e){
+        console.log('Error:', e);
+        returnError(res, e, 'Find Person by DNI or Names');
+    }
+}
