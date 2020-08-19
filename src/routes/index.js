@@ -16,6 +16,7 @@ import phoneOperatorRoutes from './phoneOperator';
 import telephoneRoutes from './telephone';
 import teacherRoutes from './teacher';
 import studentRoutes from './student';
+import courseRoutes from './course';
 
 const app = express();
 
@@ -38,5 +39,6 @@ app.use(url + '/phoneOperator', phoneOperatorRoutes);
 app.use(url + '/telephone', telephoneRoutes);
 app.use(url + '/teacher', teacherRoutes);
 app.use(url + '/student', studentRoutes);
+app.use(url + '/course', courseRoutes);
 
 module.exports = app;

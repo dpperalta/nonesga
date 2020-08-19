@@ -779,8 +779,9 @@ CREATE TABLE "course"(
  "courseCode" Character varying(10) NOT NULL,
  "courseName" Character varying(500) NOT NULL,
  "description" Text,
- "registratedDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
- "unregistratedDate" Timestamp with time zone
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
+ "isActive" Boolean DEFAULT true NOT NULL
 )
 WITH (
  autovacuum_enabled=true)
@@ -796,6 +797,9 @@ COMMENT ON COLUMN "course"."description" IS 'Description or aditional informatio
 COMMENT ON COLUMN "course"."registratedDate" IS 'Timestamp for registered date'
 ;
 COMMENT ON COLUMN "course"."unregistratedDate" IS 'Timestamp for unregistered date'
+;
+COMMENT ON COLUMN "course"."isActive" IS 'true: active
+    false: inactive'
 ;
 
 -- Add keys for table course
