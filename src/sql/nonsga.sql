@@ -827,7 +827,8 @@ CREATE TABLE "subject"(
  "gradeMinimun" Smallint NOT NULL,
  "gradeMaximun" Smallint NOT NULL,
  "teacherID" Integer,
- "contentID" Integer
+ "contentID" Integer,
+ "courseUD" Integer
 )
 WITH (
  autovacuum_enabled=true)
@@ -864,6 +865,8 @@ CREATE INDEX "subject_teacher_ix" ON "subject" ("teacherID")
 ;
 
 CREATE INDEX "subject_contenct_ix" ON "subject" ("contentID")
+;
+CREATE INDEX "subject_course_ix" ON "subject" ("courseID")
 ;
 
 -- Add keys for table subject
@@ -2154,6 +2157,9 @@ ALTER TABLE "user" ADD CONSTRAINT "usr_belongs_col_fk" FOREIGN KEY ("collegeID")
 ;
 
 ALTER TABLE "subject" ADD CONSTRAINT "sub_has_cnt_fk" FOREIGN KEY ("contentID") REFERENCES "content" ("contentID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "subject" ADD CONSTRAINT "sub_belong_cou_fk" FOREIGN KEY ("courseID") REFERENCES "course" ("courseID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "assistenceRegister" ADD CONSTRAINT "sub_has_asr_fk" FOREIGN KEY ("subjectID") REFERENCES "subject" ("subjectID") ON DELETE NO ACTION ON UPDATE NO ACTION
