@@ -827,7 +827,7 @@ CREATE TABLE "subject"(
  "gradeMinimun" Smallint NOT NULL,
  "gradeMaximun" Smallint NOT NULL,
  "teacherID" Integer,
- "contentID" Integer,
+ --"contentID" Integer,
  "courseUD" Integer
 )
 WITH (
@@ -864,8 +864,8 @@ COMMENT ON COLUMN "subject"."gradeMaximun" IS 'Maximun grade value allowed'
 CREATE INDEX "subject_teacher_ix" ON "subject" ("teacherID")
 ;
 
-CREATE INDEX "subject_contenct_ix" ON "subject" ("contentID")
-;
+/*CREATE INDEX "subject_contenct_ix" ON "subject" ("contentID")
+;*/
 CREATE INDEX "subject_course_ix" ON "subject" ("courseID")
 ;
 
@@ -962,14 +962,19 @@ CREATE TABLE "content"(
  "contentID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "contedCode" Character varying(10) NOT NULL,
- "contendDetail" Text,
- "registratedDate" Timestamp with time zone NOT NULL,
- "unregisteradDate" Timestamp with time zone,
- "status" Boolean DEFAULT true NOT NULL,
- "image" Character varying(500)
+ "contentDetail" Text,
+ "registeredDate" Timestamp with time zone NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "image" Character varying(500),
+ "subjectID" Integer
 )
 WITH (
  autovacuum_enabled=true)
+;
+
+-- Indexes
+/CREATE INDEX "content_subject_ix" ON "content" ("subjectID")
 ;
 
 -- Add keys for table content
@@ -2156,7 +2161,10 @@ ALTER TABLE "subject" ADD CONSTRAINT "tch_teachs_sub_fk" FOREIGN KEY ("teacherID
 ALTER TABLE "user" ADD CONSTRAINT "usr_belongs_col_fk" FOREIGN KEY ("collegeID") REFERENCES "college" ("collegeID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "subject" ADD CONSTRAINT "sub_has_cnt_fk" FOREIGN KEY ("contentID") REFERENCES "content" ("contentID") ON DELETE NO ACTION ON UPDATE NO ACTION
+/*ALTER TABLE "subject" ADD CONSTRAINT "sub_has_cnt_fk" FOREIGN KEY ("contentID") REFERENCES "content" ("contentID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;*/
+
+ALTER TABLE "content" ADD CONSTRAINT "sub_has_cnt_fk" FOREIGN KEY ("subjectID") REFERENCES "subject" ("subjectID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "subject" ADD CONSTRAINT "sub_belong_cou_fk" FOREIGN KEY ("courseID") REFERENCES "course" ("courseID") ON DELETE NO ACTION ON UPDATE NO ACTION
