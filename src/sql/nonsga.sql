@@ -961,7 +961,7 @@ ALTER TABLE "college" ADD CONSTRAINT "collegeCode" UNIQUE ("collegeCode")
 CREATE TABLE "content"(
  "contentID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
- "contedCode" Character varying(10) NOT NULL,
+ "contentCode" Character varying(10) NOT NULL,
  "contentDetail" Text,
  "registeredDate" Timestamp with time zone NOT NULL,
  "unregisteredDate" Timestamp with time zone,

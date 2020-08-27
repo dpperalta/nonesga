@@ -2,13 +2,16 @@ import { Router } from 'express';
 
 import mAuth from '../middlewares/authentication';
 
+const router = Router();
+
 // Import of functions
+import {
+    createContent
+} from '../controllers/content.controller';
 
 // Routes without params
-
+router.post('/', [mAuth.tokenValidation, mAuth.teacherValidation], createContent);
 // Routes with paramas
-
-const router = Router();
 
 export default router;
 /*

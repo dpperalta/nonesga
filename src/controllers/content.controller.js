@@ -3,34 +3,32 @@ import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
 
 // Create new Content
-
-
-// Create a new Course
-/*export async function createCourse(req, res) {
+export async function createContent(req, res) {
     const {
-        courseCode,
-        courseName,
-        description
+        contentCode,
+        contentDetail,
+        image,
+        subjectID
     } = req.body;
-    let status = 1;
     try {
-        let newCourse = await Course.create({
-            courseCode,
-            courseName,
-            description
+        const newContent = await Content.create({
+            contentCode,
+            contentDetail,
+            image,
+            subjectID
         }, {
-            fields: ['courseCode', 'courseName', 'description'],
-            returning: ['courseID', 'courseCode', 'courseName', 'description', 'isActive', 'registeredDate', 'unregisteredDate']
+            fields: ['contentCode', 'contentDetail', 'image', 'subjectID'],
+            returning: ['contentID', 'contentCode', 'contentDetail', 'registeredDate', 'unregisteredDate', 'image', 'isActive', 'subjectID']
         });
-        if (newCourse) {
+        if (newContent) {
             return res.status(200).json({
                 ok: true,
-                message: 'Course created successfully',
-                Course: newCourse
-            })
+                message: 'Content created successfully',
+                content: newContent
+            });
         }
     } catch (e) {
         console.log('Error:', e);
-        returnError(res, e, 'Create Course');
+        returnError(res, e, 'Create Content');
     }
-}*/
+}

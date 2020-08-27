@@ -1,4 +1,5 @@
 import Sequelize from 'sequelize';
+import Subject from '../models/Subject';
 import { sequelize } from '../database/database';
 
 const Content = sequelize.define('content', {
@@ -29,18 +30,20 @@ const Content = sequelize.define('content', {
     },
     image: {
         type: Sequelize.STRING(500)
+    },
+    subjectID: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'subject',
+            key: 'subjectID'
+        }
     }
-    /*,
-        subjectID: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: 'province',
-                key: 'provinceID'
-            }
-        }*/
 }, {
     timestamps: false,
     freezeTableName: true
 });
+
+Subject.hasMany(Content, { foreignKey: { name: 'subjectID', targetKey: 'subjectID' } });
+Content.belongsTo(Subject, { foreignKey: { name: 'subjectID', targetKey: 'subjectID' } });
 
 export default Content;
