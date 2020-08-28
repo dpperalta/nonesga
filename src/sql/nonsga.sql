@@ -962,6 +962,7 @@ CREATE TABLE "content"(
  "contentID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "contentCode" Character varying(10) NOT NULL,
+ "contentTitle" Character varying(50) NOT NULL,
  "contentDetail" Text,
  "registeredDate" Timestamp with time zone NOT NULL,
  "unregisteredDate" Timestamp with time zone,

@@ -12,6 +12,10 @@ const Content = sequelize.define('content', {
         allowNull: false,
         unique: true
     },
+    contentTitle: {
+        type: Sequelize.STRING(50),
+        allowNull: false
+    },
     contentDetail: {
         type: Sequelize.TEXT
     },

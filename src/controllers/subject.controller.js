@@ -82,15 +82,14 @@ export async function getSubjects(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
-        //returnError(res, e, 'Get Subjects');
-        return res.status(500).json({ e });
+        returnError(res, e, 'Get Subjects');
     }
 }
 
 // Get information about one subject
 export async function getSubject(req, res) {
     const { subjectID } = req.params;
-    try{
+    try {
         const subject = await Subject.findOne({
             attributes: ['subjectID', 'subjectCode', 'subjectName', 'description', 'details', 'isActive', 'registeredDate', 'unregisteredDate', 'gradeNeeded', 'gradeMinimun', 'gradeMaximun', 'teacherID', 'courseID'],
             where: {
@@ -108,22 +107,22 @@ export async function getSubject(req, res) {
                 attributes: ['courseID', 'courseName']
             }]
         });
-        if(subject){
+        if (subject) {
             return res.status(200).json({
                 ok: true,
                 subject
             });
-        }else {
+        } else {
             returnNotFound(res, 'Subject ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get Subject');
     }
 }
 
 // Update a subject
-export async function updateSubject(req, res){
+export async function updateSubject(req, res) {
     const { subjectID } = req.params;
     const {
         subjectCode,
@@ -137,16 +136,16 @@ export async function updateSubject(req, res){
         teacherID,
         courseID
     } = req.body;
-    try{
+    try {
         const dbSubject = await Subject.findOne({
             attributes: ['subjectID', 'subjectCode', 'subjectName', 'description', 'details', 'isActive', 'registeredDate', 'unregisteredDate', 'gradeNeeded', 'gradeMinimun', 'gradeMaximun', 'teacherID', 'courseID'],
             where: {
                 subjectID
             }
         });
-        if(dbSubject === null || dbSubject === undefined){
+        if (dbSubject === null || dbSubject === undefined) {
             returnNotFound(res, 'Subject ID');
-        }else{
+        } else {
             const updatedSubject = await Subject.update({
                 subjectCode,
                 subjectName,
@@ -163,23 +162,23 @@ export async function updateSubject(req, res){
                     subjectID
                 }
             });
-            if(updatedSubject){
+            if (updatedSubject) {
                 return res.status(200).json({
                     ok: true,
                     message: 'Subject Updatede Successfully'
                 });
-            }else{
+            } else {
                 returnNotFound(res, 'Subject ID');
             }
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Update Subject');
     }
 }
 
 // Change activation status to a subject
-export async function changeActivationSubject(req, res){
+export async function changeActivationSubject(req, res) {
     const { subjectID } = req.params;
     const type = req.query.type;
     let value;
@@ -187,7 +186,7 @@ export async function changeActivationSubject(req, res){
     let afirmation = '';
     let negation = '';
     let changeActivationJSON;
-    if(type.toLowerCase() === 'activate'){
+    if (type.toLowerCase() === 'activate') {
         value = true;
         action = 'Activating';
         afirmation = 'active';
@@ -196,8 +195,8 @@ export async function changeActivationSubject(req, res){
             isActive: true,
             unregisteredDate: null
         };
-    }else{
-        if(type.toLowerCase() === 'inactivate'){
+    } else {
+        if (type.toLowerCase() === 'inactivate') {
             value = false;
             action = 'Inactivating';
             afirmation = 'inactive';
@@ -206,18 +205,18 @@ export async function changeActivationSubject(req, res){
                 isActive: false,
                 unregisteredDate: sequelize.literal('CURRENT_TIMESTAMP')
             };
-        }else{
+        } else {
             returnWrongError(res, 'type', 'request');
         }
     }
-    try{
+    try {
         const dbSubject = await Subject.findOne({
             attributes: ['subjectID', 'subjectCode', 'subjectName', 'isActive', 'registeredDate', 'unregisteredDate'],
             where: {
                 subjectID
             }
         });
-        if(dbSubject){
+        if (dbSubject) {
             const changeActivation = await Subject.update(
                 changeActivationJSON, {
                     where: {
@@ -226,44 +225,44 @@ export async function changeActivationSubject(req, res){
                     }
                 }
             );
-            if(changeActivation > 0){
+            if (changeActivation > 0) {
                 return res.status(200).json({
                     ok: true,
                     message: 'Subject ' + type.toLowerCase() + 'd successfully'
                 });
-            }else{
+            } else {
                 return res.status(400).json({
                     ok: false,
                     message: 'Error while ' + action + ' a Subject or Subject already ' + afirmation,
                     error: 'Error 0'
                 });
             }
-        }else{
+        } else {
             returnNotFound(res, 'Subject ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Change Activation Subject');
     }
 }
 
-export async function deleteSubject(req, res){
+export async function deleteSubject(req, res) {
     const { subjectID } = req.params;
-    try{
+    try {
         const countDeleted = await Subject.destroy({
             where: {
                 subjectID
             }
         });
-        if(countDeleted > 0){
+        if (countDeleted > 0) {
             return res.status(200).json({
                 ok: true,
                 message: 'Subject deleted successfully'
             });
-        }else{
+        } else {
             returnNotFound(res, 'Subject ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Delete Subject');
     }
