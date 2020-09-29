@@ -19,6 +19,10 @@ import studentRoutes from './student';
 import courseRoutes from './course';
 import contentRoutes from './content';
 import subjectRoutes from './subject';
+import taskRoutes from './task';
+import enrollmentStatusRoutes from './enrollmentStatus';
+import academicPeriodRoutes from './academicPeriod';
+import enrollmentRoutes from './enrollment';
 
 const app = express();
 
@@ -44,5 +48,9 @@ app.use(url + '/student', studentRoutes);
 app.use(url + '/course', courseRoutes);
 app.use(url + '/content', contentRoutes);
 app.use(url + '/subject', subjectRoutes);
+app.use(url + '/task', taskRoutes);
+app.use(url + '/enrollmentStatus', enrollmentStatusRoutes);
+app.use(url + '/academicPeriod', academicPeriodRoutes);
+app.use(url + '/enrollment', enrollmentRoutes);
 
 module.exports = app;

@@ -83,7 +83,7 @@ ALTER TABLE "user" ADD CONSTRAINT "idUser" UNIQUE ("userID")
 ALTER TABLE "user" ADD CONSTRAINT "email" UNIQUE ("email")
 ;
 
-ALTER TABLE "user" ADD CONSTRAINT "nick" UNIQUE ("nick");
+--ALTER TABLE "user" ADD CONSTRAINT "nick" UNIQUE ("nick");
 
 -- Table person
 
@@ -632,13 +632,14 @@ ALTER TABLE "teacher" ADD CONSTRAINT "PK_teacher" PRIMARY KEY ("teacherID")
 ALTER TABLE "teacher" ADD CONSTRAINT "teacherCode" UNIQUE ("teacherCode")
 ;
 
--- Table enrrollment
+-- Table enrollment
 
-CREATE TABLE "enrrollment"(
+CREATE TABLE "enrollment"(
  "enrollmentID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "enrollmentCode" Character varying(10),
- "registrationDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "statusChangeDate" Timestamp with time zone,
  "statusID" Integer,
@@ -650,56 +651,59 @@ CREATE TABLE "enrrollment"(
 WITH (
  autovacuum_enabled=true)
 ;
-COMMENT ON COLUMN "enrrollment"."enrollmentID" IS 'Unique autoincremental identification for a teacher'
+COMMENT ON COLUMN "enrollment"."enrollmentID" IS 'Unique autoincremental identification for a teacher'
 ;
-COMMENT ON COLUMN "enrrollment"."enrollmentCode" IS 'Code for the enrrollment of a student'
+COMMENT ON COLUMN "enrollment"."enrollmentCode" IS 'Code for the enrollment of a student'
 ;
-COMMENT ON COLUMN "enrrollment"."registrationDate" IS 'Timestamp for registration date of an enrrollment'
+COMMENT ON COLUMN "enrollment"."registeredDate" IS 'Timestamp for registration date of an enrollment'
 ;
-COMMENT ON COLUMN "enrrollment"."isActive" IS 'true: active
+COMMENT ON COLUMN "enrollment"."unregisteredDate" IS 'Timestamp for unregistration date of an enrollment'
+;
+COMMENT ON COLUMN "enrollment"."isActive" IS 'true: active
 false: inactive'
 ;
-COMMENT ON COLUMN "enrrollment"."statusChangeDate" IS 'Timestamp for status change '
+COMMENT ON COLUMN "enrollment"."statusChangeDate" IS 'Timestamp for status change '
 ;
 
--- Create indexes for table enrrollment
+-- Create indexes for table enrollment
 
-CREATE INDEX "enrrollment_status_ix" ON "enrrollment" ("statusID")
+CREATE INDEX "enrollment_status_ix" ON "enrollment" ("statusID")
 ;
 
-CREATE INDEX "enrrollment_student_ix" ON "enrrollment" ("studentID")
+CREATE INDEX "enrollment_student_ix" ON "enrollment" ("studentID")
 ;
 
-CREATE INDEX "enrrollment_user_is" ON "enrrollment" ("userID")
+CREATE INDEX "enrollment_user_is" ON "enrollment" ("userID")
 ;
 
-CREATE INDEX "enrrollment_academicPeriod_ix" ON "enrrollment" ("periodID")
+CREATE INDEX "enrollment_academicPeriod_ix" ON "enrollment" ("periodID")
 ;
 
-CREATE INDEX "enrrollment_course_ix" ON "enrrollment" ("courseID")
+CREATE INDEX "enrollment_course_ix" ON "enrollment" ("courseID")
 ;
 
--- Add keys for table enrrollment
+-- Add keys for table enrollment
 
-ALTER TABLE "enrrollment" ADD CONSTRAINT "PK_enrrollment" PRIMARY KEY ("enrollmentID")
+ALTER TABLE "enrollment" ADD CONSTRAINT "PK_enrollment" PRIMARY KEY ("enrollmentID")
 ;
 
--- Table enrrollmentStatus
+-- Table enrollmentStatus
 
-CREATE TABLE "enrrollmentStatus"(
+CREATE TABLE "enrollmentStatus"(
  "statusID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "code" Smallint NOT NULL,
  "description" Character varying(150) NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "detail" Text
 )
 WITH (
  autovacuum_enabled=true)
 ;
-COMMENT ON COLUMN "enrrollmentStatus"."statusID" IS 'Unique autoincremental identification for the status of enrrollment'
+COMMENT ON COLUMN "enrollmentStatus"."statusID" IS 'Unique autoincremental identification for the status of enrollment'
 ;
-COMMENT ON COLUMN "enrrollmentStatus"."code" IS '1: Application
+COMMENT ON COLUMN "enrollmentStatus"."code" IS '1: Application
 2: Registered
 3: Wating pay confirmation
 4: Paid
@@ -712,20 +716,22 @@ COMMENT ON COLUMN "enrrollmentStatus"."code" IS '1: Application
 11: System canceled
 12: Administration user canceled'
 ;
-COMMENT ON COLUMN "enrrollmentStatus"."description" IS 'Description for the enrrollment status, it''s the field that will see the user in the application'
+COMMENT ON COLUMN "enrollmentStatus"."description" IS 'Description for the enrollment status, it''s the field that will see the user in the application'
 ;
-COMMENT ON COLUMN "enrrollmentStatus"."isActive" IS 'true: active
+COMMENT ON COLUMN "enrollmentStatus"."isActive" IS 'true: active
 false: inactive'
 ;
-COMMENT ON COLUMN "enrrollmentStatus"."detail" IS 'Aditional information for the enrrollment process'
+COMMENT ON COLUMN "enrollmentStatus"."unregisteredDate" IS 'Timestamp for unregistration date'
+;
+COMMENT ON COLUMN "enrollmentStatus"."detail" IS 'Aditional information for the enrollment process'
 ;
 
--- Add keys for table enrrollmentStatus
+-- Add keys for table enrollmentStatus
 
-ALTER TABLE "enrrollmentStatus" ADD CONSTRAINT "PK_enrrollmentStatus" PRIMARY KEY ("statusID")
+ALTER TABLE "enrollmentStatus" ADD CONSTRAINT "PK_enrollmentStatus" PRIMARY KEY ("statusID")
 ;
 
-ALTER TABLE "enrrollmentStatus" ADD CONSTRAINT "description" UNIQUE ("description")
+ALTER TABLE "enrollmentStatus" ADD CONSTRAINT "description" UNIQUE ("description")
 ;
 
 -- Table academicPeriod
@@ -767,9 +773,9 @@ COMMENT ON COLUMN "academicPeriod"."detail" IS 'Details or aditional information
 
 ALTER TABLE "academicPeriod" ADD CONSTRAINT "PK_academicPeriod" PRIMARY KEY ("periodID")
 ;
-
-ALTER TABLE "academicPeriod" ADD CONSTRAINT "periodName" UNIQUE ("periodName")
-;
+-- Si sea agrega College el constraint unique sería con "periodName" y "collegeID"
+--ALTER TABLE "academicPeriod" ADD CONSTRAINT "periodName" UNIQUE ("periodName")
+--;
 
 -- Table course
 
@@ -974,8 +980,9 @@ WITH (
  autovacuum_enabled=true)
 ;
 
--- Indexes
-/CREATE INDEX "content_subject_ix" ON "content" ("subjectID")
+-- Create indexes for table content
+
+CREATE INDEX "content_subject_ix" ON "content" ("subjectID")
 ;
 
 -- Add keys for table content
@@ -995,6 +1002,7 @@ CREATE TABLE "assistenceRegister"(
  "time" Time DEFAULT current_time NOT NULL,
  "period" Character varying(20),
  "detail" Text,
+ "justification" Text,
  "present" Boolean NOT NULL,
  "registrationDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "studentDetail" Text,
@@ -1005,7 +1013,8 @@ CREATE TABLE "assistenceRegister"(
  "editedDate" Timestamp with time zone,
  "editedUser" Integer,
  "subjectID" Integer,
- "studentID" Integer
+ "studentID" Integer,
+ "classScheduleID" Integer
 )
 WITH (
  autovacuum_enabled=true)
@@ -1019,6 +1028,8 @@ COMMENT ON COLUMN "assistenceRegister"."time" IS 'Hour of register'
 COMMENT ON COLUMN "assistenceRegister"."period" IS 'Period time or enumeration, name or similar'
 ;
 COMMENT ON COLUMN "assistenceRegister"."detail" IS 'If the registration needs aditional details'
+;
+COMMENT ON COLUMN "assistenceRegister"."justification" IS 'Justification for the asistance'
 ;
 COMMENT ON COLUMN "assistenceRegister"."present" IS 'true: strudent is present
 false: studen is absent'
@@ -1048,6 +1059,9 @@ CREATE INDEX "assistance_subject_ix" ON "assistenceRegister" ("subjectID")
 ;
 
 CREATE INDEX "assistance_student_ix" ON "assistenceRegister" ("studentID")
+;
+
+CREATE INDEX "assistance_scheduleClass_ix" ON "assistenceRegister" ("classScheduleID")
 ;
 
 -- Add keys for table assistenceRegister
@@ -1587,7 +1601,8 @@ CREATE TABLE "calificationAverange"(
  "isFinal" Boolean DEFAULT false NOT NULL,
  "subjectID" Integer NOT NULL,
  "studentID" Integer NOT NULL,
- "teacherID" Integer NOT NULL
+ "teacherID" Integer NOT NULL,
+ "maxDate" Timestamp with time zone
 )
 WITH (
  autovacuum_enabled=true)
@@ -1662,6 +1677,7 @@ CREATE TABLE "partial"(
  "description" Text,
  "studentDetail" Text,
  "agentDetail" Text,
+ "requiresReview" Boolean DEFAULT false,
  "subjectID" Integer,
  "studentID" Integer
 )
@@ -1887,7 +1903,8 @@ CREATE TABLE "payment"(
  "personID" Integer,
  "userID" Integer,
  "paymentTypeID" Integer,
- "collegeID" Integer
+ "collegeID" Integer,
+ "statusID" Integer
 )
 WITH (
  autovacuum_enabled=true)
@@ -1951,6 +1968,9 @@ CREATE INDEX "payment_type_ix" ON "payment" ("paymentTypeID")
 ;
 
 CREATE INDEX "payment_college_ix" ON "payment" ("collegeID")
+;
+
+CREATE INDEX "payment_status_ix" ON "payment" ("statusID")
 ;
 
 -- Add keys for table payment
@@ -2115,6 +2135,718 @@ ALTER TABLE "paymentType" ADD CONSTRAINT "paymentCode" UNIQUE ("paymentCode")
 
 ALTER TABLE "paymentType" ADD CONSTRAINT "paymentTypeName" UNIQUE ("paymentTypeName")
 ;
+
+-- Table group
+
+CREATE TABLE "group"(
+ "groupID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "groupName" Character varying(100) NOT NULL,
+ "groupDescription" Text,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
+ "isActive" Boolean DEFAULT true,
+ "groupRoom" Text,
+ "teacherID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "group"."groupID" IS 'Unique identificator for a group'
+;
+COMMENT ON COLUMN "group"."groupName" IS 'Name for the group'
+;
+COMMENT ON COLUMN "group"."groupDescription" IS 'Description for the group'
+;
+COMMENT ON COLUMN "group"."registeredDate" IS 'Timestamp for date of creation of the group'
+;
+COMMENT ON COLUMN "group"."unregisteredDate" IS 'Timestamp for date of logical erease for the group'
+;
+COMMENT ON COLUMN "group"."isActive" IS 'true: group active
+false: group inactive'
+;
+COMMENT ON COLUMN "group"."groupRoom" IS 'Socket room for the group'
+;
+
+-- Create indexes for table group
+
+CREATE INDEX "group_teacher_ix" ON "group" ("teacherID")
+;
+
+-- Add keys for table group
+
+ALTER TABLE "group" ADD CONSTRAINT "PK_group" PRIMARY KEY ("groupID")
+;
+
+ALTER TABLE "group" ADD CONSTRAINT "groupID" UNIQUE ("groupID")
+;
+
+-- Table groupUser
+
+CREATE TABLE "groupUser"(
+ "groupUserID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "isAdministrator" Boolean,
+ "isBlocked" Boolean,
+ "isMuted" Boolean,
+ "groupID" Integer,
+ "userID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "groupUser"."groupUserID" IS 'Unique identificator for a user in a group'
+;
+COMMENT ON COLUMN "groupUser"."registeredDate" IS 'Timestamp for the date were the user was registered
+'
+;
+COMMENT ON COLUMN "groupUser"."unregisteredDate" IS 'Timestamp for the date of unregister of an user'
+;
+COMMENT ON COLUMN "groupUser"."isActive" IS 'true: user is active in group
+false: user is inactive in group'
+;
+COMMENT ON COLUMN "groupUser"."isAdministrator" IS 'true: user is administrator of the group
+false: user is a particpant only'
+;
+COMMENT ON COLUMN "groupUser"."isBlocked" IS 'true: user blocked to read and write in group
+false: user not blocked'
+;
+COMMENT ON COLUMN "groupUser"."isMuted" IS 'true: user muted
+false: user not muted'
+;
+
+-- Create indexes for table groupUser
+
+CREATE INDEX "groupUser_group_ix" ON "groupUser" ("groupID")
+;
+
+CREATE INDEX "groupUser_user_ix" ON "groupUser" ("userID")
+;
+
+-- Add keys for table groupUser
+
+ALTER TABLE "groupUser" ADD CONSTRAINT "PK_groupUser" PRIMARY KEY ("groupUserID")
+;
+
+ALTER TABLE "groupUser" ADD CONSTRAINT "groupUserID" UNIQUE ("groupUserID")
+;
+
+-- Table groupMessage
+
+CREATE TABLE "groupMessage"(
+ "groupMessageID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "message" Text NOT NULL,
+ "registeredDate" Timestamp WITH TIME zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
+ "sendDated" Timestamp with time zone,
+ "receivedDate" Timestamp with time zone,
+ "readDate" Timestamp with time zone,
+ "isSended" Boolean,
+ "isReaded" Boolean,
+ "isUrgent" Boolean,
+ "isDirectMessage" Boolean DEFAULT false,
+ "groupID" Integer,
+ "sentUserID" Integer,
+ "receivedUserID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "groupMessage"."groupMessageID" IS 'Unique identificator for a message'
+;
+COMMENT ON COLUMN "groupMessage"."message" IS 'Text or content for the message'
+;
+COMMENT ON COLUMN "groupMessage"."registeredDate" IS 'Timestamp for the date of the message'
+;
+COMMENT ON COLUMN "groupMessage"."unregisteredDate" IS 'Timestamp for register the date If the messege was deleted'
+;
+COMMENT ON COLUMN "groupMessage"."sendDated" IS 'Timestapo for register the date when the message was sended'
+;
+COMMENT ON COLUMN "groupMessage"."receivedDate" IS 'Timestapo for register the date when the message was received'
+;
+COMMENT ON COLUMN "groupMessage"."readDate" IS 'Timestapo for register the date when the message was readed'
+;
+COMMENT ON COLUMN "groupMessage"."isSended" IS 'true: sended
+false not sended'
+;
+COMMENT ON COLUMN "groupMessage"."isReaded" IS 'true: readed
+false: not readed'
+;
+COMMENT ON COLUMN "groupMessage"."isUrgent" IS 'true: urgent
+false: not urgent'
+;
+COMMENT ON COLUMN "groupMessage"."isDirectMessage" IS 'true: dirrect Message
+false: broadcast'
+;
+
+-- Create indexes for table groupMessage
+
+CREATE INDEX "message_group_ix" ON "groupMessage" ("groupID")
+;
+
+CREATE INDEX "message_sentUser_ix" ON "groupMessage" ("sentUserID")
+;
+
+CREATE INDEX "message_receivedUser_ix" ON "groupMessage" ("receivedUserID")
+;
+
+-- Add keys for table groupMessage
+
+ALTER TABLE "groupMessage" ADD CONSTRAINT "PK_groupMessage" PRIMARY KEY ("groupMessageID")
+;
+
+ALTER TABLE "groupMessage" ADD CONSTRAINT "groupMessageID" UNIQUE ("groupMessageID")
+;
+
+-- Table forum
+
+CREATE TABLE "forum"(
+ "forumID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "forumName" Character varying(100) NOT NULL,
+ "forumDetails" Text,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with TIME zone,
+ "isActive" Boolean DEFAULT ture NOT NULL,
+ "isAcademic" Boolean,
+ "isQualified" Boolean,
+ "teacherID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "forum"."forumID" IS 'Unique identificator for a forum'
+;
+COMMENT ON COLUMN "forum"."forumName" IS 'Name for the forum'
+;
+COMMENT ON COLUMN "forum"."forumDetails" IS 'Details for describe a forum'
+;
+COMMENT ON COLUMN "forum"."registeredDate" IS 'Timestamp for the date of creation of the forum'
+;
+COMMENT ON COLUMN "forum"."unregisteredDate" IS 'Timestamp for the elimination date of the forum'
+;
+COMMENT ON COLUMN "forum"."isActive" IS 'true: is active
+false: is inactive'
+;
+COMMENT ON COLUMN "forum"."isAcademic" IS 'true: academic content
+false: any content'
+;
+COMMENT ON COLUMN "forum"."isQualified" IS 'true: have qualification
+false: don''t have qualificationm'
+;
+
+-- Create indexes for table forum
+
+CREATE INDEX "forum_teacher_ix" ON "forum" ("teacherID")
+;
+
+-- Add keys for table forum
+
+ALTER TABLE "forum" ADD CONSTRAINT "PK_forum" PRIMARY KEY ("forumID")
+;
+
+ALTER TABLE "forum" ADD CONSTRAINT "forumID" UNIQUE ("forumID")
+;
+
+-- Table forumMember
+
+CREATE TABLE "forumMember"(
+ "idForumMember" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "registeredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+ "unregistereDate" Timestamp WITH Time ZONE,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "isAdministrator" Boolean,
+ "forumID" Integer,
+ "userID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "forumMember"."idForumMember" IS 'Unique identificator for a forum member'
+;
+COMMENT ON COLUMN "forumMember"."registeredDate" IS 'Timestamp for register of a member'
+;
+COMMENT ON COLUMN "forumMember"."unregistereDate" IS 'Timestamp fot the date of delete of a member'
+;
+COMMENT ON COLUMN "forumMember"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "forumMember"."isAdministrator" IS 'true: is administrator
+false: not administrator'
+;
+
+-- Create indexes for table forumMember
+
+CREATE INDEX "forumMember_forum_ix" ON "forumMember" ("forumID")
+;
+
+CREATE INDEX "forumMember_user_ix" ON "forumMember" ("userID")
+;
+
+-- Add keys for table forumMember
+
+ALTER TABLE "forumMember" ADD CONSTRAINT "PK_forumMember" PRIMARY KEY ("idForumMember")
+;
+
+ALTER TABLE "forumMember" ADD CONSTRAINT "idForumMember" UNIQUE ("idForumMember")
+;
+
+-- Table forumContent
+
+CREATE TABLE "forumContent"(
+ "forumContentID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "registeredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp WITH Time ZONE,
+ "isActive" Boolean,
+ "forumContent" Text NOT NULL,
+ "details" Text,
+ "forumID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "forumContent"."forumContentID" IS 'Unique identificator for forum content'
+;
+COMMENT ON COLUMN "forumContent"."registeredDate" IS 'Timestamp for registered content'
+;
+COMMENT ON COLUMN "forumContent"."unregisteredDate" IS 'Timestamp for unregistered content'
+;
+COMMENT ON COLUMN "forumContent"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "forumContent"."forumContent" IS 'Content for the forum'
+;
+COMMENT ON COLUMN "forumContent"."details" IS 'Aditional details'
+;
+
+-- Create indexes for table forumContent
+
+CREATE INDEX "forumContent_forum_ix" ON "forumContent" ("forumID")
+;
+
+-- Add keys for table forumContent
+
+ALTER TABLE "forumContent" ADD CONSTRAINT "PK_forumContent" PRIMARY KEY ("forumContentID")
+;
+
+-- Table forumReply
+
+CREATE TABLE "forumReply"(
+ "replyID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "registeredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+ "replyText" Text NOT NULL,
+ "unregisteredDate" Timestamp WITH TIME ZONE,
+ "isDraft" Boolean,
+ "replayObservation" Text,
+ "qualification" Double precision,
+ "isReviewed" Boolean,
+ "isQualified" Boolean,
+ "qualificationDate" Timestamp WITH TIME ZONE,
+ "forumID" Integer,
+ "forumContentID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "forumReply"."replyID" IS 'Unique identificator for a reply'
+;
+COMMENT ON COLUMN "forumReply"."registeredDate" IS 'Timestamp for registered reply'
+;
+COMMENT ON COLUMN "forumReply"."replyText" IS 'Text or content for the replay'
+;
+COMMENT ON COLUMN "forumReply"."unregisteredDate" IS 'Timestamp for unregistered reply'
+;
+COMMENT ON COLUMN "forumReply"."isDraft" IS 'true: draft
+false: published'
+;
+COMMENT ON COLUMN "forumReply"."replayObservation" IS 'Teacher details for the replay'
+;
+COMMENT ON COLUMN "forumReply"."qualification" IS 'Qualification for the replay'
+;
+COMMENT ON COLUMN "forumReply"."isReviewed" IS 'true: reviewd
+false: not reviewed'
+;
+COMMENT ON COLUMN "forumReply"."isQualified" IS 'true: qualified
+false: not qualified'
+;
+COMMENT ON COLUMN "forumReply"."qualificationDate" IS 'Timestamp for the qualification'
+;
+
+-- Create indexes for table forumReply
+
+CREATE INDEX "forumReply_forum_ix" ON "forumReply" ("forumID")
+;
+
+CREATE INDEX "forumReply_member_ix" ON "forumReply" ("forumContentID")
+;
+
+-- Add keys for table forumReply
+
+ALTER TABLE "forumReply" ADD CONSTRAINT "PK_forumReply" PRIMARY KEY ("replyID")
+;
+
+ALTER TABLE "forumReply" ADD CONSTRAINT "replyID" UNIQUE ("replyID")
+;
+
+-- Table paymentStatus
+
+CREATE TABLE "paymentStatus"(
+ "statusID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "statusName" Character varying(100) NOT NULL,
+ "statusDetail" Text,
+ "registeredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp WITH TIME ZONE,
+ "isActive" Boolean DEFAULT true NOT NULL
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "paymentStatus"."statusID" IS 'Unique identificator for the status'
+;
+COMMENT ON COLUMN "paymentStatus"."statusName" IS 'Name for the status'
+;
+COMMENT ON COLUMN "paymentStatus"."statusDetail" IS 'Status details'
+;
+COMMENT ON COLUMN "paymentStatus"."registeredDate" IS 'Timestamp for the date of registration of the status'
+;
+COMMENT ON COLUMN "paymentStatus"."unregisteredDate" IS 'Timestamp for the date when the status was deleted'
+;
+COMMENT ON COLUMN "paymentStatus"."isActive" IS 'true: active
+false: inactive'
+;
+
+-- Add keys for table paymentStatus
+
+ALTER TABLE "paymentStatus" ADD CONSTRAINT "PK_paymentStatus" PRIMARY KEY ("statusID")
+;
+
+ALTER TABLE "paymentStatus" ADD CONSTRAINT "statusID" UNIQUE ("statusID")
+;
+
+-- Table schedule
+
+CREATE TABLE "schedule"(
+ "scheduleID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "registeredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp WITH TIME ZONE,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "details" Text,
+ "isAutomatic" Boolean,
+ "startDate" Date NOT NULL,
+ "endDate" Date NOT NULL,
+ "collegeID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "schedule"."scheduleID" IS 'Unique identificator for a schedule'
+;
+COMMENT ON COLUMN "schedule"."registeredDate" IS 'Timestamp for registration date'
+;
+COMMENT ON COLUMN "schedule"."unregisteredDate" IS 'Timestamp for unregistration date'
+;
+COMMENT ON COLUMN "schedule"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "schedule"."details" IS 'Details for the schedule'
+;
+COMMENT ON COLUMN "schedule"."isAutomatic" IS 'true: Automatic generation
+false: Manual generation'
+;
+COMMENT ON COLUMN "schedule"."startDate" IS 'Date to start of the use of the shcedule'
+;
+COMMENT ON COLUMN "schedule"."endDate" IS 'Date to the end of the schedule'
+;
+
+-- Create indexes for table schedule
+
+CREATE INDEX "schedule_college_ix" ON "schedule" ("collegeID")
+;
+
+-- Add keys for table schedule
+
+ALTER TABLE "schedule" ADD CONSTRAINT "PK_schedule" PRIMARY KEY ("scheduleID")
+;
+
+ALTER TABLE "schedule" ADD CONSTRAINT "scheduleID" UNIQUE ("scheduleID")
+;
+
+-- Table classSchedule
+
+CREATE TABLE "classSchedule"(
+ "classScheduleID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "nameHour" Character varying(50),
+ "startHour" Time NOT NULL,
+ "endHour" Time NOT NULL,
+ "startDate" Date NOT NULL,
+ "endDate" Date NOT NULL,
+ "numberHour" Smallint,
+ "reigsteredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp WITH TIME ZONE,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "isDelayer" Boolean,
+ "isCancelled" Boolean DEFAULT false,
+ "isReprogramed" Boolean DEFAULT false,
+ "isRecurrent" Bigint DEFAULT true NOT NULL,
+ "scheduleID" Integer,
+ "subjectID" Integer,
+ "holidayID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "classSchedule"."classScheduleID" IS 'Unique identification of an class hour
+'
+;
+COMMENT ON COLUMN "classSchedule"."nameHour" IS 'Name of the class hour'
+;
+COMMENT ON COLUMN "classSchedule"."startHour" IS 'Start time'
+;
+COMMENT ON COLUMN "classSchedule"."endHour" IS 'End time'
+;
+COMMENT ON COLUMN "classSchedule"."startDate" IS 'Start date'
+;
+COMMENT ON COLUMN "classSchedule"."endDate" IS 'End date'
+;
+COMMENT ON COLUMN "classSchedule"."numberHour" IS 'Number of the hour'
+;
+COMMENT ON COLUMN "classSchedule"."reigsteredDate" IS 'Timestamp for regristration of the hour'
+;
+COMMENT ON COLUMN "classSchedule"."unregisteredDate" IS 'Timestamp for unregistration of the class hour'
+;
+COMMENT ON COLUMN "classSchedule"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "classSchedule"."isDelayer" IS 'true: delayed
+false: not delayed'
+;
+COMMENT ON COLUMN "classSchedule"."isCancelled" IS 'Register for cancell notifications
+
+true: cancelled
+false: not cancelled '
+;
+COMMENT ON COLUMN "classSchedule"."isReprogramed" IS 'Register for reprogramation notifications
+
+true: reprogramed
+false: not reprogramed'
+;
+COMMENT ON COLUMN "classSchedule"."isRecurrent" IS 'true: recurrent
+false: not recurrent
+
+For automatic programation'
+;
+
+-- Create indexes for table classSchedule
+
+CREATE INDEX "classSchedule_schedule_ix" ON "classSchedule" ("scheduleID")
+;
+
+CREATE INDEX "classSchedule_subject_ix" ON "classSchedule" ("subjectID")
+;
+
+CREATE INDEX "classSchedule_holiday_ix" ON "classSchedule" ("holidayID")
+;
+
+-- Add keys for table classSchedule
+
+ALTER TABLE "classSchedule" ADD CONSTRAINT "PK_classSchedule" PRIMARY KEY ("classScheduleID")
+;
+
+ALTER TABLE "classSchedule" ADD CONSTRAINT "classScheduleID" UNIQUE ("classScheduleID")
+;
+
+-- Table holiday
+
+CREATE TABLE "holiday"(
+ "holidayID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "name" Character varying(100) NOT NULL,
+ "date" Time NOT NULL,
+ "details" Text,
+ "registeredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp WITH TIME ZONE,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "isNational" Boolean,
+ "isOptional" Boolean,
+ "isReprogramed" Boolean DEFAULT false,
+ "reprogramedDate" Date,
+ "countryID" Integer,
+ "provinceID" Integer,
+ "cityID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "holiday"."holidayID" IS 'Unique identificator for a holiday'
+;
+COMMENT ON COLUMN "holiday"."name" IS 'Name for the holiday'
+;
+COMMENT ON COLUMN "holiday"."date" IS 'Date for the holiday'
+;
+COMMENT ON COLUMN "holiday"."details" IS 'Detaild to give more information about the holiday'
+;
+COMMENT ON COLUMN "holiday"."registeredDate" IS 'Timestamp for registration date'
+;
+COMMENT ON COLUMN "holiday"."unregisteredDate" IS 'Timestamp for unregistration date'
+;
+COMMENT ON COLUMN "holiday"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "holiday"."isNational" IS 'true: national holiday
+false: local holiday'
+;
+COMMENT ON COLUMN "holiday"."isOptional" IS 'true: optional holiday
+false: mandatory holiday'
+;
+COMMENT ON COLUMN "holiday"."isReprogramed" IS 'true: reprogroamed to another date
+false: not reprogramed to another date'
+;
+COMMENT ON COLUMN "holiday"."reprogramedDate" IS 'Reprogramed date for the holiday'
+;
+
+-- Create indexes for table holiday
+
+CREATE INDEX "holiday_country_ix" ON "holiday" ("countryID")
+;
+
+CREATE INDEX "holiday_province_ix" ON "holiday" ("provinceID")
+;
+
+CREATE INDEX "holiday_city_ix" ON "holiday" ("cityID")
+;
+
+-- Add keys for table holiday
+
+ALTER TABLE "holiday" ADD CONSTRAINT "PK_holiday" PRIMARY KEY ("holidayID")
+;
+
+ALTER TABLE "holiday" ADD CONSTRAINT "date" UNIQUE ("date")
+;
+
+-- Table recalification
+
+CREATE TABLE "recalification"(
+ "recalificationID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "registeredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp,
+ "unregisteredDate" Timestamp WITH TIME ZONE,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "detail" Text,
+ "previousCalification" Double precision,
+ "newCalification" Double precision NOT NULL,
+ "reason" Text NOT NULL,
+ "isPublished" Boolean,
+ "isAuthorizade" Boolean,
+ "patialID" Integer,
+ "averangeID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "recalification"."recalificationID" IS 'Unique identificator for a recalification'
+;
+COMMENT ON COLUMN "recalification"."registeredDate" IS 'Timestamp for recalification date'
+;
+COMMENT ON COLUMN "recalification"."unregisteredDate" IS 'Timestamp for unregistration of a calification'
+;
+COMMENT ON COLUMN "recalification"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "recalification"."detail" IS 'Aditional details for recalification'
+;
+COMMENT ON COLUMN "recalification"."previousCalification" IS 'Calification before recalification'
+;
+COMMENT ON COLUMN "recalification"."newCalification" IS 'Calification after recalification'
+;
+COMMENT ON COLUMN "recalification"."reason" IS 'Justification for the recalification'
+;
+COMMENT ON COLUMN "recalification"."isPublished" IS 'true: published
+false: not published yet'
+;
+COMMENT ON COLUMN "recalification"."isAuthorizade" IS 'true: authorized
+false: not authorized'
+;
+
+-- Create indexes for table recalification
+
+CREATE INDEX "recalification_partial_ix" ON "recalification" ("patialID")
+;
+
+CREATE INDEX "recalification_average_ix" ON "recalification" ("averangeID")
+;
+
+-- Add keys for table recalification
+
+ALTER TABLE "recalification" ADD CONSTRAINT "PK_recalification" PRIMARY KEY ("recalificationID")
+;
+
+ALTER TABLE "recalification" ADD CONSTRAINT "recalificationID" UNIQUE ("recalificationID")
+;
+
+-- Table reviewApplication
+
+CREATE TABLE "reviewApplication"(
+ "applicationID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "registeredDate" Timestamp WITH TIME ZONE DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp WITH TIME ZONE,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "applicantDetail" Text,
+ "teacherDetail" Text,
+ "approverDetail" Text,
+ "isApproved" Boolean DEFAULT false NOT NULL,
+ "reason" Text,
+ "decitionDate" Timestamp WITH TIME ZONE,
+ "recalificationID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "reviewApplication"."applicationID" IS 'Unique identificator for an approvation review form'
+;
+COMMENT ON COLUMN "reviewApplication"."registeredDate" IS 'Timestamp for registration date'
+;
+COMMENT ON COLUMN "reviewApplication"."unregisteredDate" IS 'Timestamp for unregistration date'
+;
+COMMENT ON COLUMN "reviewApplication"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "reviewApplication"."applicantDetail" IS 'Details for the application, reasons or motivations to the request'
+;
+COMMENT ON COLUMN "reviewApplication"."teacherDetail" IS 'Details for the teacher, justification for approvation or negation to the request'
+;
+COMMENT ON COLUMN "reviewApplication"."approverDetail" IS 'Details provided by the approvation instance'
+;
+COMMENT ON COLUMN "reviewApplication"."isApproved" IS 'true: approved
+false: rejected'
+;
+COMMENT ON COLUMN "reviewApplication"."reason" IS 'Reason for approve or reject the application'
+;
+COMMENT ON COLUMN "reviewApplication"."decitionDate" IS 'Timestamp for approvation or negation '
+;
+
+-- Create indexes for table reviewApplication
+
+CREATE INDEX "review_application_ix" ON "reviewApplication" ("recalificationID")
+;
+
+-- Add keys for table reviewApplication
+
+ALTER TABLE "reviewApplication" ADD CONSTRAINT "PK_reviewApplication" PRIMARY KEY ("applicationID")
+;
+
+ALTER TABLE "reviewApplication" ADD CONSTRAINT "applicationID" UNIQUE ("applicationID")
+;
 -- Create foreign keys (relationships) section ------------------------------------------------- 
 
 ALTER TABLE "person" ADD CONSTRAINT "per_has_typ_fk" FOREIGN KEY ("personTypeID") REFERENCES "personType" ("personTypeID") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -2141,19 +2873,19 @@ ALTER TABLE "student" ADD CONSTRAINT "std_is_per_fk" FOREIGN KEY ("personID") RE
 ALTER TABLE "teacher" ADD CONSTRAINT "tch_is_per_fk" FOREIGN KEY ("personID") REFERENCES "person" ("personID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "enrrollment" ADD CONSTRAINT "enr_has_sta_fk" FOREIGN KEY ("statusID") REFERENCES "enrrollmentStatus" ("statusID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "enrollment" ADD CONSTRAINT "enr_has_sta_fk" FOREIGN KEY ("statusID") REFERENCES "enrollmentStatus" ("statusID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "enrrollment" ADD CONSTRAINT "stu_req_enr_fk" FOREIGN KEY ("studentID") REFERENCES "student" ("studentID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "enrollment" ADD CONSTRAINT "stu_req_enr_fk" FOREIGN KEY ("studentID") REFERENCES "student" ("studentID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "enrrollment" ADD CONSTRAINT "usr_reg_enr_fk" FOREIGN KEY ("userID") REFERENCES "user" ("userID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "enrollment" ADD CONSTRAINT "usr_reg_enr_fk" FOREIGN KEY ("userID") REFERENCES "user" ("userID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "enrrollment" ADD CONSTRAINT "enr_has_per_fk" FOREIGN KEY ("periodID") REFERENCES "academicPeriod" ("periodID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "enrollment" ADD CONSTRAINT "enr_has_per_fk" FOREIGN KEY ("periodID") REFERENCES "academicPeriod" ("periodID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "enrrollment" ADD CONSTRAINT "cou_needs_enr_fk" FOREIGN KEY ("courseID") REFERENCES "course" ("courseID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "enrollment" ADD CONSTRAINT "cou_needs_enr_fk" FOREIGN KEY ("courseID") REFERENCES "course" ("courseID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "subject" ADD CONSTRAINT "tch_teachs_sub_fk" FOREIGN KEY ("teacherID") REFERENCES "teacher" ("teacherID") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -2274,6 +3006,78 @@ ALTER TABLE "payment" ADD CONSTRAINT "pay_has_typ_fk" FOREIGN KEY ("paymentTypeI
 ;
 
 ALTER TABLE "payment" ADD CONSTRAINT "col_reg_pay_fk" FOREIGN KEY ("collegeID") REFERENCES "college" ("collegeID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "groupUser" ADD CONSTRAINT "usr_belongs_grp_fk" FOREIGN KEY ("groupID") REFERENCES "group" ("groupID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "groupMessage" ADD CONSTRAINT "grp_has_msg_fk" FOREIGN KEY ("groupID") REFERENCES "group" ("groupID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "groupUser" ADD CONSTRAINT "usr_isIn_grp_fk" FOREIGN KEY ("userID") REFERENCES "user" ("userID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "groupMessage" ADD CONSTRAINT "usr_sent_msg_fk" FOREIGN KEY ("sentUserID") REFERENCES "groupUser" ("groupUserID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "groupMessage" ADD CONSTRAINT "usr_received_msg_fk" FOREIGN KEY ("receivedUserID") REFERENCES "groupUser" ("groupUserID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "group" ADD CONSTRAINT "tch_manages_grp_fk" FOREIGN KEY ("teacherID") REFERENCES "teacher" ("teacherID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "forum" ADD CONSTRAINT "tch_creates_frm_fk" FOREIGN KEY ("teacherID") REFERENCES "teacher" ("teacherID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "forumMember" ADD CONSTRAINT "frm_has_mem_fk" FOREIGN KEY ("forumID") REFERENCES "forum" ("forumID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "forumMember" ADD CONSTRAINT "usr_isA_mbr_fk" FOREIGN KEY ("userID") REFERENCES "user" ("userID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "forumContent" ADD CONSTRAINT "frm_has_cnt_fk" FOREIGN KEY ("forumID") REFERENCES "forum" ("forumID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "forumReply" ADD CONSTRAINT "frm_has_rpl_fk" FOREIGN KEY ("forumID") REFERENCES "forum" ("forumID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "forumReply" ADD CONSTRAINT "rpl_done_mbr_fk" FOREIGN KEY ("forumContentID") REFERENCES "forumContent" ("forumContentID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "payment" ADD CONSTRAINT "pay_has_sta_fk" FOREIGN KEY ("statusID") REFERENCES "paymentStatus" ("statusID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "schedule" ADD CONSTRAINT "col_has_sch_fk" FOREIGN KEY ("collegeID") REFERENCES "college" ("collegeID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "classSchedule" ADD CONSTRAINT "sch_has_hou_fk" FOREIGN KEY ("scheduleID") REFERENCES "schedule" ("scheduleID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "classSchedule" ADD CONSTRAINT "hor_has_sub_fk" FOREIGN KEY ("subjectID") REFERENCES "subject" ("subjectID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "assistenceRegister" ADD CONSTRAINT "asi_has_sch_fk" FOREIGN KEY ("classScheduleID") REFERENCES "classSchedule" ("classScheduleID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "classSchedule" ADD CONSTRAINT "hou_couldBe_hol_fk" FOREIGN KEY ("holidayID") REFERENCES "holiday" ("holidayID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "holiday" ADD CONSTRAINT "cou_has_hol_fk" FOREIGN KEY ("countryID") REFERENCES "country" ("countryID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "holiday" ADD CONSTRAINT "prov_has_hol_fk" FOREIGN KEY ("provinceID") REFERENCES "province" ("provinceID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "holiday" ADD CONSTRAINT "cit_has_hol_fk" FOREIGN KEY ("cityID") REFERENCES "city" ("cityID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "recalification" ADD CONSTRAINT "par_couldBe_rec_fk" FOREIGN KEY ("patialID") REFERENCES "partial" ("patialID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "recalification" ADD CONSTRAINT "avg_coudBe_rec_fk" FOREIGN KEY ("averangeID") REFERENCES "calificationAverange" ("averangeID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "reviewApplication" ADD CONSTRAINT "rec_needs_app_fk" FOREIGN KEY ("recalificationID") REFERENCES "recalification" ("recalificationID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
  CREATE TABLE "errorLog"

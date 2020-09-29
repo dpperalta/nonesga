@@ -1,3 +1,45 @@
+import Enrollment from '../models/Enrollment';
+import { sequelize } from '../database/database';
+import { returnError, returnNotFound, returnWrongError } from './errors';
+
+// Create a new Enrollment
+export async function createEnrollment(req, res) {
+    const {
+        enrollmentCode,
+        //statusChangeDate,
+        //statusID,
+        studenID,
+        userID,
+        periodID,
+        courseID
+    } = req.body;
+    try {
+        let newEnrollment = await Enrollment.create({
+            enrollmentCode,
+            statusChangeDate: sequelize.literal('CURRENT_TIMESTAMP'),
+            statusID: 1,
+            studenID,
+            userID,
+            periodID,
+            courseID
+        }, {
+            fields: ['enrollmentCode', 'statusChangeDate', 'statusID', 'studentID', 'userID', 'periodID', 'courseID'],
+            returnint: ['enrollmentID', 'enrollmentCode', 'isActive', 'registeredDate', 'unregisteredDate', 'statusChangeDate', 'statusID', 'studentID', 'userID', 'periodID', 'courseID']
+        });
+        if (newEnrollment) {
+            return res.status(200).json({
+                ok: true,
+                message: 'Enrollment created successfully',
+                enrollment: newEnrollment
+            });
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        returnError(res, e, 'Create Enrollment');
+    }
+}
+
+/*
 import Subject from '../models/Subject';
 import Course from '../models/Course';
 import Teacher from '../models/Teacher';
@@ -8,16 +50,6 @@ import Person from '../models/Person';
 //Create a new Subject
 export async function createSubject(req, res) {
     const {
-        subjectCode,
-        subjectName,
-        description,
-        details,
-        gradeNeeded,
-        gradeHomologation,
-        gradeMinimun,
-        gradeMaximun,
-        teacherID,
-        courseID
     } = req.body;
     try {
         let newSubject = await Subject.create({
@@ -272,3 +304,4 @@ export async function deleteSubject(req, res) {
 // Get subject by course
 // Get subject by teacher
 // Get subject by student
+*/
