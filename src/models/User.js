@@ -7,7 +7,7 @@ import College from './College';
 const User = sequelize.define('user', {
     userID: {
         type: Sequelize.INTEGER,
-        primarykey: true
+        primaryKey: true
     },
     nick: {
         type: Sequelize.STRING(100),
@@ -42,19 +42,30 @@ const User = sequelize.define('user', {
         defaultValue: true
     },
     personID: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'person',
+            key: 'personID'
+        }
     },
     roleID: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'role',
+            key: 'roleID'
+        }
     },
     collegeID: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'college',
+            key: 'collegeID'
+        }
     }
 }, {
     timestamps: false,
     freezeTableName: true
 });
-
 
 Role.hasMany(User, { foreingKey: 'roleID', sourceKey: 'roleID' });
 User.belongsTo(Role, { foreingKey: 'roleID', sourceKey: 'roleID' });
