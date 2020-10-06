@@ -130,11 +130,114 @@ export async function getSubjectTasks(req, res) {
 }
 
 // Get task by Student
+export async function getTaskByStudent(req, res) {
+    const { studentID } = req.params;
+    const limit = req.query.limit || 100;
+    const from = req.query.from || 0;
+    const active = req.query.active || true;
+    try {
+        const tasks = await sequelize.query(`
+            SELECT	ta."taskCode" codeTask,
+                    ta."startDate" dateStart,
+                    ta."endDate" dateFinish,
+                    ta."taskName" nameTask,
+                    ta."taskDetail" details,
+                    ta."isActive" active,
+                    ta."permitsDelay" delay,
+                    ta."maxDelay" delayDate,
+                    ta."image" preview,
+                    su."subjectCode" codeSubject,
+                    su."subjectName" nameSubject,
+                    cu."courseName" nameCourse,
+                    cu."description" descriptionCourse,
+                    en."enrollmentCode" enrollment,
+                    st."studentCode" codeStudent
+            FROM 	"task" ta, 
+                    "subject" su, 
+                    "course" cu, 
+                    "enrollment" en, 
+                    "student" st
+            WHERE 	ta."subjectID" = su."subjectID"
+                AND su."courseID" = cu."courseID"
+                AND cu."courseID" = en."courseID"
+                AND en."studentID" = st."studentID"
+                AND st."studentID" = ${ studentID }
+                AND ta."isActive" = ${ active }
+                ORDER BY ta."startDate", ta."endDate" DESC
+                LIMIT ${ limit }
+                OFFSET ${ from };
+        `);
+        if (tasks) {
+            return res.status(200).json({
+                ok: true,
+                tasks: tasks[0],
+                total: tasks[1].rowCount
+            });
+        } else {
+            returnNotFound(res, 'Student ID');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        returnrError(res, e, 'Get Task by Student');
+    }
+}
+
+// Get tasks by Student and Subject
+export async function getTaskByStudentSubject(req, res) {
+    const {
+        studentID,
+        subjectID
+    } = req.params;
+    const active = req.query.active || true;
+    try {
+        const tasks = await sequelize.query(`
+            SELECT	ta."taskCode" codeTask,
+                    ta."startDate" dateStart,
+                    ta."endDate" dateFinish,
+                    ta."taskName" nameTask,
+                    ta."taskDetail" details,
+                    ta."isActive" active,
+                    ta."permitsDelay" delay,
+                    ta."maxDelay" delayDate,
+                    ta."image" preview,
+                    su."subjectCode" codeSubject,
+                    su."subjectName" nameSubject,
+                    cu."courseName" nameCourse,
+                    cu."description" descriptionCourse,
+                    en."enrollmentCode" enrollment,
+                    st."studentCode" codeStudent
+            FROM 	"task" ta, 
+                    "subject" su, 
+                    "course" cu, 
+                    "enrollment" en, 
+                    "student" st
+            WHERE 	ta."subjectID" = su."subjectID"
+                AND su."courseID" = cu."courseID"
+                AND cu."courseID" = en."courseID"
+                AND en."studentID" = st."studentID"
+                AND st."studentID" = ${ studentID }
+                AND ta."isActive" = ${ active }
+                AND su."subjectID" = ${ subjectID }
+                ORDER BY ta."startDate", ta."endDate" DESC;
+        `);
+        if (tasks) {
+            return res.status(200).json({
+                ok: true,
+                tasks: tasks[0],
+                total: tasks[1].rowCount
+            });
+        } else {
+            returnNotFound(res, 'Student ID or Course ID');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        returnrError(res, e, 'Get Task by Student and Course');
+    }
+}
 
 // Update a task
 export async function updateTask(req, res) {
     const { taskID } = req.params;
-    console.log(taskID);
     let delayDate;
     const {
         taskCode,

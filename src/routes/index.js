@@ -23,6 +23,10 @@ import taskRoutes from './task';
 import enrollmentStatusRoutes from './enrollmentStatus';
 import academicPeriodRoutes from './academicPeriod';
 import enrollmentRoutes from './enrollment';
+import taskResourceRoutes from './taskResource';
+import taskEvaluationRoutes from './taskEvaluation';
+import taskResolutionRoutes from './taskResolution';
+import taskResolutionResourceRoutes from './taskResolutionResource';
 
 const app = express();
 
@@ -52,5 +56,9 @@ app.use(url + '/task', taskRoutes);
 app.use(url + '/enrollmentStatus', enrollmentStatusRoutes);
 app.use(url + '/academicPeriod', academicPeriodRoutes);
 app.use(url + '/enrollment', enrollmentRoutes);
+app.use(url + '/taskResource', taskResourceRoutes);
+app.use(url + '/taskEvaluation', taskEvaluationRoutes);
+app.use(url + '/taskResolution', taskResolutionRoutes);
+app.use(url + '/taskResolutionResource', taskResolutionResourceRoutes);
 
 module.exports = app;
