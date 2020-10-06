@@ -27,6 +27,7 @@ import taskResourceRoutes from './taskResource';
 import taskEvaluationRoutes from './taskEvaluation';
 import taskResolutionRoutes from './taskResolution';
 import taskResolutionResourceRoutes from './taskResolutionResource';
+import examRoutes from './exam';
 
 const app = express();
 
@@ -60,5 +61,6 @@ app.use(url + '/taskResource', taskResourceRoutes);
 app.use(url + '/taskEvaluation', taskEvaluationRoutes);
 app.use(url + '/taskResolution', taskResolutionRoutes);
 app.use(url + '/taskResolutionResource', taskResolutionResourceRoutes);
+app.use(url + '/exam', examRoutes);
 
 module.exports = app;

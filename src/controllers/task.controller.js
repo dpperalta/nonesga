@@ -227,7 +227,7 @@ export async function getTaskByStudentSubject(req, res) {
                 total: tasks[1].rowCount
             });
         } else {
-            returnNotFound(res, 'Student ID or Course ID');
+            returnNotFound(res, 'Student ID or Subject ID');
         }
     } catch (e) {
         console.log('Error:', e);

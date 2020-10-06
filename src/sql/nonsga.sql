@@ -4300,7 +4300,7 @@ CREATE TABLE "exam"(
  "maxDelayed" Smallint,
  "delayedDate" Timestamp,
  "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisterdDate" Timestamp,
+ "unregisteredDate" Timestamp,
  "isPartial" Boolean,
  "isFinal" Boolean,
  "isActive" Boolean DEFAULT true NOT NULL,
