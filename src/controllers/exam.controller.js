@@ -13,6 +13,7 @@ export async function createExam(req, res) {
         minGrade,
         maxGrade,
         status,
+        topic,
         isDelayed,
         minDelayed,
         maxDelayed,
@@ -49,6 +50,7 @@ export async function createExam(req, res) {
             minGrade,
             maxGrade,
             status,
+            topic,
             isDelayed,
             minDelayed,
             maxDelayed,
@@ -57,8 +59,8 @@ export async function createExam(req, res) {
             isFinal: finalExam,
             subjectID
         }, {
-            fields: ['startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'isPartial', 'isFinal', 'subjectID'],
-            returning: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'registeredDate', 'unregisteredDate', 'isPartial', 'isFinal', 'isActive', 'subjectID']
+            fields: ['startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'topic', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'isPartial', 'isFinal', 'subjectID'],
+            returning: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'topic', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'registeredDate', 'unregisteredDate', 'isPartial', 'isFinal', 'isActive', 'subjectID']
         });
         if (newExam) {
             return res.status(200).json({
@@ -79,7 +81,7 @@ export async function getExams(req, res) {
     const from = req.query.from || 0;
     try {
         const exams = await Exam.findAndCountAll({
-            attributes: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'registeredDate', 'isPartial', 'isFinal', 'isActive', 'unregisteredDate', 'subjectID'],
+            attributes: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'topic', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'registeredDate', 'isPartial', 'isFinal', 'isActive', 'unregisteredDate', 'subjectID'],
             include: [{
                 model: Subject,
                 attributes: ['subjectID', 'subjectName']
@@ -106,7 +108,7 @@ export async function getExamByID(req, res) {
     const { examID } = req.params;
     try {
         const exam = await Exam.findOne({
-            attributes: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'registeredDate', 'unregisteredDate', 'isPartial', 'isFinal', 'isActive', 'subjectID'],
+            attributes: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'topic', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'registeredDate', 'unregisteredDate', 'isPartial', 'isFinal', 'isActive', 'subjectID'],
             where: {
                 examID
             },
@@ -136,7 +138,7 @@ export async function getExamsBySubject(req, res) {
     const from = req.query.from || 0;
     try {
         const exams = await Exam.findAndCountAll({
-            attributes: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'registeredDate', 'unregisteredDate', 'isPartial', 'isFinal', 'isActive', 'subjectID'],
+            attributes: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'topic', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'registeredDate', 'unregisteredDate', 'isPartial', 'isFinal', 'isActive', 'subjectID'],
             where: {
                 subjectID
             },
@@ -193,6 +195,7 @@ export async function getExamsByStudent(req, res) {
                         ex."minGrade" gradeMin,
                         ex."maxGrade" gradeMax,
                         ex."status" status,
+                        ex."topic" topic,
                         ex."isDelayed" permitsDelay,
                         ex."minDelayed" delayedMin,
                         ex."maxDelayed" delayedMax,
@@ -274,6 +277,7 @@ export async function getExamsByStudentAndSubject(req, res) {
                         ex."minGrade" gradeMin,
                         ex."maxGrade" gradeMax,
                         ex."status" status,
+                        ex."topic" topic,
                         ex."isDelayed" permitsDelay,
                         ex."minDelayed" delayedMin,
                         ex."maxDelayed" delayedMax,
@@ -331,6 +335,7 @@ export async function updateExam(req, res) {
         minGrade,
         maxGrade,
         status,
+        topic,
         isDelayed,
         minDelayed,
         maxDelayed,
@@ -360,7 +365,7 @@ export async function updateExam(req, res) {
     }
     try {
         const dbExam = await Exam.findOne({
-            attributes: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'isPartial', 'isFinal', 'subjectID'],
+            attributes: ['examID', 'startDate', 'startHour', 'endDate', 'endHour', 'minGrade', 'maxGrade', 'status', 'topic', 'isDelayed', 'minDelayed', 'maxDelayed', 'delayedDate', 'isPartial', 'isFinal', 'subjectID'],
             where: {
                 examID
             }
@@ -376,6 +381,7 @@ export async function updateExam(req, res) {
                 minGrade,
                 maxGrade,
                 status,
+                topic,
                 isDelayed,
                 minDelayed,
                 maxDelayed,

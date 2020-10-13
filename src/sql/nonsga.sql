@@ -1230,6 +1230,7 @@ CREATE TABLE "exam"(
  "minGrade" Smallint NOT NULL,
  "maxGrade" Smallint NOT NULL,
  "status" Smallint,
+ "topic" Text,
  "isDelayed" Boolean,
  "minDelayed" Smallint,
  "maxDelayed" Smallint,
@@ -1264,6 +1265,8 @@ COMMENT ON COLUMN "exam"."status" IS '0: Invalid
 4: Rapid Evaluaton
 5: Formal Evaluation
 6: Final Evaluation'
+;
+COMMENT ON COLUMN "exam"."topic" IS 'Theme or topic about exam'
 ;
 COMMENT ON COLUMN "exam"."isDelayed" IS 'true: delay allowed
 false delay not allowed'
@@ -1436,7 +1439,8 @@ CREATE TABLE "examQuestion"(
  "minGrade" Smallint,
  "maxGrade" Smallint,
  "image" Character varying(500),
- "registratedDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" TIMESTAMP WITH TIME ZONE,
  "status" Smallint NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "examID" Integer
@@ -1454,7 +1458,9 @@ COMMENT ON COLUMN "examQuestion"."maxGrade" IS 'Max value grade for the question
 ;
 COMMENT ON COLUMN "examQuestion"."image" IS 'If its needed, URL for an image'
 ;
-COMMENT ON COLUMN "examQuestion"."registratedDate" IS 'Timestamp for registration'
+COMMENT ON COLUMN "examQuestion"."registeredDate" IS 'Timestamp for registration'
+;
+COMMENT ON COLUMN "examQuestion"."unregisteredDate" IS 'Timestamp for unregistration'
 ;
 COMMENT ON COLUMN "examQuestion"."status" IS '0: Invalid
 1: Valid
@@ -1477,9 +1483,9 @@ CREATE INDEX "question_exam_ix" ON "examQuestion" ("examID")
 ALTER TABLE "examQuestion" ADD CONSTRAINT "PK_examQuestion" PRIMARY KEY ("questionID")
 ;
 
--- Table examAnswers
+-- Table examAnswer
 
-CREATE TABLE "examAnswers"(
+CREATE TABLE "examAnswer"(
  "answerID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "answer" Text NOT NULL,
@@ -1487,6 +1493,7 @@ CREATE TABLE "examAnswers"(
  "homologatedGrade" Character varying(5),
  "isCorrect" Boolean DEFAULT false NOT NULL,
  "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "status" Smallint,
  "detail" Text,
@@ -1495,39 +1502,41 @@ CREATE TABLE "examAnswers"(
 WITH (
  autovacuum_enabled=true)
 ;
-COMMENT ON COLUMN "examAnswers"."answerID" IS 'Unique autoincremental identification for a question answer'
+COMMENT ON COLUMN "examAnswer"."answerID" IS 'Unique autoincremental identification for a question answer'
 ;
-COMMENT ON COLUMN "examAnswers"."answer" IS 'Answer for the question'
+COMMENT ON COLUMN "examAnswer"."answer" IS 'Answer for the question'
 ;
-COMMENT ON COLUMN "examAnswers"."grade" IS 'Grade value'
+COMMENT ON COLUMN "examAnswer"."grade" IS 'Grade value'
 ;
-COMMENT ON COLUMN "examAnswers"."homologatedGrade" IS 'Homologated grade value'
+COMMENT ON COLUMN "examAnswer"."homologatedGrade" IS 'Homologated grade value'
 ;
-COMMENT ON COLUMN "examAnswers"."isCorrect" IS 'true: is correct answer
+COMMENT ON COLUMN "examAnswer"."isCorrect" IS 'true: is correct answer
 false: is incorrect answer'
 ;
-COMMENT ON COLUMN "examAnswers"."registeredDate" IS 'Timestamp for registration'
+COMMENT ON COLUMN "examAnswer"."registeredDate" IS 'Timestamp for registration'
 ;
-COMMENT ON COLUMN "examAnswers"."isActive" IS 'true: active
+COMMENT ON COLUMN "examAnswer"."unregisteredDate" IS 'Timestamp for unregistration'
+;
+COMMENT ON COLUMN "examAnswer"."isActive" IS 'true: active
 false: inactive'
 ;
-COMMENT ON COLUMN "examAnswers"."status" IS '0: Invalid
+COMMENT ON COLUMN "examAnswer"."status" IS '0: Invalid
 1: Valid
 2: Draft
 3: Mandatory
 4: Extra'
 ;
-COMMENT ON COLUMN "examAnswers"."detail" IS 'Aditional detail'
+COMMENT ON COLUMN "examAnswer"."detail" IS 'Aditional detail'
 ;
 
--- Create indexes for table examAnswers
+-- Create indexes for table examAnswer
 
-CREATE INDEX "answer_question_ix" ON "examAnswers" ("questionID")
+CREATE INDEX "answer_question_ix" ON "examAnswer" ("questionID")
 ;
 
--- Add keys for table examAnswers
+-- Add keys for table examAnswer
 
-ALTER TABLE "examAnswers" ADD CONSTRAINT "PK_examAnswers" PRIMARY KEY ("answerID")
+ALTER TABLE "examAnswer" ADD CONSTRAINT "PK_examAnswer" PRIMARY KEY ("answerID")
 ;
 
 -- Table studentAnswer
@@ -2933,10 +2942,10 @@ ALTER TABLE "examGrade" ADD CONSTRAINT "tch_gives_grd_fk" FOREIGN KEY ("teacherI
 ALTER TABLE "examQuestion" ADD CONSTRAINT "exm_has_qst_fk" FOREIGN KEY ("examID") REFERENCES "exam" ("examID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "examAnswers" ADD CONSTRAINT "qst_has_ans_fk" FOREIGN KEY ("questionID") REFERENCES "examQuestion" ("questionID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "examAnswer" ADD CONSTRAINT "qst_has_ans_fk" FOREIGN KEY ("questionID") REFERENCES "examQuestion" ("questionID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_isRegistered_std_fk" FOREIGN KEY ("answerID") REFERENCES "examAnswers" ("answerID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_isRegistered_std_fk" FOREIGN KEY ("answerID") REFERENCES "examAnswer" ("answerID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "studentAnswer" ADD CONSTRAINT "std_choices_ans_fk" FOREIGN KEY ("studentID") REFERENCES "student" ("studentID") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -4542,9 +4551,9 @@ CREATE INDEX "question_exam_ix" ON "examQuestion" ("examID")
 ALTER TABLE "examQuestion" ADD CONSTRAINT "PK_examQuestion" PRIMARY KEY ("questionID")
 ;
 
--- Table examAnswers
+-- Table examAnswer
 
-CREATE TABLE "examAnswers"(
+CREATE TABLE "examAnswer"(
  "answerID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "answer" Text NOT NULL,
@@ -4560,39 +4569,39 @@ CREATE TABLE "examAnswers"(
 WITH (
  autovacuum_enabled=true)
 ;
-COMMENT ON COLUMN "examAnswers"."answerID" IS 'Unique autoincremental identification for a question answer'
+COMMENT ON COLUMN "examAnswer"."answerID" IS 'Unique autoincremental identification for a question answer'
 ;
-COMMENT ON COLUMN "examAnswers"."answer" IS 'Answer for the question'
+COMMENT ON COLUMN "examAnswer"."answer" IS 'Answer for the question'
 ;
-COMMENT ON COLUMN "examAnswers"."grade" IS 'Grade value'
+COMMENT ON COLUMN "examAnswer"."grade" IS 'Grade value'
 ;
-COMMENT ON COLUMN "examAnswers"."homologatedGrade" IS 'Homologated grade value'
+COMMENT ON COLUMN "examAnswer"."homologatedGrade" IS 'Homologated grade value'
 ;
-COMMENT ON COLUMN "examAnswers"."isCorrect" IS 'true: is correct answer
+COMMENT ON COLUMN "examAnswer"."isCorrect" IS 'true: is correct answer
 false: is incorrect answer'
 ;
-COMMENT ON COLUMN "examAnswers"."registeredDate" IS 'Timestamp for registration'
+COMMENT ON COLUMN "examAnswer"."registeredDate" IS 'Timestamp for registration'
 ;
-COMMENT ON COLUMN "examAnswers"."isActive" IS 'true: active
+COMMENT ON COLUMN "examAnswer"."isActive" IS 'true: active
 false: inactive'
 ;
-COMMENT ON COLUMN "examAnswers"."status" IS '0: Invalid
+COMMENT ON COLUMN "examAnswer"."status" IS '0: Invalid
 1: Valid
 2: Draft
 3: Mandatory
 4: Extra'
 ;
-COMMENT ON COLUMN "examAnswers"."detail" IS 'Aditional detail'
+COMMENT ON COLUMN "examAnswer"."detail" IS 'Aditional detail'
 ;
 
--- Create indexes for table examAnswers
+-- Create indexes for table examAnswer
 
-CREATE INDEX "answer_question_ix" ON "examAnswers" ("questionID")
+CREATE INDEX "answer_question_ix" ON "examAnswer" ("questionID")
 ;
 
--- Add keys for table examAnswers
+-- Add keys for table examAnswer
 
-ALTER TABLE "examAnswers" ADD CONSTRAINT "PK_examAnswers" PRIMARY KEY ("answerID")
+ALTER TABLE "examAnswer" ADD CONSTRAINT "PK_examAnswer" PRIMARY KEY ("answerID")
 ;
 
 -- Table studentAnswer
@@ -6086,10 +6095,10 @@ ALTER TABLE "examGrade" ADD CONSTRAINT "tch_gives_grd_fk" FOREIGN KEY ("teacherI
 ALTER TABLE "examQuestion" ADD CONSTRAINT "exm_has_qst_fk" FOREIGN KEY ("examID") REFERENCES "exam" ("examID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "examAnswers" ADD CONSTRAINT "qst_has_ans_fk" FOREIGN KEY ("questionID") REFERENCES "examQuestion" ("questionID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "examAnswer" ADD CONSTRAINT "qst_has_ans_fk" FOREIGN KEY ("questionID") REFERENCES "examQuestion" ("questionID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_isRegistered_std_fk" FOREIGN KEY ("answerID") REFERENCES "examAnswers" ("answerID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_isRegistered_std_fk" FOREIGN KEY ("answerID") REFERENCES "examAnswer" ("answerID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "studentAnswer" ADD CONSTRAINT "std_choices_ans_fk" FOREIGN KEY ("studentID") REFERENCES "student" ("studentID") ON DELETE NO ACTION ON UPDATE NO ACTION

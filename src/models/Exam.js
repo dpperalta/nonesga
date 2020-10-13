@@ -38,6 +38,9 @@ const Exam = sequelize.define('exam', {
     status: {
         type: Sequelize.SMALLINT
     },
+    topic: {
+        type: Sequelize.TEXT
+    },
     isDelayed: {
         type: Sequelize.BOOLEAN
     },
