@@ -1545,14 +1545,21 @@ CREATE TABLE "studentAnswer"(
  "studentAnswerID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "selectedDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
- "grade" Smallint,
+ "grade" Double precision,
+ "studentAnswer" Text,
  "teacherDetails" Text,
  "agentDetails" Text,
  "studentDetails" Text,
  "isReviewed" Boolean DEFAULT false NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
+ "isPublished" Boolean DEFAULT false NOT NULL,
+ "publishedDate" Timestamp with time zone,
+ "teacherUpdates" Timestamp with time zone,
+ "studentUpdates" Timestamp with time zone,
+ "agentUpdates" Timestamp with time zone,
  "answerID" Integer,
- "studentID" Integer
+ "studentID" Integer,
+ "questionID" Integer
 )
 WITH (
  autovacuum_enabled=true)
@@ -1562,6 +1569,8 @@ COMMENT ON COLUMN "studentAnswer"."studentAnswerID" IS 'Unique autoincremental i
 COMMENT ON COLUMN "studentAnswer"."selectedDate" IS 'Timestamp for registration date'
 ;
 COMMENT ON COLUMN "studentAnswer"."grade" IS 'Grade value'
+;
+COMMENT ON COLUMN "studentAnswer"."studentAnswer" IS 'If the answer is not a selection, this field is filled with the answer of the student'
 ;
 COMMENT ON COLUMN "studentAnswer"."teacherDetails" IS 'Details for the teacher (student filled)'
 ;
@@ -1582,6 +1591,9 @@ CREATE INDEX "studentAnswer_answer_ix" ON "studentAnswer" ("answerID")
 ;
 
 CREATE INDEX "studentAnswer_student_ix" ON "studentAnswer" ("studentID")
+;
+
+CREATE INDEX "studentAnswer_question_ix" ON "studentAnswer" ("questionID")
 ;
 
 -- Add keys for table studentAnswer
@@ -2949,6 +2961,9 @@ ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_isRegistered_std_fk" FOREIGN KEY
 ;
 
 ALTER TABLE "studentAnswer" ADD CONSTRAINT "std_choices_ans_fk" FOREIGN KEY ("studentID") REFERENCES "student" ("studentID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_responses_que_fk" FOREIGN KEY ("questionID") REFERENCES "examQuuestion" ("questionID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "partial" ADD CONSTRAINT "sub_has_par_fk" FOREIGN KEY ("subjectID") REFERENCES "subject" ("subjectID") ON DELETE NO ACTION ON UPDATE NO ACTION

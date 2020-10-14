@@ -4258,13 +4258,20 @@ COMMENT ON COLUMN nonesga.student.bio IS 'Bio information of the student, contai
 
 CREATE TABLE nonesga."studentAnswer" (
     "studentAnswerID" integer NOT NULL,
-    "selectedDate" timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    grade smallint,
+    "selectedDate" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    grade double precision,
+    "studentAnswer" text,
     "teacherDetails" text,
     "agentDetails" text,
     "studentDetails" text,
     "isReviewed" boolean DEFAULT false NOT NULL,
     "isActive" boolean DEFAULT true NOT NULL,
+    "isPublished" boolean DEFAULT false NOT NULL,
+    "publishedDate" timestamp with time zone,
+    "tryNumber" smallint NOT NULL DEFAULT 1,
+    "teacherUpdates", Timestamp with time zone,
+    "studentUpdates" Timestamp with time zone,
+    "agentUpdates" Timestamp with time zone,
     "answerID" integer,
     "studentID" integer
 )
@@ -4298,6 +4305,15 @@ COMMENT ON COLUMN nonesga."studentAnswer"."selectedDate" IS 'Timestamp for regis
 --
 
 COMMENT ON COLUMN nonesga."studentAnswer".grade IS 'Grade value';
+
+
+--
+-- TOC entry 3761 (class 0 OID 0)
+-- Dependencies: 256
+-- Name: COLUMN "studentAnswer".grade; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga."studentAnswer"."studentAnswer" IS 'If the answer is not a selection, this field is filled with the answer of the student';
 
 
 --
@@ -4345,6 +4361,63 @@ false: is not reviewed';
 
 COMMENT ON COLUMN nonesga."studentAnswer"."isActive" IS 'ture: active
 false: inactive';
+
+
+--
+-- TOC entry 3766 (class 0 OID 0)
+-- Dependencies: 256
+-- Name: COLUMN "studentAnswer"."isPublished"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga."studentAnswer"."isActive" IS 'ture: published
+false: not published';
+
+
+--
+-- TOC entry 3766 (class 0 OID 0)
+-- Dependencies: 256
+-- Name: COLUMN "studentAnswer"."publishedDate"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga."studentAnswer"."publishedDate" IS 'Timestamp for published date';
+
+
+--
+-- TOC entry 3766 (class 0 OID 0)
+-- Dependencies: 256
+-- Name: COLUMN "studentAnswer"."tryNumber"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga."studentAnswer"."tryNumber" IS 'Number of attempts or editions for the answer';
+
+
+--
+-- TOC entry 3766 (class 0 OID 0)
+-- Dependencies: 256
+-- Name: COLUMN "studentAnswer"."teacherUpdates"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga."studentAnswer"."teacherUpdates" IS 'Timestamps for teacher updates';
+
+
+
+--
+-- TOC entry 3766 (class 0 OID 0)
+-- Dependencies: 256
+-- Name: COLUMN "studentAnswer"."studentUpdates"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga."studentAnswer"."studentUpdates" IS 'Timestamps for student updates';
+
+
+
+--
+-- TOC entry 3766 (class 0 OID 0)
+-- Dependencies: 256
+-- Name: COLUMN "studentAnswer"."agentUpdates"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga."studentAnswer"."agentUpdates" IS 'Timestamps for agent updates';
 
 
 --
