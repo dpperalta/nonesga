@@ -1,7 +1,7 @@
 import express from 'express';
 require('../config/config');
 
-// Import rouytes
+// Import routes
 import roleRoutes from './role';
 import personTypeRoutes from './personType';
 import personRoutes from './person';
@@ -32,6 +32,7 @@ import examQuestionRoutes from './examQuestion';
 import examAnswerRoutes from './examAnswer';
 import studentAnswerRoutes from './studentAnswer';
 import examRegisterRoutes from './examRegister';
+import examGradeRoutes from './examGrade';
 
 const app = express();
 
@@ -70,5 +71,6 @@ app.use(url + '/examQuestion', examQuestionRoutes);
 app.use(url + '/examAnswer', examAnswerRoutes);
 app.use(url + '/studentAnswer', studentAnswerRoutes);
 app.use(url + '/examRegister', examRegisterRoutes);
+app.use(url + '/examGrade', examGradeRoutes);
 
 module.exports = app;

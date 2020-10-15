@@ -4408,12 +4408,12 @@ CREATE TABLE "examGrade"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "grade" Smallint DEFAULT 0 NOT NULL,
  "homologatedGrade" Character varying(5),
- "gadeDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "gradeDate" Timestamp DEFAULT current_timestamp NOT NULL,
  "gradeDetail" Text,
  "isGraded" Boolean DEFAULT false NOT NULL,
  "isModified" Boolean,
  "modificationDate" Timestamp,
- "modificacionUser" Integer,
+ "modificationUser" Integer,
  "previousGrade" Smallint,
  "studentID" Integer,
  "examID" Integer,
@@ -4428,7 +4428,7 @@ COMMENT ON COLUMN "examGrade"."grade" IS 'Grade value'
 ;
 COMMENT ON COLUMN "examGrade"."homologatedGrade" IS 'Grade homologation'
 ;
-COMMENT ON COLUMN "examGrade"."gadeDate" IS 'Timestamp for registration of grade'
+COMMENT ON COLUMN "examGrade"."gradeDate" IS 'Timestamp for registration of grade'
 ;
 COMMENT ON COLUMN "examGrade"."gradeDetail" IS 'Detail for the grade'
 ;
@@ -4440,7 +4440,7 @@ false: is not modified'
 ;
 COMMENT ON COLUMN "examGrade"."modificationDate" IS 'Timestamp for modification'
 ;
-COMMENT ON COLUMN "examGrade"."modificacionUser" IS 'User ID for modification'
+COMMENT ON COLUMN "examGrade"."modificationUser" IS 'User ID for modification'
 ;
 COMMENT ON COLUMN "examGrade"."previousGrade" IS 'Value after modification'
 ;
