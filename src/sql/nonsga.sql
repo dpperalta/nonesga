@@ -996,7 +996,7 @@ ALTER TABLE "content" ADD CONSTRAINT "contedCode" UNIQUE ("contedCode")
 -- Table assistenceRegister
 
 CREATE TABLE "assistenceRegister"(
- "AssistanceRegisterID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+ "assistanceRegisterID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "date" Date DEFAULT current_date NOT NULL,
  "time" Time DEFAULT current_time NOT NULL,
@@ -1368,7 +1368,7 @@ CREATE TABLE "examRegister"(
  "registerID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
- "registeredUser" Integer NOT NULL,
+ "unregistereDate" Timestamp with time zone,
  "status" Smallint NOT NULL,
  "reviewNumber" Smallint NOT NULL,
  "isReviewed" Boolean DEFAULT false NOT NULL,
@@ -1377,9 +1377,11 @@ CREATE TABLE "examRegister"(
  "lastStatusUser" Integer,
  "reviewDetail" Text,
  "generalDetail" Text,
+ "isActive" BooleAn DEFALULT true NOT NULL,
  "isRegistered" Boolean DEFAULT false NOT NULL,
  "studentID" Integer,
- "examID" Integer
+ "examID" Integer,
+ "userID" Integer NOT NULL
 )
 WITH (
  autovacuum_enabled=true)
@@ -1388,7 +1390,7 @@ COMMENT ON COLUMN "examRegister"."registerID" IS 'Unique autoincremental identif
 ;
 COMMENT ON COLUMN "examRegister"."registeredDate" IS 'Timestamp for registration of an exam'
 ;
-COMMENT ON COLUMN "examRegister"."registeredUser" IS 'User ID for regsitration'
+COMMENT ON COLUMN "examRegister"."userID" IS 'User ID for regsitration'
 ;
 COMMENT ON COLUMN "examRegister"."status" IS '0: Not valid
 1: Valid
@@ -1423,6 +1425,9 @@ CREATE INDEX "examRegister_student_ix" ON "examRegister" ("studentID")
 ;
 
 CREATE INDEX "examRegister_exam_ix" ON "examRegister" ("examID")
+;
+
+CREATE INDEX "examRegister_user_ix" ON "examRegister" ("userID")
 ;
 
 -- Add keys for table examRegister
@@ -1554,6 +1559,8 @@ CREATE TABLE "studentAnswer"(
  "isActive" Boolean DEFAULT true NOT NULL,
  "isPublished" Boolean DEFAULT false NOT NULL,
  "publishedDate" Timestamp with time zone,
+ "studentAnswer" text,
+ "tryNumber" smallint DEFAULT 1 NOT NULL,
  "teacherUpdates" Timestamp with time zone,
  "studentUpdates" Timestamp with time zone,
  "agentUpdates" Timestamp with time zone,
@@ -2618,7 +2625,7 @@ CREATE TABLE "classSchedule"(
  "isDelayer" Boolean,
  "isCancelled" Boolean DEFAULT false,
  "isReprogramed" Boolean DEFAULT false,
- "isRecurrent" Bigint DEFAULT true NOT NULL,
+ "isRecurrent" Boolean DEFAULT true NOT NULL,
  "scheduleID" Integer,
  "subjectID" Integer,
  "holidayID" Integer
@@ -2963,7 +2970,7 @@ ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_isRegistered_std_fk" FOREIGN KEY
 ALTER TABLE "studentAnswer" ADD CONSTRAINT "std_choices_ans_fk" FOREIGN KEY ("studentID") REFERENCES "student" ("studentID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_responses_que_fk" FOREIGN KEY ("questionID") REFERENCES "examQuuestion" ("questionID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "studentAnswer" ADD CONSTRAINT "asw_responses_que_fk" FOREIGN KEY ("questionID") REFERENCES "examQuestion" ("questionID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "partial" ADD CONSTRAINT "sub_has_par_fk" FOREIGN KEY ("subjectID") REFERENCES "subject" ("subjectID") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -3102,6 +3109,9 @@ ALTER TABLE "recalification" ADD CONSTRAINT "avg_coudBe_rec_fk" FOREIGN KEY ("av
 ;
 
 ALTER TABLE "reviewApplication" ADD CONSTRAINT "rec_needs_app_fk" FOREIGN KEY ("recalificationID") REFERENCES "recalification" ("recalificationID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "examRegister" ADD CONSTRAINT "usr_reg_exa_fk" FOREIGN KEY ("userID") REFERENCES "user" ("userID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 /*
@@ -4318,6 +4328,7 @@ CREATE TABLE "exam"(
  "endHour" Time NOT NULL,
  "minGrade" Smallint NOT NULL,
  "maxGrade" Smallint NOT NULL,
+ "topic" text,
  "status" Smallint,
  "isDelayed" Boolean,
  "minDelayed" Smallint,
@@ -4353,6 +4364,8 @@ COMMENT ON COLUMN "exam"."status" IS '0: Invalid
 4: Rapid Evaluaton
 5: Formal Evaluation
 6: Final Evaluation'
+;
+COMMENT ON COLUMN "exam"."topic" IS 'Theme or topic about exam'
 ;
 COMMENT ON COLUMN "exam"."isDelayed" IS 'true: delay allowed
 false delay not allowed'
@@ -4454,7 +4467,6 @@ CREATE TABLE "examRegister"(
  "registerID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "registeredUser" Integer NOT NULL,
  "status" Smallint NOT NULL,
  "reviewNumber" Smallint NOT NULL,
  "isReviewed" Boolean DEFAULT false NOT NULL,
@@ -4466,6 +4478,7 @@ CREATE TABLE "examRegister"(
  "isRegistered" Boolean DEFAULT false NOT NULL,
  "studentID" Integer,
  "examID" Integer
+ "userID" Integer NOT NULL,
 )
 WITH (
  autovacuum_enabled=true)
@@ -4474,7 +4487,7 @@ COMMENT ON COLUMN "examRegister"."registerID" IS 'Unique autoincremental identif
 ;
 COMMENT ON COLUMN "examRegister"."registeredDate" IS 'Timestamp for registration of an exam'
 ;
-COMMENT ON COLUMN "examRegister"."registeredUser" IS 'User ID for regsitration'
+COMMENT ON COLUMN "examRegister"."userID" IS 'User ID for regsitration'
 ;
 COMMENT ON COLUMN "examRegister"."status" IS '0: Not valid
 1: Valid
@@ -4525,7 +4538,8 @@ CREATE TABLE "examQuestion"(
  "minGrade" Smallint,
  "maxGrade" Smallint,
  "image" Character varying(500),
- "registratedDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registratedDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
  "status" Smallint NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "examID" Integer
@@ -4576,6 +4590,7 @@ CREATE TABLE "examAnswer"(
  "homologatedGrade" Character varying(5),
  "isCorrect" Boolean DEFAULT false NOT NULL,
  "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
  "status" Smallint,
  "detail" Text,
@@ -4631,8 +4646,16 @@ CREATE TABLE "studentAnswer"(
  "studentDetails" Text,
  "isReviewed" Boolean DEFAULT false NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
+ "isPublished" boolean DEFAULT false NOT NULL,
+ "publishedDate" timestamp with time zone,
+ "studentAnswer" text,
+ "tryNumber" smallint DEFAULT 1 NOT NULL,
+ "teacherUpdates" timestamp with time zone,
+ "studentUpdates" timestamp with time zone,
+ "agentUpdates" timestamp with time zone,
  "answerID" Integer,
- "studentID" Integer
+ "studentID" Integer,
+ "questionID" integer
 )
 WITH (
  autovacuum_enabled=true)
@@ -4762,13 +4785,13 @@ CREATE TABLE "partial"(
  "isActive" Boolean DEFAULT true NOT NULL,
  "isModified" Boolean DEFAULT false,
  "partialScore" Double precision NOT NULL,
+ "requiresReview" Boolean DEFAULT false,
  "valueHomologated" Character varying(5),
  "description" Text,
  "studentDetail" Text,
  "agentDetail" Text,
  "subjectID" Integer,
  "studentID" Integer,
- "requiresReview" Boolean DEFAULT false
 )
 WITH (
  autovacuum_enabled=true)
@@ -4985,6 +5008,7 @@ CREATE TABLE "payment"(
  "isActive" Boolean DEFAULT true,
  "isDelayed" Boolean,
  "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" timestamp with time zone,
  "details" Text,
  "isWithTaxes" Boolean,
  "idPaymentMethod" Integer,
@@ -5109,11 +5133,11 @@ ALTER TABLE "paymentMethod" ADD CONSTRAINT "code" UNIQUE ("code")
 -- Table paymentDetail
 
 CREATE TABLE "paymentDetail"(
- "idDetail" Integer NOT NULL,
+ "detailID" Integer NOT NULL,
  "quantity" Smallint NOT NULL,
  "cost" Double precision NOT NULL,
  "detail" Text,
- "registrationDate" Timestamp DEFAULT current_timestamp NOT NULL,
+ "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
  "isActive" Boolean DEFAULT true NOT NULL,
  "isModified" Boolean,
  "unregisteredDate" Bigint,
@@ -5400,7 +5424,7 @@ CREATE TABLE "forum"(
  "forumDetails" Text,
  "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
  "unregisteredDate" Timestamp,
- "isActive" Boolean DEFAULT ture NOT NULL,
+ "isActive" Boolean DEFAULT true NOT NULL,
  "isAcademic" Boolean,
  "isQualified" Boolean,
  "teacherID" Integer

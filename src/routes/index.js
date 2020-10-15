@@ -31,6 +31,7 @@ import examRoutes from './exam';
 import examQuestionRoutes from './examQuestion';
 import examAnswerRoutes from './examAnswer';
 import studentAnswerRoutes from './studentAnswer';
+import examRegisterRoutes from './examRegister';
 
 const app = express();
 
@@ -68,5 +69,6 @@ app.use(url + '/exam', examRoutes);
 app.use(url + '/examQuestion', examQuestionRoutes);
 app.use(url + '/examAnswer', examAnswerRoutes);
 app.use(url + '/studentAnswer', studentAnswerRoutes);
+app.use(url + '/examRegister', examRegisterRoutes);
 
 module.exports = app;
