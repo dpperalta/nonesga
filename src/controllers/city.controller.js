@@ -1,4 +1,5 @@
 import City from '../models/City';
+import Canton from '../models/Canton';
 import Province from '../models/Province';
 import Country from '../models/Country';
 import { sequelize } from '../database/database';
@@ -10,17 +11,17 @@ export async function createCity(req, res) {
         cityCode,
         cityName,
         cityDetail,
-        provinceID
+        cantonID
     } = req.body;
     try {
         let newCity = await City.create({
             cityCode,
             cityName,
             cityDetail,
-            provinceID
+            cantonID
         }, {
-            fields: ['cityCode', 'cityName', 'cityDetail', 'provinceID'],
-            returning: ['cityID', 'cityCode', 'cityName', 'cityDetail', 'isActive', 'registeredDate', 'unregisteredDate', 'provinceID']
+            fields: ['cityCode', 'cityName', 'cityDetail', 'cantonID'],
+            returning: ['cityID', 'cityCode', 'cityName', 'cityDetail', 'isActive', 'registeredDate', 'unregisteredDate', 'cantonID']
         });
         if (newCity) {
             return res.status(200).json({
@@ -36,119 +37,126 @@ export async function createCity(req, res) {
 }
 
 // Get information about Cities
-export async function getCities(req, res){
+export async function getCities(req, res) {
     const limit = req.query.limit || 25;
     const from = req.query.from || 0;
-    try{
+    try {
         const cities = await City.findAndCountAll({
-            attributes: ['cityID', 'cityCode', 'cityName', 'cityDetail', 'isActive', 'registeredDate', 'provinceID'],
+            attributes: ['cityID', 'cityCode', 'cityName', 'cityDetail', 'isActive', 'registeredDate', 'cantonID'],
             where: {
                 isActive: true
-            }, 
+            },
             include: [{
-                model: Province,
-                attributes: ['provinceID', 'provinceCode', 'provinceName'],
+                model: Canton,
+                attributes: ['cantonID', 'cantonCode', 'cantonName', 'capital'],
                 include: [{
-                    model: Country,
-                    attributes: [ 'countryID', 'countryCode', 'countryName' ]
+                    model: Province,
+                    attributes: ['provinceID', 'provinceCode', 'provinceName'],
+                    include: [{
+                        model: Country,
+                        attributes: ['countryID', 'countryCode', 'countryName']
+                    }]
                 }]
             }],
             limit,
             offset: from
         });
-        if(cities.count > 0){
+        if (cities.count > 0) {
             return res.status(200).json({
                 ok: true,
                 cities
             });
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get Cities');
     }
 }
 
 // Get information of a city
-export async function getCity(req, res){
+export async function getCity(req, res) {
     const { cityID } = req.params;
-    try{
+    try {
         const city = await City.findOne({
-            attributes: [ 'cityID', 'cityCode', 'cityName', 'cityDetail', 'isActive', 'registeredDate', 'unregisteredDate', 'provinceID' ],
+            attributes: ['cityID', 'cityCode', 'cityName', 'cityDetail', 'isActive', 'registeredDate', 'unregisteredDate', 'cantonID'],
             where: {
                 cityID
             },
             include: [{
-                model: Province,
-                attributes: ['provinceCode', 'provinceName'],
+                model: Canton,
+                attributes: ['cantonID', 'cantonCode', 'cantonName', 'capital'],
                 include: [{
-                    model: Country,
-                    attributes: [ 'countryCode', 'countryName' ]
+                    model: Province,
+                    attributes: ['provinceID', 'provinceCode', 'provinceName'],
+                    include: [{
+                        model: Country,
+                        attributes: ['countryID', 'countryCode', 'countryName']
+                    }]
                 }]
             }]
         });
-        if(city){
+        if (city) {
             return res.status(200).json({
                 ok: true,
                 city
             });
-        }else{
+        } else {
             returnNotFound(res, 'City ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get City by ID');
     }
 }
 
 // Update a city
-export async function updateCity(req, res){
+export async function updateCity(req, res) {
     const { cityID } = req.params;
     const {
         cityCode,
         cityName,
         cityDetail,
-        provinceID
+        cantonID
     } = req.body;
     console.log('cityID: ', cityID);
-    try{
+    try {
         const dbCity = await City.findOne({
-            attributes: [ 'cityID', 'cityCode', 'cityName', 'cityDetail', 'isActive', 'registeredDate', 'unregisteredDate', 'provinceID' ],
+            attributes: ['cityID', 'cityCode', 'cityName', 'cityDetail', 'isActive', 'registeredDate', 'unregisteredDate', 'cantonID'],
             where: {
                 cityID
             }
         });
-        console.log('dbCity:', dbCity);
 
-        if(dbCity === null || dbCity === undefined){
+        if (dbCity === null || dbCity === undefined) {
             returnNotFound(res, 'City ID');
-        }else{
+        } else {
             const updateCity = await City.update({
                 cityCode,
                 cityName,
                 cityDetail,
-                provinceID
+                cantonID
             }, {
                 where: {
                     cityID
-                }   
+                }
             });
-            if(updateCity){
+            if (updateCity) {
                 return res.status(200).json({
                     ok: true,
                     message: 'City updated successfully'
                 });
-            }else{
+            } else {
                 returnNotFound(res, 'CityID');
             }
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Update City');
     }
 }
 
 // Change to active or inactive a city
-export async function changeActivationCity(req, res){
+export async function changeActivationCity(req, res) {
     const { cityID } = req.params;
     const type = req.query.type;
     let value;
@@ -156,7 +164,7 @@ export async function changeActivationCity(req, res){
     let afirmation = '';
     let negation = '';
     let changeActivationJSON;
-    if(type.toLowerCase() === 'activate'){
+    if (type.toLowerCase() === 'activate') {
         value = true;
         action = 'Activating';
         afirmation = 'active';
@@ -165,8 +173,8 @@ export async function changeActivationCity(req, res){
             isActive: true,
             unregisteredDate: null
         };
-    }else{
-        if(type.toLowerCase() === 'inactivate'){
+    } else {
+        if (type.toLowerCase() === 'inactivate') {
             value = false;
             action = 'Inactivating';
             afirmation = 'inactive';
@@ -175,18 +183,18 @@ export async function changeActivationCity(req, res){
                 isActive: false,
                 unregisteredDate: sequelize.literal('CURRENT_TIMESTAMP')
             };
-        }else{
+        } else {
             returnWrongError(res, 'type', 'request');
         }
     }
-    try{
+    try {
         const dbCity = await City.findOne({
             attributes: ['cityID', 'cityCode', 'cityName', 'isActive', 'registeredDate'],
             where: {
                 cityID
             }
         });
-        if(dbCity){
+        if (dbCity) {
             const changeActivation = await City.update(
                 changeActivationJSON, {
                     where: {
@@ -195,83 +203,85 @@ export async function changeActivationCity(req, res){
                     }
                 }
             );
-            if(changeActivation > 0){
+            if (changeActivation > 0) {
                 return res.status(200).json({
                     ok: true,
                     message: 'City ' + type.toLowerCase() + 'd successfully'
                 });
-            }else{
+            } else {
                 return res.status(400).json({
                     ok: false,
                     message: 'Error while ' + action + ' a City or City already ' + afirmation,
                     error: 'Error 0'
                 });
             }
-        }else{
+        } else {
             returnNotFound(res, 'City ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Change Activation City');
     }
 }
 
 // Delete a city
-export async function deleteCity(req, res){
+export async function deleteCity(req, res) {
     const { cityID } = req.params;
-    try{
+    try {
         const countDeleted = await City.destroy({
             where: {
                 cityID
             }
         });
-        if(countDeleted > 0){
+        if (countDeleted > 0) {
             return res.status(200).json({
                 ok: true,
                 message: 'City deleted successfuylly'
             });
-        }else{
+        } else {
             returnNotFound(res, 'City ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Delete City');
     }
 }
 
-// Get all city of a province
-export async function getCitiesProvince(req, res){
-    const { provinceID } = req.params;
+// Get all cities of a Canton
+export async function getCitiesCanton(req, res) {
+    const { cantonID } = req.params;
     //const limit = req.query.limit || 25;
     //const from = req.query.from || 0;
-    try{
+    try {
         const cities = await City.findAndCountAll({
             attributes: ['cityID', 'cityCode', 'cityName'],
             where: {
                 isActive: true,
-                provinceID
+                cantonID
             },
             include: [{
-                model: Province,
-                attributes: [ 'provinceID', 'provinceName' ],
-                include:[{
-                    model: Country,
-                    attributes: [ 'countryID', 'countryName' ]
+                model: Canton,
+                attributes: ['cantonID', 'cantonCode', 'cantonName', 'capital'],
+                include: [{
+                    model: Province,
+                    attributes: ['provinceID', 'provinceCode', 'provinceName'],
+                    include: [{
+                        model: Country,
+                        attributes: ['countryID', 'countryCode', 'countryName']
+                    }]
                 }]
-            }]//,
-            //limit,
-            //offset: from
+            }]
         });
-        if(cities){
+        if (cities) {
             return res.status(200).json({
                 ok: true,
                 cities
             })
-        }else{
-            returnNotFound(res, 'Province ID');
+        } else {
+            returnNotFound(res, 'Canton ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
-        returnError(res, e, 'Get Cities of Province');
+        returnError(res, e, 'Get Cities of Canton');
     }
 }

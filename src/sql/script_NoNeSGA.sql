@@ -515,6 +515,116 @@ ALTER TABLE nonesga.city ALTER COLUMN "cityID" ADD GENERATED ALWAYS AS IDENTITY 
     CACHE 1
 );
 
+
+--
+-- TOC entry 212 (class 1259 OID 16711)
+-- Name: canton; Type: TABLE; Schema: nonesga; Owner: postgres
+--
+
+CREATE TABLE nonesga.canton (
+    "cantonID" integer NOT NULL,
+    "cantonCode" character varying(10) NOT NULL,
+    "cantonName" character varying(200) NOT NULL,
+    details text,
+    "capital" character varying(200) NOT NULL,
+    "registeredDate" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "unregisteredDate" timestamp with time zone,
+    "isActive" boolean DEFAULT true NOT NULL,
+    "countryID" integer
+)
+WITH (autovacuum_enabled='true');
+
+
+ALTER TABLE nonesga.canton OWNER TO postgres;
+
+--
+-- TOC entry 4351 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: COLUMN canton."cantonID"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga.canton."cantonID" IS 'Unique autoincremental identification for a canton';
+
+
+--
+-- TOC entry 4352 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: COLUMN canton."cantonCode"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga.canton."cantonCode" IS 'Code for the canton';
+
+
+--
+-- TOC entry 4353 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: COLUMN canton."cantonName"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga.canton."cantonName" IS 'Name of the canton';
+
+
+--
+-- TOC entry 4354 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: COLUMN canton.details; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga.canton.details IS 'Aditional details or description for a canton';
+
+
+--
+-- TOC entry 4354 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: COLUMN canton.capital; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga.canton.capital IS 'Information about capital of a canton';
+
+
+--
+-- TOC entry 4355 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: COLUMN canton."registeredDate"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga.canton."registeredDate" IS 'Timestamp for registered date of the provicen';
+
+
+--
+-- TOC entry 4356 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: COLUMN canton."unregisteredDate"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga.canton."unregisteredDate" IS 'Timestamp for unregistered date of the provicen';
+
+
+--
+-- TOC entry 4357 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: COLUMN canton."isActive"; Type: COMMENT; Schema: nonesga; Owner: postgres
+--
+
+COMMENT ON COLUMN nonesga.canton."isActive" IS 'true: active
+false: inactive';
+
+
+--
+-- TOC entry 211 (class 1259 OID 16709)
+-- Name: canton_cantonID_seq; Type: SEQUENCE; Schema: nonesga; Owner: postgres
+--
+
+ALTER TABLE nonesga.canton ALTER COLUMN "cantonID" ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME nonesga."canton_cantonID_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
 --
 -- TOC entry 212 (class 1259 OID 16711)
 -- Name: province; Type: TABLE; Schema: nonesga; Owner: postgres
@@ -5867,7 +5977,7 @@ ALTER TABLE nonesga."classSchedule" ALTER COLUMN "classScheduleID" ADD GENERATED
 CREATE TABLE nonesga.holiday (
     "holidayID" integer NOT NULL,
     name character varying(100) NOT NULL,
-    date time without time zone NOT NULL,
+    "date" Date NOT NULL,
     details text,
     "registeredDate" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "unregisteredDate" timestamp with time zone,
@@ -5877,6 +5987,7 @@ CREATE TABLE nonesga.holiday (
     "isReprogramed" boolean DEFAULT false,
     "reprogramedDate" date,
     "countryID" integer,
+    "cantonID" integer,
     "provinceID" integer,
     "cityID" integer
 )
@@ -6841,6 +6952,15 @@ ALTER TABLE ONLY nonesga."calificationAverange"
 
 
 --
+-- TOC entry 3464 (class 2606 OID 16721)
+-- Name: canton PK_capital; Type: CONSTRAINT; Schema: nonesga; Owner: postgres
+--
+
+ALTER TABLE ONLY nonesga.capital
+    ADD CONSTRAINT "PK_capital" PRIMARY KEY ("capitalID");
+
+
+--
 -- TOC entry 3459 (class 2606 OID 16706)
 -- Name: city PK_city; Type: CONSTRAINT; Schema: nonesga; Owner: postgres
 --
@@ -7517,6 +7637,25 @@ ALTER TABLE ONLY nonesga."paymentType"
 
 --
 -- TOC entry 3466 (class 2606 OID 16725)
+-- Name: canton cantonCode; Type: CONSTRAINT; Schema: nonesga; Owner: postgres
+--
+
+ALTER TABLE ONLY nonesga.canton
+    ADD CONSTRAINT "cantonCode" UNIQUE ("cantonCode");
+
+
+--
+-- TOC entry 3468 (class 2606 OID 16723)
+-- Name: canton cantonName; Type: CONSTRAINT; Schema: nonesga; Owner: postgres
+--
+
+ALTER TABLE ONLY nonesga.canton
+    ADD CONSTRAINT "cantonName" UNIQUE ("cantonName");
+
+
+
+--
+-- TOC entry 3466 (class 2606 OID 16725)
 -- Name: province provinceCode; Type: CONSTRAINT; Schema: nonesga; Owner: postgres
 --
 
@@ -8004,6 +8143,14 @@ CREATE INDEX holiday_province_ix ON nonesga.holiday USING btree ("provinceID");
 
 
 --
+-- TOC entry 3646 (class 1259 OID 27015)
+-- Name: holiday_canton_ix; Type: INDEX; Schema: nonesga; Owner: postgres
+--
+
+CREATE INDEX holiday_canton_ix ON nonesga.holiday USING btree ("cantonID");
+
+
+--
 -- TOC entry 3662 (class 1259 OID 27115)
 -- Name: message_group_ix; Type: INDEX; Schema: nonesga; Owner: postgres
 --
@@ -8097,6 +8244,14 @@ CREATE INDEX payment_user_ix ON nonesga.payment USING btree ("userID");
 --
 
 CREATE INDEX "person_personType_ix" ON nonesga.person USING btree ("personTypeID");
+
+
+--
+-- TOC entry 3469 (class 1259 OID 16719)
+-- Name: canton_province_ix; Type: INDEX; Schema: nonesga; Owner: postgres
+--
+
+CREATE INDEX canton_province_ix ON nonesga.canton USING btree ("provinceID");
 
 
 --
@@ -8340,7 +8495,16 @@ ALTER TABLE ONLY nonesga."auditSession"
 
 --
 -- TOC entry 3709 (class 2606 OID 17202)
--- Name: city cit_isIn_prv_fk; Type: FK CONSTRAINT; Schema: nonesga; Owner: postgres
+-- Name: city cit_isIn_can_fk; Type: FK CONSTRAINT; Schema: nonesga; Owner: postgres
+--
+
+ALTER TABLE ONLY nonesga.city
+    ADD CONSTRAINT "cit_isIn_can_fk" FOREIGN KEY ("cantonID") REFERENCES nonesga.canton("cantonID");
+
+
+--
+-- TOC entry 3709 (class 2606 OID 17202)
+-- Name: canton can_isIn_prv_fk; Type: FK CONSTRAINT; Schema: nonesga; Owner: postgres
 --
 
 ALTER TABLE ONLY nonesga.city
@@ -8479,7 +8643,7 @@ ALTER TABLE ONLY nonesga.payment
 --
 
 ALTER TABLE ONLY nonesga.province
-    ADD CONSTRAINT "prv_isIn_cit_fk" FOREIGN KEY ("countryID") REFERENCES nonesga.country("countryID");
+    ADD CONSTRAINT "prv_isIn_cou_fk" FOREIGN KEY ("countryID") REFERENCES nonesga.country("countryID");
 
 
 --

@@ -220,7 +220,7 @@ CREATE TABLE "city"(
  "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
  "unregisteredDate" Timestamp with time zone,
  "isActive" Boolean DEFAULT true NOT NULL,
- "provinceID" Integer
+ "cantonID" Integer
 )
 WITH (
  autovacuum_enabled=true)
@@ -252,6 +252,57 @@ ALTER TABLE "city" ADD CONSTRAINT "PK_city" PRIMARY KEY ("cityID")
 ;
 
 ALTER TABLE "city" ADD CONSTRAINT "cityCode" UNIQUE ("cityCode")
+;
+
+-- Table canton
+
+CREATE TABLE "canton"(
+ "cantonID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "cantonCode" Character varying(10) NOT NULL,
+ "cantonName" Character varying(200) NOT NULL,
+ "details" Text,
+ "capital" Character varying (200),
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "provinceID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "canton"."cantonID" IS 'Unique autoincremental identification for a canton'
+;
+COMMENT ON COLUMN "canton"."cantonCode" IS 'Code for the canton'
+;
+COMMENT ON COLUMN "canton"."cantonName" IS 'Name of the canton'
+;
+COMMENT ON COLUMN "canton"."details" IS 'Aditional details or description for a canton'
+;
+COMMENT ON COLUMN "canton"."capital" IS 'Information about capital of a canton'
+;
+COMMENT ON COLUMN "canton"."registeredDate" IS 'Timestamp for registered date of the provicen'
+;
+COMMENT ON COLUMN "canton"."unregisteredDate" IS 'Timestamp for unregistered date of the provicen'
+;
+COMMENT ON COLUMN "canton"."isActive" IS 'true: active
+false: inactive'
+;
+
+-- Create indexes for table province
+
+CREATE INDEX "canton_province_ix" ON "canton" ("provinceID")
+;
+
+-- Add keys for table province
+
+ALTER TABLE "canton" ADD CONSTRAINT "PK_canton" PRIMARY KEY ("cantonID")
+;
+
+ALTER TABLE "canton" ADD CONSTRAINT "cantonName" UNIQUE ("cantonName")
+;
+
+ALTER TABLE "canton" ADD CONSTRAINT "cantonCode" UNIQUE ("cantonCode")
 ;
 
 -- Table province
@@ -2750,6 +2801,9 @@ CREATE INDEX "holiday_country_ix" ON "holiday" ("countryID")
 CREATE INDEX "holiday_province_ix" ON "holiday" ("provinceID")
 ;
 
+CREATE INDEX "holiday_canton_ix" ON "holiday" ("cantonID")
+;
+
 CREATE INDEX "holiday_city_ix" ON "holiday" ("cityID")
 ;
 
@@ -2889,10 +2943,13 @@ ALTER TABLE "address" ADD CONSTRAINT "add_isIn_cit_fk" FOREIGN KEY ("cityID") RE
 ALTER TABLE "user" ADD CONSTRAINT "urs_has_rol_fk" FOREIGN KEY ("roleID") REFERENCES "role" ("roleID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "city" ADD CONSTRAINT "cit_isIn_prv_fk" FOREIGN KEY ("provinceID") REFERENCES "province" ("provinceID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "city" ADD CONSTRAINT "cit_isIn_can_fk" FOREIGN KEY ("cantonID") REFERENCES "canton" ("cantonID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "province" ADD CONSTRAINT "prv_isIn_cit_fk" FOREIGN KEY ("countryID") REFERENCES "country" ("countryID") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "canton" ADD CONSTRAINT "can_isIn_prv_fk" FOREIGN KEY ("provinceID") REFERENCES "province" ("provinceID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "province" ADD CONSTRAINT "prv_isIn_cou_fk" FOREIGN KEY ("countryID") REFERENCES "country" ("countryID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "student" ADD CONSTRAINT "std_is_per_fk" FOREIGN KEY ("personID") REFERENCES "person" ("personID") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -3097,6 +3154,9 @@ ALTER TABLE "holiday" ADD CONSTRAINT "cou_has_hol_fk" FOREIGN KEY ("countryID") 
 ;
 
 ALTER TABLE "holiday" ADD CONSTRAINT "prov_has_hol_fk" FOREIGN KEY ("provinceID") REFERENCES "province" ("provinceID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "holiday" ADD CONSTRAINT "can_has_hol_fk" FOREIGN KEY ("cantonID") REFERENCES "canton" ("cantonID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "holiday" ADD CONSTRAINT "cit_has_hol_fk" FOREIGN KEY ("cityID") REFERENCES "city" ("cityID") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -3327,7 +3387,7 @@ CREATE TABLE "city"(
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "cityCode" Character varying(10) NOT NULL,
  "cityName" Character varying(200) NOT NULL,
- "dityDetail" Text,
+ "cityDetail" Text,
  "registrationDate" Timestamp DEFAULT current_timestamp NOT NULL,
  "unregisteredDate" Timestamp,
  "isActive" Boolean DEFAULT true NOT NULL,
@@ -3342,7 +3402,7 @@ COMMENT ON COLUMN "city"."cityCode" IS 'Code assigned for a city'
 ;
 COMMENT ON COLUMN "city"."cityName" IS 'Name for the city, is the real name that identifies a city in the app'
 ;
-COMMENT ON COLUMN "city"."dityDetail" IS 'Aditional details for the city'
+COMMENT ON COLUMN "city"."cityDetail" IS 'Aditional details for the city'
 ;
 COMMENT ON COLUMN "city"."registrationDate" IS 'Timestamp for registration date of the city'
 ;
@@ -5784,7 +5844,7 @@ CREATE TABLE "holiday"(
  "holidayID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "name" Character varying(100) NOT NULL,
- "date" Time NOT NULL,
+ "date" Date NOT NULL,
  "details" Text,
  "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
  "unregisteredDate" Timestamp,

@@ -1,22 +1,26 @@
 import Sequelize from 'sequelize';
 import { sequelize } from '../database/database';
-import Canton from './Canton';
+import Province from './Province';
 
-const City = sequelize.define('city', {
-    cityID: {
+const Canton = sequelize.define('canton', {
+    cantonID: {
         type: Sequelize.INTEGER,
         primaryKey: true
     },
-    cityCode: {
+    cantonCode: {
         type: Sequelize.STRING(10),
         allowNull: false,
         unique: true
     },
-    cityName: {
-        type: Sequelize.STRING(200),
-        allowNull: false
+    cantonName: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+        unique: true
     },
-    cityDetail: {
+    details: {
+        type: Sequelize.TEXT
+    },
+    capital: {
         type: Sequelize.TEXT
     },
     registeredDate: {
@@ -32,11 +36,11 @@ const City = sequelize.define('city', {
         allowNull: false,
         defaultValue: true
     },
-    cantonID: {
+    provinceID: {
         type: Sequelize.INTEGER,
         references: {
-            model: 'canton',
-            key: 'cantonID'
+            model: 'province',
+            key: 'provinceID'
         }
     }
 }, {
@@ -44,7 +48,7 @@ const City = sequelize.define('city', {
     freezeTableName: true
 });
 
-Canton.hasMany(City, { foreignKey: { name: 'cantonID', targetKey: 'cantonID' } });
-City.belongsTo(Canton, { foreignKey: { name: 'cantonID', targetKey: 'cantonID' } });
+Province.hasMany(Canton, { foreignKey: { name: 'provinceID', targetKey: 'provinceID' } });
+Canton.belongsTo(Province, { foreignKey: { name: 'provinceID', targetKey: 'provinceID' } });
 
-export default City;
+export default Canton;

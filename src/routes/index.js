@@ -10,6 +10,7 @@ import userRoutes from './user';
 import loginRoutes from './login';
 import countryRoutes from './country';
 import provinceRoutes from './province';
+import cantonRoutes from './canton';
 import cityRoutes from './city';
 import addressRoutes from './address';
 import phoneOperatorRoutes from './phoneOperator';
@@ -33,6 +34,7 @@ import examAnswerRoutes from './examAnswer';
 import studentAnswerRoutes from './studentAnswer';
 import examRegisterRoutes from './examRegister';
 import examGradeRoutes from './examGrade';
+import holidayRoutes from './holiday';
 
 const app = express();
 
@@ -49,6 +51,7 @@ app.use(url + '/user', userRoutes);
 app.use(url + '/login', loginRoutes);
 app.use(url + '/country', countryRoutes);
 app.use(url + '/province', provinceRoutes);
+app.use(url + '/canton', cantonRoutes);
 app.use(url + '/city', cityRoutes);
 app.use(url + '/address', addressRoutes);
 app.use(url + '/phoneOperator', phoneOperatorRoutes);
@@ -72,5 +75,6 @@ app.use(url + '/examAnswer', examAnswerRoutes);
 app.use(url + '/studentAnswer', studentAnswerRoutes);
 app.use(url + '/examRegister', examRegisterRoutes);
 app.use(url + '/examGrade', examGradeRoutes);
+app.use(url + '/holiday', holidayRoutes);
 
 module.exports = app;
