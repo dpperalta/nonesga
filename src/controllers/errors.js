@@ -26,8 +26,16 @@ export function returnNotFound(res, value) {
     });
 }
 
-export function returnWrongError(res, argument, value){
+export function returnWrongError(res, argument, value) {
     let error = 'Wrong ' + argument + ' for the ' + value + ' please validate';
+    return res.status(400).json({
+        ok: false,
+        message: error
+    });
+}
+
+export function returnMissingError(res, value) {
+    let error = 'Some values are required: ' + value;
     return res.status(400).json({
         ok: false,
         message: error

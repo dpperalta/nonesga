@@ -37,6 +37,9 @@ const Calendar = sequelize.define('calendar', {
     },
     updatedReason: {
         type: Sequelize.TEXT
+    },
+    isVisible: {
+        type: Sequelize.BOOLEAN
     }
 }, {
     timestamps: false,
