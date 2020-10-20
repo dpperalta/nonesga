@@ -1,10 +1,13 @@
-import app from './app'; 
+import app from './app';
 import '@babel/polyfill';
-require('./config/config') ;
+//require('./config/config');
+import config from './config/config';
 
 const port = process.env.PORT;
+console.log('port', port);
 
-async function main(){
+async function main() {
+    //await app.listen(port);
     await app.listen(port);
     console.log('Server Runing on PORT ' + port);
 }
