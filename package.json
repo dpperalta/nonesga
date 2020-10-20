@@ -7,7 +7,7 @@
     "scripts": {
         "dev": "nodemon src/index.js --exec babel-node",
         "build": "babel src --out-dir dist",
-        "start": "node src/index.js --exec babel-node"
+        "start": "node src/index.js"
     },
     "keywords": [
         "sga",
