@@ -2929,6 +2929,58 @@ ALTER TABLE "reviewApplication" ADD CONSTRAINT "PK_reviewApplication" PRIMARY KE
 
 ALTER TABLE "reviewApplication" ADD CONSTRAINT "applicationID" UNIQUE ("applicationID")
 ;
+
+
+-- Table calendar
+
+CREATE TABLE "calendar"(
+ "calendarID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "registeredDate" Timestamp WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
+ "unregisteredDate" Timestamp WITH TIME ZONE,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "date" Date not null,
+ "detail" Text,
+ "year": Character VARYING(5)
+ "updatedDate" Date,
+ "updatedUser" Integer,
+ "updatedReason" Text,
+ "isVisible" Boolean,
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "calendar"."calendarID" IS 'Unique identificator for a calendar'
+;
+COMMENT ON COLUMN "calendar"."registeredDate" IS 'Timestamp for calendar date'
+;
+COMMENT ON COLUMN "calendar"."unregisteredDate" IS 'Timestamp for unregistration of a calification'
+;
+COMMENT ON COLUMN "calendar"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "calendar"."detail" IS 'Aditional details for calendar'
+;
+COMMENT ON COLUMN "calendar"."updatedDate" IS 'Date of update before calendar'
+;
+COMMENT ON COLUMN "calendar"."updatedUser" IS 'User that updates calendar'
+;
+COMMENT ON COLUMN "calendar"."reason" IS 'Justification for the calendar'
+;
+COMMENT ON COLUMN "calendar"."isVisible" IS 'true: visible date
+false: date invisible'
+;
+COMMENT ON COLUMN "calendar"."year" IS 'Year for the calendar'
+;
+
+-- Add keys for table calendar
+
+ALTER TABLE "calendar" ADD CONSTRAINT "PK_calendar" PRIMARY KEY ("calendarID")
+;
+
+ALTER TABLE "calendar" ADD CONSTRAINT "calendarID" UNIQUE ("calendarID")
+;
+
 -- Create foreign keys (relationships) section ------------------------------------------------- 
 
 ALTER TABLE "person" ADD CONSTRAINT "per_has_typ_fk" FOREIGN KEY ("personTypeID") REFERENCES "personType" ("personTypeID") ON DELETE NO ACTION ON UPDATE NO ACTION
