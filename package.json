@@ -3,10 +3,11 @@
     "version": "1.0.0",
     "description": "NoNe SGA",
     "main": "index.js",
+    "type": "module",
     "scripts": {
         "dev": "nodemon src/index.js --exec babel-node",
         "build": "babel src --out-dir dist",
-        "start": "node src/index.js"
+        "start": "node src/index.js --exec babel-node"
     },
     "keywords": [
         "sga",
