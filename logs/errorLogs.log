@@ -1,0 +1,5 @@
+[2020-10-20T18:55:10.205] [ERROR] default - Error: ReferenceError: yearOld is not defined
+[2020-10-20T18:55:10.208] [ERROR] default - [Unknown]:Error: ReferenceError: yearOld is not defined
+[2020-10-20T19:02:50.645] [ERROR] default - Error: SequelizeDatabaseError: no existe la columna «yearOld»
+[2020-10-20T19:02:50.646] [ERROR] default - [Unknown]:Error: SequelizeDatabaseError: no existe la columna «yearOld»
+[2020-10-20T19:03:35.805] [ERROR] default - [Unknown]:Error: SequelizeDatabaseError: no existe la columna «yearOld»

@@ -3,6 +3,7 @@ import { sequelize } from '../database/database';
 import { returnError, returnMissingError, returnNotFound, returnWrongError } from './errors';
 import moment from 'moment';
 import cron from 'node-cron';
+import { nonesgaLog } from './log4js';
 
 //Generate Calendar
 export async function generateCalendar(req, res) {
@@ -203,6 +204,7 @@ export async function updateCalendarDay(req, res) {
             }
         } catch (e) {
             console.log('Error:', e);
+            nonesgaLog('Error: ' + e, 'debug');
             returnError(res, e, 'Update Calendar Day');
         }
     }
@@ -244,6 +246,7 @@ export async function deleteYear(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Delete Day Error: ' + e, 'error');
         returnError(res, e, 'Delete year');
     }
 }

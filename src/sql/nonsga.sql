@@ -2622,6 +2622,9 @@ CREATE TABLE "schedule"(
  "isAutomatic" Boolean,
  "startDate" Date NOT NULL,
  "endDate" Date NOT NULL,
+ "startHour" Time NOT NULL,
+ "endHour" Time NOT NULL,
+ "timePeriod" Interval,
  "collegeID" Integer
 )
 WITH (
@@ -2644,6 +2647,12 @@ false: Manual generation'
 COMMENT ON COLUMN "schedule"."startDate" IS 'Date to start of the use of the shcedule'
 ;
 COMMENT ON COLUMN "schedule"."endDate" IS 'Date to the end of the schedule'
+;
+COMMENT ON COLUMN "schedule"."startHour" IS 'Hour to start of the use of the shcedule'
+;
+COMMENT ON COLUMN "schedule"."endHour" IS 'Hour to the end of the schedule'
+;
+COMMENT ON COLUMN "schedule"."timePeriod" IS 'Intervals between hours in the schedule'
 ;
 
 -- Create indexes for table schedule
