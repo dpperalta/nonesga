@@ -3,3 +3,38 @@
 [2020-10-20T19:02:50.645] [ERROR] default - Error: SequelizeDatabaseError: no existe la columna «yearOld»
 [2020-10-20T19:02:50.646] [ERROR] default - [Unknown]:Error: SequelizeDatabaseError: no existe la columna «yearOld»
 [2020-10-20T19:03:35.805] [ERROR] default - [Unknown]:Error: SequelizeDatabaseError: no existe la columna «yearOld»
+[2020-10-23T20:50:10.537] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T20:50:10.538] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T20:50:27.389] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T20:50:27.389] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T20:50:59.768] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T20:50:59.770] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T20:51:17.486] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T20:51:17.488] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T20:59:24.828] [ERROR] default - Create a Forum: SequelizeDatabaseError: la sintaxis de entrada no es válida para tipo double precision: «»
+[2020-10-23T20:59:24.829] [ERROR] default - [Unknown]:Create a Forum: SequelizeDatabaseError: la sintaxis de entrada no es válida para tipo double precision: «»
+[2020-10-23T21:12:39.820] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:12:39.821] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:13:12.475] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:13:12.476] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:13:29.378] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:13:29.378] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:13:41.358] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:13:41.358] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:14:34.127] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:14:34.128] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:15:10.987] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:15:10.989] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:15:30.688] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:15:30.689] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:15:47.338] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:15:47.339] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:17:39.417] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:17:39.417] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:18:45.095] [ERROR] default - Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T21:18:45.095] [ERROR] default - [Unknown]:Create a Forum: ReferenceError: newForum is not defined
+[2020-10-23T22:05:46.066] [ERROR] default - Get All Forums: SequelizeDatabaseError: no existe la columna forum.teacherdID
+[2020-10-23T22:05:46.067] [ERROR] default - [Unknown]:Get All Forums: SequelizeDatabaseError: no existe la columna forum.teacherdID
+[2020-10-23T22:06:09.400] [ERROR] default - Get All Forums: SequelizeDatabaseError: no existe la columna teacher.rating
+[2020-10-23T22:06:09.401] [ERROR] default - [Unknown]:Get All Forums: SequelizeDatabaseError: no existe la columna teacher.rating
+[2020-10-26T15:40:42.687] [ERROR] default - [Unknown]:Error updating forum: 

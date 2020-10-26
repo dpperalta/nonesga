@@ -2393,6 +2393,7 @@ CREATE TABLE "forum"(
  "isActive" Boolean DEFAULT ture NOT NULL,
  "isAcademic" Boolean,
  "isQualified" Boolean,
+ "calification" DOUBLE PRECISION,
  "teacherID" Integer
 )
 WITH (
@@ -2416,6 +2417,8 @@ false: any content'
 ;
 COMMENT ON COLUMN "forum"."isQualified" IS 'true: have qualification
 false: don''t have qualificationm'
+;
+COMMENT ON COLUMN "forum"."calification" IS 'If calification is true, this fiels stores the calification for the forum'
 ;
 
 -- Create indexes for table forum
@@ -6168,15 +6171,132 @@ COMMENT ON COLUMN "taskResolutionResource"."unregisteredDate" IS 'Timestamp for 
 COMMENT ON COLUMN "taskResolutionResource"."updateDate" IS 'Timestamp for date of udapte to the task resolution resource'
 ;
 
--- Create indexes for table taskResolutionResource
+-- --------------------------------------------
+-- NONE SGA CONFIGURATION TABLES
+-- --------------------------------------------
 
-CREATE INDEX "resolution_resours_ix" ON "taskResolutionResource" ("resolutionID")
+-- Table noneModule
+
+CREATE TABLE "noneModule"(
+ "moduleID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
+ "name" CHARACTER VARYING(100) UNIQUE NOT NULL,
+ "description" Text,
+ "privileges" SMALLINT,
+ "isActive" BOOLEAN DEFAULT true NOT NULL,
+ "registeredDate" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+ "unregisteredDate" TIMESTAMP WITH TIME ZONE,
+ "updatedDate" Timestamp with time zone,
+ "updatedUser" INTEGER,
+ "parentID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "noneModule"."moduleID" IS 'Unique identificator for a task a NoNe SGA Modle'
+;
+COMMENT ON COLUMN "noneModule"."name" IS 'Name for the generated module'
+;
+COMMENT ON COLUMN "noneModule"."description" IS 'Description for the module or submodule'
+;
+COMMENT ON COLUMN "noneModule"."privileges" IS 'Value or ranking for the option'
+;
+COMMENT ON COLUMN "noneModule"."isActive" IS 'true: Active
+false: inactive'
+;
+COMMENT ON COLUMN "noneModule"."registeredDate" IS 'Timestamp for registration date'
+;
+COMMENT ON COLUMN "noneModule"."unregisteredDate" IS 'Timestamp for unregistration date'
+;
+COMMENT ON COLUMN "noneModule"."updatedDate" IS 'Timestamp for date of update'
+;
+COMMENT ON COLUMN "noneModule"."updatedUser" IS 'User ID of person who updated a module'
+;
+COMMENT ON COLUMN "noneModule"."parentID" IS 'Self relation for the parent module of another one'
 ;
 
--- Add keys for table taskResolutionResource
+-- Create indexes for table noneModule
 
-ALTER TABLE "taskResolutionResource" ADD CONSTRAINT "PK_taskResolutionResource" PRIMARY KEY ("resourceID")
+CREATE INDEX "module_submodule_ix" ON "noneModule" ("moduleID")
 ;
+
+-- Add keys for table noneModule
+
+ALTER TABLE "noneModule" ADD CONSTRAINT "PK_noneModule" PRIMARY KEY ("moduleID")
+;
+ALTER TABLE "noneModule" ADD CONSTRAINT "UQ_name_module" UNIQUE ("name")
+;
+
+-- Add foreign key for noneModule
+ALTER TABLE "noneModule" ADD CONSTRAINT "mod_has_sub_fk" FOREIGN KEY ("parentID") REFERENCES "noneModule" ("moduleID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+
+-- Table noneParam
+
+CREATE TABLE "noneParam"(
+ "paramID" Integer NOT NULL,
+ "paramName" Character varying(100) NOT NULL,
+ "description" Text,
+ "isActive" Boolean DEFAULT true NOT NULL,
+ "registeredDate" Time with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+ "unregisteredDate" Time with time zone,
+ "updatedDate" Timestamp,
+ "updatedUser" Integer,
+ "updateReason" Text,
+ "isGlobal" Boolean DEFAULT true NOT NULL,
+ "value" Text,
+ "rules" Json,
+ "collegeID" Integer,
+ "moduleID" Integer
+)
+WITH (
+ autovacuum_enabled=true)
+;
+COMMENT ON COLUMN "noneParam"."paramID" IS 'Unique identifier for a param value'
+;
+COMMENT ON COLUMN "noneParam"."paramName" IS 'Name for the parameter or set of params'
+;
+COMMENT ON COLUMN "noneParam"."description" IS 'Description to add details about a set of params or configuration'
+;
+COMMENT ON COLUMN "noneParam"."isActive" IS 'true: active
+false: inactive'
+;
+COMMENT ON COLUMN "noneParam"."registeredDate" IS 'Timestamp for registration date'
+;
+COMMENT ON COLUMN "noneParam"."unregisteredDate" IS 'Timestatamp for unregistration date'
+;
+COMMENT ON COLUMN "noneParam"."updatedDate" IS 'Timestamp for updated date'
+;
+COMMENT ON COLUMN "noneParam"."updatedUser" IS 'User who updates the value'
+;
+COMMENT ON COLUMN "noneParam"."updateReason" IS 'Reason for the application of updates'
+;
+COMMENT ON COLUMN "noneParam"."isGlobal" IS 'true: params global
+false: params only for a collegeID'
+;
+COMMENT ON COLUMN "noneParam"."value" IS 'Ruel or value for a set of a one parm'
+;
+COMMENT ON COLUMN "noneParam"."rules" IS 'Set of rules for the configuration'
+;
+
+-- Create indexes for table noneParam
+
+CREATE INDEX "param_college_IX" ON "noneParam" ("collegeID")
+;
+
+CREATE INDEX "param_module_IX" ON "noneParam" ("moduleID")
+;
+
+-- Add keys for table noneParam
+
+ALTER TABLE "noneParam" ADD CONSTRAINT "PK_noneParam" PRIMARY KEY ("paramID")
+;
+
+ALTER TABLE "noneParam" ADD CONSTRAINT "UQ_name_params" UNIQUE ("paramName")
+;
+
+
 
 -- Create foreign keys (relationships) section ------------------------------------------------- 
 
@@ -6378,6 +6498,9 @@ ALTER TABLE "payment" ADD CONSTRAINT "pay_has_sta_fk" FOREIGN KEY ("statusID") R
 ALTER TABLE "schedule" ADD CONSTRAINT "col_has_sch_fk" FOREIGN KEY ("collegeID") REFERENCES "college" ("collegeID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
+ALTER TABLE "schedule" ADD CONSTRAINT "cou_has_sch_fk" FOREIGN KEY ("courseID") REFERENCES "course" ("courseID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
 ALTER TABLE "classSchedule" ADD CONSTRAINT "sch_has_hou_fk" FOREIGN KEY ("scheduleID") REFERENCES "schedule" ("scheduleID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
@@ -6416,6 +6539,13 @@ ALTER TABLE "taskResolution" ADD CONSTRAINT "std_records_res_fk" FOREIGN KEY ("s
 
 ALTER TABLE "taskResolutionResource" ADD CONSTRAINT "res_has_src_fk" FOREIGN KEY ("resolutionID") REFERENCES "taskResolution" ("resolutionID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
+
+ALTER TABLE "noneParam" ADD CONSTRAINT "col_has_prm_FK" FOREIGN KEY ("collegeID") REFERENCES "college" ("collegeID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
+ALTER TABLE "noneParam" ADD CONSTRAINT "mod_has_prm_FK" FOREIGN KEY ("moduleID") REFERENCES "noneModule" ("moduleID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
 
  CREATE TABLE "errorLog"
 (

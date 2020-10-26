@@ -511,7 +511,6 @@ export async function updateHoliday(req, res) {
         cantonID,
         cityID
     } = req.body;
-    console.log('body', req.body);
     try {
         const dbHoliday = await Holiday.findOne({
             attributes: ['holidayID', 'name', 'details', 'date'],
