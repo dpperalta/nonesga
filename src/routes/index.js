@@ -36,7 +36,10 @@ import examRegisterRoutes from './examRegister';
 import examGradeRoutes from './examGrade';
 import holidayRoutes from './holiday';
 import calendarRoutes from './calendar';
+
 import forumRoutes from './forum';
+
+import noneModuleRoutes from './noneModule';
 
 const app = express();
 
@@ -81,5 +84,7 @@ app.use(url + '/holiday', holidayRoutes);
 app.use(url + '/calendar', calendarRoutes);
 
 app.use(url + '/forum', forumRoutes);
+
+app.use(url + '/noneModule', noneModuleRoutes);
 
 module.exports = app;

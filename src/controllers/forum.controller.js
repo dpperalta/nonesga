@@ -36,7 +36,6 @@ export async function createForum(req, res) {
         }
     }
     try {
-        console.log('Entra al try');
         const newForum = await Forum.create({
             forumName,
             forumDetails,

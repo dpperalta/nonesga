@@ -6188,6 +6188,7 @@ CREATE TABLE "noneModule"(
  "unregisteredDate" TIMESTAMP WITH TIME ZONE,
  "updatedDate" Timestamp with time zone,
  "updatedUser" INTEGER,
+ "updateReason" Text,
  "parentID" Integer
 )
 WITH (
@@ -6211,6 +6212,8 @@ COMMENT ON COLUMN "noneModule"."unregisteredDate" IS 'Timestamp for unregistrati
 COMMENT ON COLUMN "noneModule"."updatedDate" IS 'Timestamp for date of update'
 ;
 COMMENT ON COLUMN "noneModule"."updatedUser" IS 'User ID of person who updated a module'
+;
+COMMENT ON COLUMN "noneModule"."updatedReason" IS 'Reason or casuses to update a module'
 ;
 COMMENT ON COLUMN "noneModule"."parentID" IS 'Self relation for the parent module of another one'
 ;

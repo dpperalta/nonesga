@@ -38,3 +38,39 @@
 [2020-10-23T22:06:09.400] [ERROR] default - Get All Forums: SequelizeDatabaseError: no existe la columna teacher.rating
 [2020-10-23T22:06:09.401] [ERROR] default - [Unknown]:Get All Forums: SequelizeDatabaseError: no existe la columna teacher.rating
 [2020-10-26T15:40:42.687] [ERROR] default - [Unknown]:Error updating forum: 
+[2020-10-27T10:23:19.929] [ERROR] default - Error creating Module SequelizeDatabaseError: la sintaxis de entrada no es válida para tipo integer: «»
+[2020-10-27T10:23:19.930] [ERROR] default - [Unknown]:Error creating Module SequelizeDatabaseError: la sintaxis de entrada no es válida para tipo integer: «»
+[2020-10-27T10:36:24.278] [ERROR] default - Error Creating Submodule SequelizeDatabaseError: no se puede insertar en la columna «moduleID»
+[2020-10-27T10:36:24.279] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeDatabaseError: no se puede insertar en la columna «moduleID»
+[2020-10-27T10:38:54.490] [ERROR] default - Error Creating Submodule SequelizeDatabaseError: no se puede insertar en la columna «moduleID»
+[2020-10-27T10:38:54.491] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeDatabaseError: no se puede insertar en la columna «moduleID»
+[2020-10-27T10:39:32.659] [ERROR] default - Error Creating Submodule SequelizeDatabaseError: la sintaxis de entrada no es válida para tipo integer: «»
+[2020-10-27T10:39:32.660] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeDatabaseError: la sintaxis de entrada no es válida para tipo integer: «»
+[2020-10-27T11:54:24.709] [ERROR] default - Error getting Submodules ReferenceError: parentID is not defined
+[2020-10-27T11:54:24.711] [ERROR] default - [Unknown]:Error getting Submodules ReferenceError: parentID is not defined
+[2020-10-27T12:00:35.624] [ERROR] default - Error getting Submodules ReferenceError: parentID is not defined
+[2020-10-27T12:00:35.625] [ERROR] default - [Unknown]:Error getting Submodules ReferenceError: parentID is not defined
+[2020-10-27T12:04:25.301] [ERROR] default - Error getting Submodules SequelizeEagerLoadingError: noneModule is associated to noneModule multiple times. To identify the correct association, you must use the 'as' keyword to specify the alias of the association you want to include.
+[2020-10-27T12:04:25.302] [ERROR] default - [Unknown]:Error getting Submodules SequelizeEagerLoadingError: noneModule is associated to noneModule multiple times. To identify the correct association, you must use the 'as' keyword to specify the alias of the association you want to include.
+[2020-10-27T12:05:25.318] [ERROR] default - Error getting Submodules SequelizeDatabaseError: no existe la columna Module.noneModuleModuleID
+[2020-10-27T12:05:25.319] [ERROR] default - [Unknown]:Error getting Submodules SequelizeDatabaseError: no existe la columna Module.noneModuleModuleID
+[2020-10-27T12:05:58.870] [ERROR] default - Error getting Submodules SequelizeDatabaseError: no existe la columna Module.noneModuleModuleID
+[2020-10-27T12:05:58.871] [ERROR] default - [Unknown]:Error getting Submodules SequelizeDatabaseError: no existe la columna Module.noneModuleModuleID
+[2020-10-27T12:09:31.303] [ERROR] default - Error getting Submodules SequelizeDatabaseError: el nombre de tabla «noneModule» fue especificado más de una vez
+[2020-10-27T12:09:31.304] [ERROR] default - [Unknown]:Error getting Submodules SequelizeDatabaseError: el nombre de tabla «noneModule» fue especificado más de una vez
+[2020-10-27T14:55:28.548] [ERROR] default - Error getting Modules SequelizeDatabaseError: no existe la columna user.personPersonID
+[2020-10-27T14:55:28.549] [ERROR] default - [Unknown]:Error getting Modules SequelizeDatabaseError: no existe la columna user.personPersonID
+[2020-10-27T14:57:28.078] [ERROR] default - Error getting Modules SequelizeDatabaseError: no existe la columna user.personPersonID
+[2020-10-27T14:57:28.079] [ERROR] default - [Unknown]:Error getting Modules SequelizeDatabaseError: no existe la columna user.personPersonID
+[2020-10-27T15:00:58.098] [ERROR] default - Error getting Modules SequelizeDatabaseError: no existe la columna user.personPersonID
+[2020-10-27T15:00:58.101] [ERROR] default - [Unknown]:Error getting Modules SequelizeDatabaseError: no existe la columna user.personPersonID
+[2020-10-27T15:03:33.434] [ERROR] default - Error getting Modules SequelizeDatabaseError: no existe la columna user.personPersonID
+[2020-10-27T15:03:33.437] [ERROR] default - [Unknown]:Error getting Modules SequelizeDatabaseError: no existe la columna user.personPersonID
+[2020-10-27T16:47:15.498] [ERROR] default - Error getting Submodules of a Module: ReferenceError: cout is not defined
+[2020-10-27T16:47:15.501] [ERROR] default - [Unknown]:Error getting Submodules of a Module: ReferenceError: cout is not defined
+[2020-10-27T19:05:39.505] [ERROR] default - Error while updating submodule: SequelizeDatabaseError: no existe la columna «updatedRaeson»
+[2020-10-27T19:05:39.506] [ERROR] default - [Unknown]:Error while updating submodule: SequelizeDatabaseError: no existe la columna «updatedRaeson»
+[2020-10-27T19:06:14.250] [ERROR] default - Error while updating submodule: SequelizeValidationError: string violation: updatedReason cannot be an array or an object
+[2020-10-27T19:06:14.253] [ERROR] default - [Unknown]:Error while updating submodule: SequelizeValidationError: string violation: updatedReason cannot be an array or an object
+[2020-10-27T19:12:13.141] [ERROR] default - Error while updating submodule: TypeError: parentModule.parseInt is not a function
+[2020-10-27T19:12:13.142] [ERROR] default - [Unknown]:Error while updating submodule: TypeError: parentModule.parseInt is not a function
