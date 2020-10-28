@@ -40,6 +40,7 @@ import calendarRoutes from './calendar';
 import forumRoutes from './forum';
 
 import noneModuleRoutes from './noneModule';
+import noneParamsRoutes from './noneParam';
 
 const app = express();
 
@@ -86,5 +87,6 @@ app.use(url + '/calendar', calendarRoutes);
 app.use(url + '/forum', forumRoutes);
 
 app.use(url + '/noneModule', noneModuleRoutes);
+app.use(url + '/noneParam', noneParamsRoutes);
 
 module.exports = app;

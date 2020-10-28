@@ -74,3 +74,119 @@
 [2020-10-27T19:06:14.253] [ERROR] default - [Unknown]:Error while updating submodule: SequelizeValidationError: string violation: updatedReason cannot be an array or an object
 [2020-10-27T19:12:13.141] [ERROR] default - Error while updating submodule: TypeError: parentModule.parseInt is not a function
 [2020-10-27T19:12:13.142] [ERROR] default - [Unknown]:Error while updating submodule: TypeError: parentModule.parseInt is not a function
+[2020-10-27T20:51:44.075] [ERROR] default - Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-10-27T20:51:44.076] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-10-28T10:39:39.943] [ERROR] default - Error while changin activation:ReferenceError: Module is not defined
+[2020-10-28T10:39:39.944] [ERROR] default - [Unknown]:Error while changin activation:ReferenceError: Module is not defined
+[2020-10-28T10:42:14.888] [ERROR] default - Error while changin activation:ReferenceError: Module is not defined
+[2020-10-28T10:42:14.890] [ERROR] default - [Unknown]:Error while changin activation:ReferenceError: Module is not defined
+[2020-10-28T10:45:16.940] [ERROR] default - Error while changin activation:ReferenceError: Module is not defined
+[2020-10-28T10:45:16.942] [ERROR] default - [Unknown]:Error while changin activation:ReferenceError: Module is not defined
+[2020-10-28T10:50:29.751] [ERROR] default - Error while changin activation:SequelizeDatabaseError: no existe la columna «details»
+[2020-10-28T10:50:29.752] [ERROR] default - [Unknown]:Error while changin activation:SequelizeDatabaseError: no existe la columna «details»
+[2020-10-28T10:52:57.748] [ERROR] default - Error while changin activation:SequelizeDatabaseError: no existe la columna «details»
+[2020-10-28T10:52:57.750] [ERROR] default - [Unknown]:Error while changin activation:SequelizeDatabaseError: no existe la columna «details»
+[2020-10-28T12:27:52.560] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:27:52.561] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:30:46.134] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:30:46.135] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:34:12.922] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:34:12.923] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:40:06.738] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:40:06.738] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:52:46.248] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:52:46.249] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:53:31.360] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:53:31.363] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:54:22.981] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:54:22.983] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T12:56:04.383] [ERROR] default - Error while creating parametrization:TypeError: Cannot read property 'userID' of undefined
+[2020-10-28T12:56:04.384] [ERROR] default - [Unknown]:Error while creating parametrization:TypeError: Cannot read property 'userID' of undefined
+[2020-10-28T15:00:01.500] [ERROR] default - Error while creating parametrization:TypeError: Cannot read property 'userID' of undefined
+[2020-10-28T15:00:01.502] [ERROR] default - [Unknown]:Error while creating parametrization:TypeError: Cannot read property 'userID' of undefined
+[2020-10-28T15:08:54.434] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: no existe la columna «updatedReason» en la relación «noneParam»
+[2020-10-28T15:08:54.437] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: no existe la columna «updatedReason» en la relación «noneParam»
+[2020-10-28T15:09:30.975] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: no existe la columna «updatedReason» en la relación «noneParam»
+[2020-10-28T15:09:30.975] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: no existe la columna «updatedReason» en la relación «noneParam»
+[2020-10-28T15:12:17.211] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:12:17.212] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:16:15.539] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:16:15.539] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:16:41.850] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:16:41.851] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:21:31.485] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: el valor null para la columna «paramID» viola la restricción not null
+[2020-10-28T15:21:31.486] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: el valor null para la columna «paramID» viola la restricción not null
+[2020-10-28T15:22:39.342] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: el valor null para la columna «paramID» viola la restricción not null
+[2020-10-28T15:22:39.343] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: el valor null para la columna «paramID» viola la restricción not null
+[2020-10-28T15:29:01.241] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:29:01.241] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:31:02.338] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:31:02.338] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:35:24.511] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:35:24.512] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:35:24.674] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:35:24.674] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:35:46.185] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:35:46.186] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:36:25.443] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:36:25.445] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:36:43.395] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:36:43.396] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:37:44.120] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:37:44.121] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:38:00.122] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:38:00.123] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:38:42.605] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:38:42.606] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:38:57.873] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:38:57.874] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:39:17.222] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:39:17.223] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:39:55.637] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:39:55.638] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:40:25.560] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:40:25.561] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:41:09.964] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:41:09.965] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:42:05.052] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:42:05.053] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:42:23.675] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T15:42:23.675] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T15:46:53.302] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:46:53.303] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:47:02.718] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T15:47:02.718] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T15:47:37.481] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:47:37.482] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:47:43.045] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T15:47:43.045] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T15:54:41.386] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T15:54:41.387] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T15:55:02.915] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T15:55:02.915] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T16:04:16.112] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T16:04:16.113] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T16:04:31.628] [ERROR] default - Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T16:04:31.628] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeDatabaseError: no existe la columna «paramIDx»
+[2020-10-28T16:04:46.676] [ERROR] default - Error while creating parametrization:SequelizeForeignKeyConstraintError: inserción o actualización en la tabla «noneParam» viola la llave foránea «col_has_prm_FK»
+[2020-10-28T16:04:46.678] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeForeignKeyConstraintError: inserción o actualización en la tabla «noneParam» viola la llave foránea «col_has_prm_FK»
+[2020-10-28T16:12:13.791] [ERROR] default - Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:12:13.791] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:14:07.103] [ERROR] default - Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:14:07.105] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:14:53.068] [ERROR] default - Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:14:53.069] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:15:27.717] [ERROR] default - Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:15:27.718] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:17:14.236] [ERROR] default - Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:17:14.237] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:17:25.719] [ERROR] default - Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T16:17:25.719] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeValidationError: notNull Violation: noneParam.paramName cannot be null
+[2020-10-28T16:17:37.912] [ERROR] default - Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:17:37.913] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_college_module»
+[2020-10-28T16:19:02.374] [ERROR] default - Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_param_college_module»
+[2020-10-28T16:19:02.374] [ERROR] default - [Unknown]:Error while creating parametrization:SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «UQ_param_college_module»
+[2020-10-28T16:28:47.194] [ERROR] default - Error while getting params: SequelizeDatabaseError: no existe la columna noneParam.unregistereDate
+[2020-10-28T16:28:47.195] [ERROR] default - [Unknown]:Error while getting params: SequelizeDatabaseError: no existe la columna noneParam.unregistereDate
+[2020-10-28T18:02:06.930] [ERROR] default - Error while changin activation:SequelizeDatabaseError: no existe la columna «parmName»
+[2020-10-28T18:02:06.931] [ERROR] default - [Unknown]:Error while changin activation:SequelizeDatabaseError: no existe la columna «parmName»

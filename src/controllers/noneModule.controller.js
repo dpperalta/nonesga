@@ -1,6 +1,6 @@
 import NoneModule from '../models/NoneModule';
 import { sequelize } from '../database/database';
-import { returnError, returnNotFound } from './errors';
+import { returnError, returnNotFound, returnWrongError } from './errors';
 import { nonesgaLog } from './log4js';
 import { Op } from 'sequelize';
 
@@ -325,15 +325,9 @@ export async function updateModule(req, res) {
         name,
         description,
         privileges,
-        user,
         updatedReason
     } = req.body;
-    if (user === undefined || user === null || user === '') {
-        return res.status(400).json({
-            ok: false,
-            message: 'User is required, please validate'
-        });
-    }
+    let user = req.user.userID;
     if (updatedReason === undefined || updatedReason === null || updatedReason === '') {
         return res.status(400).json({
             ok: false,
@@ -476,6 +470,7 @@ export async function deleteModule(req, res) {
     }
 }
 
+// Delete a submodule
 export async function deleteSubmodule(req, res) {
     const { submoduleID } = req.params;
     try {
@@ -502,27 +497,93 @@ export async function deleteSubmodule(req, res) {
     }
 }
 
-/*
-export async function deleteForum(req, res) {
-    const { forumID } = req.params;
+// Change to inactive a Module or Submodule
+export async function changeActivationModule(req, res) {
+    const { moduleID } = req.params;
+    const type = req.query.type;
+    const user = req.query.user;
+    let value;
+    let action = '';
+    let afirmation = '';
+    let negation = '';
+    let changeActivationJSON;
+    if (user === undefined || user === '' || user === null) {
+        return res.status(404).json({
+            ok: false,
+            message: 'User is required, please validate'
+        });
+    }
+    if (type.toLowerCase() === 'activate') {
+        value = true;
+        action = 'Activating';
+        afirmation = 'active';
+        negation = 'inactive';
+        changeActivationJSON = {
+            isActive: true,
+            unregisteredDate: null,
+            updatedUser: user,
+            updatedDate: sequelize.literal('CURRENT_TIMESTAMP')
+        };
+    } else {
+        if (type.toLowerCase() === 'inactivate') {
+            value = false;
+            action = 'Inactivating';
+            afirmation = 'inactive';
+            negation = 'active';
+            changeActivationJSON = {
+                isActive: false,
+                unregisteredDate: sequelize.literal('CURRENT_TIMESTAMP'),
+                updatedUser: user,
+                updatedDate: sequelize.literal('CURRENT_TIMESTAMP')
+            };
+        } else {
+            returnWrongError(res, 'type', 'request');
+        }
+    }
     try {
-        const countDeleted = await Forum.destroy({
+        const dbModule = await NoneModule.findOne({
+            attributes: ['moduleID', 'name', 'description', 'isActive', 'registeredDate', 'unregisteredDate', 'parentID'],
             where: {
-                forumID
+                moduleID
             }
         });
-        if (countDeleted > 0) {
-            return res.status(200).json({
-                ok: true,
-                message: 'Forum deleted successfully'
-            });
+        let parent = dbModule.parentID;
+        console.log('parent', parent);
+        let typeOfModule = '';
+        if (parent === null || parent === undefined) {
+            typeOfModule = 'Module';
         } else {
-            returnNotFound(res, 'Forum ID');
+            typeOfModule = 'Submodule';
+        }
+        let reason = action + ' ' + typeOfModule;
+        if (dbModule) {
+            changeActivationJSON.updatedReason = reason;
+            const changeActivation = await NoneModule.update(
+                changeActivationJSON, {
+                    where: {
+                        moduleID,
+                        isActive: !value
+                    }
+                }
+            );
+            if (changeActivation > 0) {
+                return res.status(200).json({
+                    ok: true,
+                    message: typeOfModule + ' ' + type.toLowerCase() + 'd successfully'
+                });
+            } else {
+                return res.status(400).json({
+                    ok: false,
+                    message: 'Error while ' + action + ' a ' + typeOfModule + ' or ' + typeOfModule + ' already ' + afirmation,
+                    error: 'Error 0'
+                });
+            }
+        } else {
+            returnNotFound(res, typeOfModule + 'ID');
         }
     } catch (e) {
         console.log('Error:', e);
-        nonesgaLog('Error deleting forum: ' + e, 'error');
-        returnError(res, e, 'Delete Forum');
+        nonesgaLog('Error while changin activation:' + e, 'error');
+        returnError(res, e, 'Change Activation Module or Submodule');
     }
 }
-*/

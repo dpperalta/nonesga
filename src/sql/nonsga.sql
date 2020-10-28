@@ -6238,7 +6238,8 @@ ALTER TABLE "noneModule" ADD CONSTRAINT "mod_has_sub_fk" FOREIGN KEY ("parentID"
 -- Table noneParam
 
 CREATE TABLE "noneParam"(
- "paramID" Integer NOT NULL,
+ "paramID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+  (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "paramName" Character varying(100) NOT NULL,
  "description" Text,
  "isActive" Boolean DEFAULT true NOT NULL,
@@ -6246,7 +6247,7 @@ CREATE TABLE "noneParam"(
  "unregisteredDate" Time with time zone,
  "updatedDate" Timestamp,
  "updatedUser" Integer,
- "updateReason" Text,
+ "updatedReason" Text,
  "isGlobal" Boolean DEFAULT true NOT NULL,
  "value" Text,
  "rules" Json,
@@ -6296,10 +6297,7 @@ CREATE INDEX "param_module_IX" ON "noneParam" ("moduleID")
 ALTER TABLE "noneParam" ADD CONSTRAINT "PK_noneParam" PRIMARY KEY ("paramID")
 ;
 
-ALTER TABLE "noneParam" ADD CONSTRAINT "UQ_name_params" UNIQUE ("paramName")
-;
-
-
+ALTER TABLE "noneParam" ADD CONSTRAINT "UQ_param_college_module" UNIQUE ("paramName", "collegeID", "moduleID");
 
 -- Create foreign keys (relationships) section ------------------------------------------------- 
 

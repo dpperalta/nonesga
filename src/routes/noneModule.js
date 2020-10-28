@@ -13,7 +13,8 @@ import {
     updateModule,
     updateSubmodule,
     deleteModule,
-    deleteSubmodule
+    deleteSubmodule,
+    changeActivationModule
 } from '../controllers/noneModule.controller';
 
 const router = Router();
@@ -27,6 +28,7 @@ router.post('/submodule', [mAuth.tokenValidation, mAuth.superAdminValidation], c
 router.get('/submodule', [mAuth.tokenValidation, mAuth.superAdminValidation], getSubModules);
 
 // Routes with params
+router.post('/:moduleID', [mAuth.tokenValidation, mAuth.superAdminValidation], changeActivationModule);
 // Modules
 router.get('/:moduleID', [mAuth.tokenValidation, mAuth.superAdminValidation], getModuleByID);
 router.get('/module/submodule/:moduleID', [mAuth.tokenValidation, mAuth.superAdminValidation], getSubmodulesOfModule);

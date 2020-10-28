@@ -1,20 +1,19 @@
 import Sequelize from 'sequelize';
 import { sequelize } from '../database/database';
+import College from './College';
+import NoneModule from './NoneModule';
 
-const NoneModule = sequelize.define('noneModule', {
-    moduleID: {
+const NoneParam = sequelize.define('noneParam', {
+    paramID: {
         type: Sequelize.INTEGER,
         primaryKey: true
     },
-    name: {
+    paramName: {
         type: Sequelize.STRING(100),
         allowNull: false
     },
     description: {
         type: Sequelize.TEXT
-    },
-    privileges: {
-        type: Sequelize.SMALLINT
     },
     isActive: {
         type: Sequelize.BOOLEAN,
@@ -38,7 +37,25 @@ const NoneModule = sequelize.define('noneModule', {
     updatedReason: {
         type: Sequelize.TEXT
     },
-    parentID: {
+    isGlobal: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
+    value: {
+        type: Sequelize.TEXT
+    },
+    rules: {
+        type: Sequelize.JSON
+    },
+    collegeID: {
+        type: Sequelize.INTEGER,
+        references: {
+            modle: 'college',
+            key: 'collegeID'
+        }
+    },
+    moduleID: {
         type: Sequelize.INTEGER,
         references: {
             model: 'noneModule',
@@ -50,7 +67,9 @@ const NoneModule = sequelize.define('noneModule', {
     freezeTableName: true
 });
 
-NoneModule.hasMany(NoneModule, { foreignKey: { name: 'moduleID', targetKey: 'parentID' } });
-NoneModule.belongsTo(NoneModule, { foreignKey: { name: 'parentID', targetKey: 'moduleID' } });
+College.hasMany(NoneParam, { foreignKey: { name: 'collegeID', targetKey: 'collegeID' } });
+NoneParam.belongsTo(College, { foreignKey: { name: 'collegeID', targetKey: 'collegeID' } });
+NoneModule.hasMany(NoneParam, { foreignKey: { name: 'moduleID', targetKey: 'moduleID' } });
+NoneParam.belongsTo(NoneModule, { foreignKey: { name: 'moduleID', targetKey: 'moduleID' } });
 
-export default NoneModule;
+export default NoneParam;
