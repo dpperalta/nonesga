@@ -9,22 +9,21 @@ export async function createModule(req, res) {
     const {
         name,
         description,
-        privileges,
-        user
+        privileges
     } = req.body;
-    if (user === null || user === undefined) {
+    /*if (user === null || user === undefined) {
         return res.status(400).json({
             ok: true,
             message: 'User is required, please validate'
         });
-    }
+    }*/
     try {
         const newModule = await NoneModule.create({
             name,
             description,
             privileges,
             updatedDate: sequelize.literal('CURRENT_TIMESTAMP'),
-            updatedUser: user,
+            updatedUser: req.user.userID,
             updatedReason: 'Creation of module ' + name
         }, {
             fields: ['name', 'description', 'privileges', 'updatedDate', 'updatedUser', 'updatedReason'],
@@ -50,15 +49,8 @@ export async function createSubModule(req, res) {
         name,
         description,
         privileges,
-        parentID,
-        user
+        parentID
     } = req.body;
-    if (user === undefined || user === null) {
-        return res.status(400).json({
-            ok: false,
-            message: 'User is required, please validate'
-        });
-    }
     if (parentID === undefined || parentID === null) {
         return res.status(400).json({
             ok: false,
@@ -71,7 +63,7 @@ export async function createSubModule(req, res) {
             description,
             privileges,
             updatedDate: sequelize.literal('CURRENT_TIMESTAMP'),
-            updatedUser: user,
+            updatedUser: req.user.userID,
             updatedReason: 'Creation of submodule ' + name,
             parentID
         }, {
@@ -381,16 +373,10 @@ export async function updateSubmodule(req, res) {
         name,
         description,
         privileges,
-        user,
         updatedReason,
         parentModule,
     } = req.body;
-    if (user === undefined || user === null || user === '') {
-        return res.status(400).json({
-            ok: false,
-            message: 'User is required, please validate'
-        });
-    }
+
     if (updatedReason === undefined || updatedReason === null || updatedReason === '') {
         return res.status(400).json({
             ok: false,
@@ -419,7 +405,7 @@ export async function updateSubmodule(req, res) {
                 name,
                 description,
                 privileges,
-                updatedUser: user,
+                updatedUser: req.user.userID,
                 updatedReason,
                 updatedDate: sequelize.literal('CURRENT_TIMESTAMP'),
                 parentID: parentModule

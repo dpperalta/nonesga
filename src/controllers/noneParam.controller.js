@@ -39,7 +39,7 @@ export async function createParametrization(req, res) {
         paramRules = null;
         messageToSend = '- Single param value';
     }
-    if (isGlobal === true || isGlobal === 'true') {
+    if (isGlobal === false || isGlobal === 'false') {
         if (collegeID === undefined || collegeID === null || collegeID == '') {
             return res.status(400).json({
                 ok: false,

@@ -7,7 +7,10 @@ import {
     getForumByID,
     updateForum,
     changeActivationForum,
-    deleteForum
+    deleteForum,
+    getForumByTeacher,
+    getForumsByStudent,
+    getForumsBySubject
 } from '../controllers/forum.controller';
 
 const router = Router();
@@ -18,6 +21,9 @@ router.get('/', mAuth.tokenValidation, getForums);
 
 // Routes with params
 router.get('/:forumID', mAuth.tokenValidation, getForumByID);
+router.get('/teacher/:teacherID', [mAuth.tokenValidation, mAuth.teacherValidation], getForumByTeacher);
+router.get('/student/:studentID', [mAuth.tokenValidation, mAuth.teacherValidation], getForumsByStudent);
+router.get('/subject/:subjectID', [mAuth.tokenValidation, mAuth.teacherValidation], getForumsBySubject);
 router.put('/:forumID', [mAuth.tokenValidation, mAuth.teacherValidation], updateForum);
 router.post('/:forumID', [mAuth.tokenValidation, mAuth.teacherValidation], changeActivationForum);
 router.delete('/:forumID', [mAuth.tokenValidation, mAuth.adminValidation], deleteForum);

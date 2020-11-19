@@ -190,3 +190,11 @@
 [2020-10-28T16:28:47.195] [ERROR] default - [Unknown]:Error while getting params: SequelizeDatabaseError: no existe la columna noneParam.unregistereDate
 [2020-10-28T18:02:06.930] [ERROR] default - Error while changin activation:SequelizeDatabaseError: no existe la columna «parmName»
 [2020-10-28T18:02:06.931] [ERROR] default - [Unknown]:Error while changin activation:SequelizeDatabaseError: no existe la columna «parmName»
+[2020-11-04T11:11:23.537] [ERROR] default - Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-11-04T11:11:23.539] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-11-09T17:30:49.274] [ERROR] default - Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-11-09T17:30:49.276] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-11-09T17:31:01.109] [ERROR] default - Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-11-09T17:31:01.109] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-11-09T17:40:35.931] [ERROR] default - Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-11-09T17:40:35.932] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»

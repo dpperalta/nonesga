@@ -268,5 +268,170 @@ export async function deleteForum(req, res) {
 }
 
 // GET Forum by Teacher
+export async function getForumByTeacher(req, res) {
+    const { teacherID } = req.params;
+    try {
+        const dbForum = await Forum.findAndCountAll({
+            attributes: ['forumID', 'forumName', 'forumDetails', 'registeredDate', 'unregisteredDate', 'isActive', 'isAcademic', 'isQualified', 'calification', 'teacherID'],
+            where: {
+                teacherID
+            },
+            include: [{
+                model: Teacher,
+                attributes: ['teacherID', 'teacherCode', 'bio', 'details', 'ratting'],
+                include: [{
+                    model: Person,
+                    attributes: ['personID', 'completeName']
+                }]
+            }]
+        });
+        if (dbForum) {
+            return res.status(200).json({
+                ok: true,
+                forum: dbForum
+            });
+        } else {
+            returnNotFound(res, 'Teacher ID');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('Get Forum by Teacher ID: ' + e, 'error');
+        returnError(res, e, 'Get Forum by Teacher ID');
+    }
+}
+
 // GET Forum by Student
+export async function getForumsByStudent(req, res) {
+    const { studentID } = req.params;
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+    const active = req.query.active || true;
+    try {
+        const count = await sequelize.query(`
+        SELECT	count (*)
+        FROM 	"forum" fo, "teacher" te, "subject" su, "course" cu, "student" st, "person" pe
+            WHERE 	fo."teacherID" = te."teacherID"
+                AND te."teacherID" = su."teacherID"
+                AND su."courseID" = cu."courseID"
+                AND cu."courseID" = st."actualCourse"
+                AND te."personID" = pe."personID"
+                AND fo."isActive" = ${ active }
+                AND st."studentID" = ${ studentID }
+                LIMIT ${ limit }
+                OFFSET ${ from };
+        `);
+        let total = count[1].rows[0].count;
+        if (total > 0) {
+            const forums = await sequelize.query(`
+            SELECT 	fo."forumID" IDforum,
+                    fo."forumName" forumName,
+                    fo."forumDetails" details,
+                    fo."registeredDate" registered,
+                    fo."unregisteredDate" unregistered,
+                    fo."isActive" active,
+                    fo."isAcademic" academic,
+                    fo."isQualified" qualified,
+                    fo."calification" calification,
+                    te."teacherID" IDteacher,
+                    te."teacherCode" code,
+                    te."bio" teacherbio,
+                    te."details" teacherDetails,
+                    te."ratting" teahcerRating,
+                    pe."personID" IDperson,
+                    pe."completeName" personName
+            FROM "forum" fo, "teacher" te, "subject" su, "course" cu, "student" st, "person" pe
+                WHERE fo."teacherID" = te."teacherID"
+                    AND te."teacherID" = su."teacherID"
+                    AND su."courseID" = cu."courseID"
+                    AND cu."courseID" = st."actualCourse"
+                    AND te."personID" = pe."personID"
+                    AND fo."isActive" = ${ active }
+                    AND st."studentID" = ${ studentID }
+                    LIMIT ${ limit }
+                    OFFSET ${ from };
+            `);
+            if (forums) {
+                return res.status(200).json({
+                    ok: true,
+                    forums: forums[0],
+                    count: total
+                });
+            } else {
+                returnNotFound(res, 'Forum for this Student ID');
+            }
+        } else {
+            returnNotFound(res, 'Forum for this Student ID');
+        }
+    } catch (e) {
+        console.log('Error: ', e);
+        nonesgaLog('Get Forum by Studen ID :', 'error');
+        returnError(res, e, 'Get Forum by Student ID');
+    }
+
+}
+
 // GET Forum by Signature
+
+export async function getForumsBySubject(req, res) {
+    const { subjectID } = req.params;
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+    const active = req.query.active || true;
+    try {
+        const count = await sequelize.query(`
+            SELECT 	count (*)
+            FROM    "forum" fo, "teacher" te, "subject" su, "person" pe
+                WHERE fo."teacherID" = te."teacherID"
+                    AND te."teacherID" = su."teacherID"
+                    AND te."personID" = pe."personID"
+                    AND "su"."subjectID" = ${ subjectID }
+                    AND fo."isActive" = ${ active }
+                    LIMIT ${ limit }
+                    OFFSET ${ from };
+        `);
+        let total = count[1].rows[0].count;
+        if (total > 0) {
+            const forums = await sequelize.query(`
+            SELECT 	fo."forumID" IDforum,
+                    fo."forumName" forumName,
+                    fo."forumDetails" details,
+                    fo."registeredDate" registered,
+                    fo."unregisteredDate" unregistered,
+                    fo."isActive" active,
+                    fo."isAcademic" academic,
+                    fo."isQualified" qualified,
+                    fo."calification" calification,
+                    te."teacherID" IDteacher,
+                    te."teacherCode" code,
+                    te."bio" teacherbio,
+                    te."details" teacherDetails,
+                    te."ratting" teahcerRating,
+                    pe."personID" IDperson,
+                    pe."completeName" personName
+            FROM    "forum" fo, "teacher" te, "subject" su, "person" pe
+                WHERE fo."teacherID" = te."teacherID"
+                    AND te."teacherID" = su."teacherID"
+                    AND te."personID" = pe."personID"
+                    AND "su"."subjectID" = ${ subjectID }
+                    AND fo."isActive" = ${ active }
+                    LIMIT ${ limit }
+                    OFFSET ${ from };
+            `);
+            if (forums) {
+                return res.status(200).json({
+                    ok: true,
+                    forums: forums[0],
+                    count: total
+                });
+            } else {
+                returnNotFound(res, 'Forum for this Subject ID');
+            }
+        } else {
+            returnNotFound(res, 'Forum for this Subject ID');
+        }
+    } catch (e) {
+        console.log('Error: ', e);
+        nonesgaLog('Get Forum by SubjectID: ', 'error');
+        returnError(res, e, 'Get Forum by Subject ID');
+    }
+}
