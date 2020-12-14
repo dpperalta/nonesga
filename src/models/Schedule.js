@@ -1,5 +1,4 @@
 import Sequelize from 'sequelize';
-import { Col } from 'sequelize/types/lib/utils';
 import { sequelize } from '../database/database';
 import College from '../models/College';
 import Course from '../models/Course';
@@ -72,9 +71,3 @@ Course.hasMany(Schedule, { foreignKey: { name: 'courseID', targetKey: 'courseID'
 Schedule.belongsTo(Course, { foreignKey: { name: 'courseID', targetKey: 'courseID' } });
 
 export default Schedule;
-
-/*
-Person.hasMany(Student, { foreignKey: { name: 'personID', targetKey: 'personID' } });
-Student.belongsTo(Person, { foreignKey: { name: 'personID', targetKey: 'personID' } });
-
-*/

@@ -198,3 +198,11 @@
 [2020-11-09T17:31:01.109] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
 [2020-11-09T17:40:35.931] [ERROR] default - Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
 [2020-11-09T17:40:35.932] [ERROR] default - [Unknown]:Error Creating Submodule SequelizeUniqueConstraintError: llave duplicada viola restricción de unicidad «noneModule_name_key»
+[2020-11-23T11:25:39.664] [ERROR] default - Create a Forum: SequelizeValidationError: notNull Violation: forum.forumName cannot be null
+[2020-11-23T11:25:39.665] [ERROR] default - [Unknown]:Create a Forum: SequelizeValidationError: notNull Violation: forum.forumName cannot be null
+[2020-11-23T15:00:58.506] [ERROR] default - Get all Forum Content
+[2020-11-23T15:00:58.509] [ERROR] default - [Unknown]:Get all Forum Content
+[2020-11-23T15:16:29.038] [ERROR] default - Get all Forum Content
+[2020-11-23T15:16:29.040] [ERROR] default - [Unknown]:Get all Forum Content
+[2020-11-23T15:17:04.898] [ERROR] default - Get all Forum Content
+[2020-11-23T15:17:04.899] [ERROR] default - [Unknown]:Get all Forum Content

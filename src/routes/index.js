@@ -38,6 +38,7 @@ import holidayRoutes from './holiday';
 import calendarRoutes from './calendar';
 
 import forumRoutes from './forum';
+import forumContentRoutes from './forumContent';
 
 import noneModuleRoutes from './noneModule';
 import noneParamsRoutes from './noneParam';
@@ -85,6 +86,7 @@ app.use(url + '/holiday', holidayRoutes);
 app.use(url + '/calendar', calendarRoutes);
 
 app.use(url + '/forum', forumRoutes);
+app.use(url + '/forumContent', forumContentRoutes);
 
 app.use(url + '/noneModule', noneModuleRoutes);
 app.use(url + '/noneParam', noneParamsRoutes);
