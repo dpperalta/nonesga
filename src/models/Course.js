@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize';
 import { sequelize } from '../database/database';
+import College from './College';
 
 const Course = sequelize.define('course', {
     courseID: {
@@ -30,10 +31,20 @@ const Course = sequelize.define('course', {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true
+    },
+    collegeID: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'college',
+            key: 'collegeID'
+        }
     }
 }, {
     timestamps: false,
     freezeTableName: true
 });
+
+College.hasMany(Course, { foreignKey: { name: 'collegeID', targetKey: 'collegeID' } });
+Course.belongsTo(College, { foreignKey: { name: 'collegeID', targetKey: 'collegeID' } });
 
 export default Course;

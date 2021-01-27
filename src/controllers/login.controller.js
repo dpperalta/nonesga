@@ -2,6 +2,7 @@ import { sequelize } from '../database/database';
 import { returnError, returnNotFound } from './errors';
 import User from '../models/User';
 import Session from '../models/Session';
+import { nonesgaLog } from './log4js';
 
 //Imports for variables
 const bcrypt = require('bcryptjs');
@@ -56,7 +57,8 @@ export async function login(req, res) {
         let name = role[0];
         roleName = name[0].nameofrole;
         loggedUser.pass = '|m|';
-        let token = jwt.sign({ user: loggedUser }, SEED, { expiresIn: TOKEN_END });
+
+        let token = jwt.sign({ user: loggedUser, role: roleName }, SEED, { expiresIn: TOKEN_END });
         let codeDate = new Date();
         let month = codeDate.getMonth() + 1;
         code = codeDate.getDate().toString() + month.toString() + codeDate.getFullYear().toString() + loggedUser.userID
@@ -95,12 +97,21 @@ export async function login(req, res) {
         });
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Login error', 'error');
         returnError(res, e, 'Login');
     }
 }
 
 export async function logout(req, res) {
     const { userID } = req.params;
+
+    if (userID != req.user.userID) {
+        return res.status(403).json({
+            ok: false,
+            message: 'Insufficient permissions to perform this operation'
+        });
+    }
+
     try {
         const isLogged = await Session.findOne({
             attributes: ['sessionID', 'sessionRoom', 'sessionDate', 'sessionToken', 'sessionExpiration', 'sessionCode', 'sessionDevice', 'sessionIP', 'userID'],
@@ -128,6 +139,7 @@ export async function logout(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Logout error', 'error');
         returnError(res, e, 'Logout');
     }
 }
@@ -135,8 +147,19 @@ export async function logout(req, res) {
 // Function to renew a token to refresh the login
 export async function tokenRenew(req, res) {
 
-    let token = jwt.sign({ user: req.user }, SEED, { expiresIn: TOKEN_END });
+    //let token = jwt.sign({ user: req.user }, SEED, { expiresIn: TOKEN_END });
     const { userID } = req.user;
+    let roleName = '';
+
+    const role = await sequelize.query(`
+                    SELECT r."roleName" nameOfRole
+                    FROM role r
+                    WHERE r."roleID" = ${ req.user.roleID };        
+        `);
+    let name = role[0];
+    roleName = name[0].nameofrole;
+
+    let token = jwt.sign({ user: req.user, role: roleName }, SEED, { expiresIn: TOKEN_END });
 
     const userUpdate = Session.findOne({
         attributes: ['sessionID', 'sessionRoom', 'sessionDate', 'sessionToken', 'sessionExpiration', 'sessionCode', 'sessionDevice', 'sessionIP', 'userID'],
@@ -163,6 +186,8 @@ export async function tokenRenew(req, res) {
 
     return res.status(200).json({
         ok: true,
-        token
+        user: req.user,
+        token,
+        role: roleName
     });
 }

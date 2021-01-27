@@ -1,17 +1,19 @@
 import Role from '../models/Role';
 import ErrorLog from '../models/ErrorLog';
 import { sequelize } from '../database/database';
+import { nonesgaLog } from './log4js';
+import { codeGeneration } from '../helpers/codes';
 
 export async function createRole(req, res) {
     const {
-        roleCode,
+        //roleCode,
         roleName,
         privileges,
         description
     } = req.body;
     try {
         let newRole = await Role.create({
-            roleCode,
+            roleCode: await codeGeneration('role'),
             roleName,
             privileges,
             description
@@ -28,6 +30,7 @@ export async function createRole(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Create a role', 'error');
         returnError(res, e, 'createRole');
         /*return res.status(500).json({
             ok: false,
@@ -39,13 +42,13 @@ export async function createRole(req, res) {
 
 export async function getRoles(req, res) {
     try {
-        const roles = await Role.findAll({
+        const roles = await Role.findAndCountAll({
             attributes: ['roleID', 'roleCode', 'roleName', 'description', 'privileges', 'isActive', 'registeredDate', 'unregisteredDate'],
             order: [
                 ['roleID', 'ASC']
             ]
         });
-        if (roles.length > 0) {
+        if (roles.count > 0) {
             return res.status(200).json({
                 ok: true,
                 roles
@@ -61,6 +64,7 @@ export async function getRoles(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Get all roles', 'error');
         return res.status(500).json({
             ok: false,
             message: 'An Database error occurrs',
@@ -91,6 +95,7 @@ export async function getActiveRolesWithCounter(req, res) {
         }
     } catch (e) {
         console.log('Error: ', e);
+        nonesgaLog('Get all roles with couter', 'error');
         returnError(res, e);
     }
 }
@@ -147,9 +152,9 @@ export async function updateRole(req, res) {
             },
             returning: ['roleID', 'roleCode', 'roleName', 'descirption', 'privileges', 'isActive', 'unregisteredDate']
         });
-        if(role === null || role === undefined){
+        if (role === null || role === undefined) {
             returnNotFound(res, 'Role ID');
-        }else{
+        } else {
             const updatedRole = await Role.update({
                 roleCode,
                 roleName,
@@ -226,8 +231,14 @@ export async function activateRole(req, res) {
             },
             returning: ['roleID', 'roleCode', 'roleName', 'descirption', 'privileges', 'isActive', 'unregisteredDate']
         });
+        if (role.isActive) {
+            return res.status(400).json({
+                ok: false,
+                message: 'Role is already active'
+            });
+        }
         if (role) {
-            const inactivateRole = await Role.update({ isActive, registeredDate: sequelize.fn('NOW') }, {
+            const inactivateRole = await Role.update({ isActive, registeredDate: sequelize.fn('NOW'), unregisteredDate: null }, {
                 where: {
                     roleID
                 }

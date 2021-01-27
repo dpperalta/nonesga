@@ -11,16 +11,20 @@ import { returnNotFound, returnError } from '../controllers/errors';
 let roleName = '';
 
 let tokenValidation = function(req, res, next) {
-    let token = req.query.token;
+    //let token = req.query.token;
+    let token = req.header('none-token');
+
     jwt.verify(token, SEED, (error, decoded) => {
         if (error) {
             return res.status(403).json({
                 ok: false,
                 message: 'ERROR: Wrong token',
+                token,
                 error
             });
         }
         req.user = decoded.user;
+        req.role = decoded.role;
         next();
     });
 }

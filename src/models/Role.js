@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import {sequelize} from '../database/database';
+import { sequelize } from '../database/database';
 
 const Role = sequelize.define('role', {
     roleID: {
@@ -7,7 +7,7 @@ const Role = sequelize.define('role', {
         primaryKey: true
     },
     roleCode: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.STRING(100),
         allowNull: false,
         unique: true
     },

@@ -1,17 +1,18 @@
 import PersonType from '../models/PersonType';
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound } from './errors';
+import { codeGeneration } from '../helpers/codes';
 
 // Function to create a person type
 export async function createPersonType(req, res) {
     const {
-        personType,
+        //personType,
         typeName,
         details
     } = req.body;
     try {
         let newPersonType = await PersonType.create({
-            personType,
+            personType: await codeGeneration('personType'),
             typeName,
             details
         }, {
@@ -97,9 +98,9 @@ export async function updatePersonType(req, res) {
             returning: ['personTypeID', 'personType', 'typeName', 'details', 'registeredDate', 'unregisteredDate', 'isActive']
         });
 
-        if(dbPersonType === null || dbPersonType === undefined){
+        if (dbPersonType === null || dbPersonType === undefined) {
             returnNotFound(res, 'Person Type ID');
-        }else{
+        } else {
             const updatePersonType = await PersonType.update({
                 personType,
                 typeName,
@@ -180,7 +181,8 @@ export async function activatePersonType(req, res) {
         });
         if (dbPersonType) {
             const activatePersonType = await PersonType.update({
-                isActive
+                isActive,
+                unregisteredDate: null
             }, {
                 where: {
                     personTypeID,

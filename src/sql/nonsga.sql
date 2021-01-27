@@ -3688,13 +3688,13 @@ ALTER TABLE "address" ADD CONSTRAINT "PK_address" PRIMARY KEY ("addressID")
 CREATE TABLE "role"(
  "roleID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
- "roleCode" Character varying(10) NOT NULL,
+ "roleCode" Character varying(100) NOT NULL,
  "name" Character varying(100) NOT NULL,
  "privileges" Smallint,
  "description" Text,
  "isActive" Boolean DEFAULT true NOT NULL,
- "registeredDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregisteredDate" Timestamp
+ "registeredDate" Timestamp with time zone DEFAULT current_timestamp NOT NULL,
+ "unregisteredDate" Timestamp with time zone
 )
 WITH (
  autovacuum_enabled=true)
@@ -4014,7 +4014,8 @@ CREATE TABLE "course"(
  "courseName" Character varying(500) NOT NULL,
  "description" Text,
  "registratedDate" Timestamp DEFAULT current_timestamp NOT NULL,
- "unregistratedDate" Timestamp
+ "unregistratedDate" Timestamp,
+ "collegeID"
 )
 WITH (
  autovacuum_enabled=true)
@@ -6546,6 +6547,11 @@ ALTER TABLE "noneParam" ADD CONSTRAINT "col_has_prm_FK" FOREIGN KEY ("collegeID"
 
 ALTER TABLE "noneParam" ADD CONSTRAINT "mod_has_prm_FK" FOREIGN KEY ("moduleID") REFERENCES "noneModule" ("moduleID") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
+
+
+ALTER TABLE "course" ADD CONSTRAINT "col_has_cou_fk" FOREIGN KEY ("collegeID") REFERENCES "college" ("collegeID") ON DELETE NO ACTION ON UPDATE NO ACTION
+;
+
 
 
  CREATE TABLE "errorLog"

@@ -2,6 +2,9 @@ import Person from '../models/Person';
 import PersonType from '../models/PersonType';
 import { sequelize } from '../database/database';
 import { returnNotFound, returnError } from './errors';
+import User from '../models/User';
+import Student from '../models/Student';
+import { nonesgaLog } from './log4js';
 
 // Create a person
 export async function createPerson(req, res) {
@@ -20,10 +23,10 @@ export async function createPerson(req, res) {
 
     let sexToCreate = '';
     let sexToRead = sex.toLowerCase();
-    if (sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones') {
+    if (sexToRead === 'male' || sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones') {
         sexToCreate = 'Male'
     } else {
-        if (sexToRead = 'femenino' || sexToRead === 'femeninas' || sexToRead === 'mujer' || sexToRead === 'mujeres' || sexToRead === 'dama' || sexToRead === 'damas') {
+        if (sexToRead === 'female' || sexToRead === 'femenino' || sexToRead === 'femeninas' || sexToRead === 'mujer' || sexToRead === 'mujeres' || sexToRead === 'dama' || sexToRead === 'damas') {
             sexToCreate = 'Female'
         } else {
             sexToCreate = 'Unknown'
@@ -54,6 +57,7 @@ export async function createPerson(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Create Person', 'error');
         returnError(res, e, 'Create Person');
     }
 }
@@ -64,9 +68,12 @@ export async function getPeople(req, res) {
     const from = req.query.from || 0;
     try {
         const people = await Person.findAndCountAll({
-            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
+            attributes: ['personID', 'dni', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
             limit,
-            offset: from
+            offset: from,
+            order: [
+                ['registeredDate', 'DESC']
+            ]
         });
         if (people.count > 0) {
             return res.status(200).json({
@@ -78,6 +85,7 @@ export async function getPeople(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Get People', 'error');
         returnError(res, e, 'Get People');
     }
 }
@@ -88,7 +96,7 @@ export async function getActivePeople(req, res) {
     const from = req.query.from || 0;
     try {
         const people = await Person.findAndCountAll({
-            attributes: ['personID', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
+            attributes: ['personID', 'dni', 'names', 'lastNames', 'completeName', 'birthdate', 'isActive', 'registeredDate', 'image', 'details', 'bio', 'votes', 'sex', 'unregisteredDate', 'personTypeID'],
             where: {
                 isActive: true
             },
@@ -105,6 +113,7 @@ export async function getActivePeople(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Get Active People', 'error');
         returnError(res, e, 'Get Active People');
     }
 }
@@ -144,6 +153,7 @@ export async function getPerson(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Get Person', 'error');
         returnError(res, e, 'Get Person');
     }
 }
@@ -171,6 +181,7 @@ export async function getInactivePeople(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Get Inactive People', 'error');
         returnError(res, e, 'Get Inactive People');
     }
 }
@@ -219,6 +230,7 @@ export async function getActivePeopleType(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Get Active People', 'error');
         returnError(res, e, 'Get Active People');
     }
 }
@@ -288,6 +300,7 @@ export async function updatePerson(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Update Person', 'error');
         returnError(res, e, "Update Person");
     }
 }
@@ -330,6 +343,7 @@ export async function inactivatePerson(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Inactivate Person', 'error');
         returnError(res, e, 'Inactivate Person');
     }
 }
@@ -347,7 +361,8 @@ export async function activatePerson(req, res) {
         });
         if (dbPerson) {
             const inactivatePerson = await Person.update({
-                isActive
+                isActive,
+                unregisteredDate: null
             }, {
                 where: {
                     personID,
@@ -371,6 +386,7 @@ export async function activatePerson(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Activate Person', 'error');
         returnError(res, e, 'Activate Person');
     }
 }
@@ -379,6 +395,36 @@ export async function activatePerson(req, res) {
 export async function deletePerson(req, res) {
     const { personID } = req.params;
     try {
+        // Validation of foreign tables
+        const findUserPerson = await sequelize.query(`
+            SELECT COUNT(*)
+            FROM "user"
+            WHERE "personID" = ${ personID }
+        `);
+        let countUser = findUserPerson[1].rows[0].count;
+
+        if (countUser > 0) {
+            return res.status(400).json({
+                ok: false,
+                message: 'Person is associated with a user, please change the values and try again'
+            });
+        }
+
+        const findUserStudent = await sequelize.query(`
+            SELECT COUNT(*)
+            FROM "student"
+            WHERE "personID" = ${ personID }
+        `);
+
+        let countStudent = findUserStudent[1].rows[0].count;
+        if (countStudent > 0) {
+            return res.status(400).json({
+                ok: false,
+                message: 'Person is associated with a student, please change the values and try again'
+            })
+        }
+
+        // Try to delete the person
         const countDeleted = await Person.destroy({
             where: {
                 personID
@@ -394,32 +440,33 @@ export async function deletePerson(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Delete Person', 'error');
         returnError(res, e, 'Delete Person');
     }
 }
 
 // Find a Person by DNI or Names
-export async function findPerson(req, res){
+export async function findPerson(req, res) {
     let dni = req.query.dni;
     let names = req.query.names;
 
-    if(dni.length === 0 && names.length === 0){
+    if (dni.length === 0 && names.length === 0) {
         return res.status(400).json({
             ok: false,
             message: 'You must provide at least one searching parameter'
         });
     }
 
-    if(dni.length > 0 && dni.length > 10){
+    if (dni.length > 0 && dni.length > 10) {
         return res.status(400).json({
             ok: false,
             message: 'DNI information is incorrect'
         });
     }
-    if(names.length === 0 || dni.length === 10){
+    if (names.length === 0 || dni.length === 10) {
         names = 'NN';
     }
-    try{
+    try {
         const people = await sequelize.query(`
             SELECT	"person"."personID" idPersona,
                     "person"."dni" cedula,
@@ -443,17 +490,74 @@ export async function findPerson(req, res){
                 AND "person"."isActive" = true
                 ORDER BY apellidos, nombres;
         `);
-        if(people){
+        if (people) {
             return res.status(200).json({
                 ok: true,
                 people: people[0],
                 total: people[1].rowCount
             });
-        }else{
+        } else {
             returnNotFound(res, 'People with provided DNI or Names');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Find PErson by DNI or Names', 'error');
         returnError(res, e, 'Find Person by DNI or Names');
+    }
+}
+
+// Find all people without an user
+export async function getPeopleWhitoutUser(req, res) {
+    try {
+        const counter = await sequelize.query(`
+            SELECT COUNT(*)
+            FROM "person" per
+            WHERE per."personID" NOT IN (SELECT DISTINCT("personID")
+                                         FROM "user"
+                                         WHERE "personID" IS NOT NULL);
+        `);
+        let total = parseInt(counter[1].rows[0].count);
+        if (total > 0) {
+            const people = await sequelize.query(`
+                SELECT "personID",
+                        "dni",
+                        "birthdate",
+                        "names",
+                        "lastNames",
+                        "completeName",
+                        "image",
+                        "details",
+                        "registeredDate",
+                        "unregisteredDate",
+                        "isActive",
+                        "bio",
+                        "votes",
+                        "personTypeID",
+                        "sex"
+                FROM "person" 
+                WHERE "personID" NOT IN (SELECT DISTINCT("personID")
+                                         FROM "user"
+                                         WHERE "personID" IS NOT NULL)
+                ORDER BY "personID" DESC;
+            `);
+            if (people) {
+                return res.status(200).json({
+                    ok: true,
+                    count: total,
+                    people: people[0]
+                });
+            }
+
+        } else {
+            return res.status(404).json({
+                ok: false,
+                message: 'Can not find people without user associated'
+            });
+        }
+
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('Get people whitout user', 'error');
+        returnError(res, e, 'Get people withouy user');
     }
 }

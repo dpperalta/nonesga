@@ -1,29 +1,47 @@
 import Course from '../models/Course';
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
+import { nonesgaLog } from './log4js';
 
 // Create a new Course
 export async function createCourse(req, res) {
     const {
         courseCode,
         courseName,
-        description
+        description,
+        collegeID
     } = req.body;
     let status = 1;
+    let college;
+
+    if (req.role !== 'Super Administrator') {
+        college = req.user.collegeID
+    } else {
+        college = collegeID;
+    }
+
+    if (!college) {
+        return res.status(400).json({
+            ok: false,
+            message: 'Plese select a college'
+        });
+    }
+
     try {
         let newCourse = await Course.create({
             courseCode,
             courseName,
-            description
+            description,
+            collegeID: college
         }, {
-            fields: ['courseCode', 'courseName', 'description'],
-            returning: ['courseID', 'courseCode', 'courseName', 'description', 'isActive', 'registeredDate', 'unregisteredDate']
+            fields: ['courseCode', 'courseName', 'description', 'collegeID'],
+            returning: ['courseID', 'courseCode', 'courseName', 'description', 'isActive', 'registeredDate', 'unregisteredDate', 'collegeID']
         });
         if (newCourse) {
             return res.status(200).json({
                 ok: true,
                 message: 'Course created successfully',
-                Course: newCourse
+                course: newCourse
             })
         }
     } catch (e) {
@@ -32,7 +50,7 @@ export async function createCourse(req, res) {
     }
 }
 
-// Get all active countries
+// Get all active courses
 export async function getCourses(req, res) {
     const limit = req.query.limit || 25;
     const from = req.query.from || 0;
@@ -180,7 +198,8 @@ export async function getCourse(req, res) {
         const course = await Course.findOne({
             attributes: ['courseID', 'courseCode', 'courseName', 'description', 'isActive', 'registeredDate', 'unregisteredDate'],
             where: {
-                courseID
+                courseID,
+                collegeID: req.user.collegeID
             }
         });
         if (course) {
@@ -217,5 +236,83 @@ export async function deleteCourse(req, res) {
     } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Delete Course');
+    }
+}
+
+// Get courses all of a college
+export async function getAllCoursesCollege(req, res) {
+    const collegeID = req.user.collegeID;
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+
+    try {
+        const courses = await Course.findAndCountAll({
+            attributes: ['courseID', 'courseCode', 'courseName', 'description', 'isActive', 'registeredDate', 'unregisteredDate', 'collegeID'],
+            order: [
+                ['courseName', 'ASC']
+            ],
+            where: {
+                collegeID
+            },
+            limit,
+            offset: from
+        });
+        if (courses) {
+            return res.status(200).json({
+                ok: true,
+                courses
+            });
+        } else {
+            returnNotFound(res, 'Any Course');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('Get all courses college', 'error');
+        returnError(res, e, 'Get all courses college');
+    }
+}
+
+// Get active or inactive courses all of a college
+export async function getAllCoursesCollegeActive(req, res) {
+
+    const collegeID = req.user.collegeID;
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+    const active = req.query.active || true;
+
+    if (active.toString() !== 'true') {
+        if (active.toString() !== 'false') {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Active type invalid, please validate'
+            });
+        }
+    }
+
+    try {
+        const courses = await Course.findAndCountAll({
+            attributes: ['courseID', 'courseCode', 'courseName', 'description', 'isActive', 'registeredDate', 'unregisteredDate', 'collegeID'],
+            order: [
+                ['courseName', 'ASC']
+            ],
+            where: {
+                isActive: active,
+                collegeID
+            },
+            limit,
+            offset: from
+        });
+        if (courses) {
+            return res.status(200).json({
+                ok: true,
+                courses
+            });
+        } else {
+            returnNotFound(res, 'Any Course');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('Get all courses college active', 'error');
+        returnError(res, e, 'Get all courses college active');
     }
 }

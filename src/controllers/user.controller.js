@@ -83,10 +83,10 @@ export async function getUsers(req, res) {
         rows = total[0];
         totalRows = parseInt(rows[0].count);
         const users = await sequelize.query(`
-                    select 	"user"."userID" identificador,
-                    "user"."nick" nick,
-                    "user"."email" correo,
-                    "user"."registeredDate" alta,
+                    select 	"user"."userID",
+                    "user"."nick",
+                    "user"."email",
+                    "user"."registeredDate",
                     case when "user"."status" = 0 then 'Demo'
                         when "user"."status" = 1 then 'Activo'
                         when "user"."status" = 2 then 'Activo con solicitud de pago'
@@ -98,19 +98,23 @@ export async function getUsers(req, res) {
                         when "user"."status" = 8 then 'Accesso prohibido'
                         when "user"."status" = 9 then 'Acceso restringido'
                         when "user"."status" = 10 then 'Necesita Verificación ADM'
-                    end status,
-                    "user"."unregisteredDate" baja,
-                    "user"."lastLogin" ultimoLogin,
+                    end statusd,
+                    "user"."status",
+                    "user"."unregisteredDate",
+                    "user"."lastLogin",
                     "user"."isActive",
-                    "person"."completeName" nombre,
-                    "role"."roleName" rol,
-                    "college"."collegeShowName" colegio
+                    "person"."personID",
+                    "person"."completeName",
+                    "role"."roleName",
+                    "role"."roleID",
+                    "college"."collegeID",
+                    "college"."collegeShowName"
             from "user"
             left join "role"  on "user"."roleID" = "role"."roleID"
             left join "person" on "user"."personID" = "person"."personID"
             left join "college" on "user"."collegeID" = "college"."collegeID"
-                where "user"."isActive" = true
-                order by "user"."userID"
+                --where "user"."isActive" = true
+                order by "user"."userID" DESC
                 limit ${ limit }
                 offset ${ from };;
         `);
@@ -121,7 +125,7 @@ export async function getUsers(req, res) {
                 count: users[1].rowCount,
                 total: totalRows
             });
-        }else{
+        } else {
             return res.status(400).json({
                 ok: false,
                 message: 'Any user was founded please contact your administrator',
@@ -135,9 +139,9 @@ export async function getUsers(req, res) {
 }
 
 // Get a user by an ID
-export async function getUser(req, res){
+export async function getUser(req, res) {
     const { userID } = req.params;
-    try{
+    try {
         const user = await sequelize.query(`
                     select 	"user"."userID" identificador,
                     "user"."nick" nick,
@@ -167,22 +171,22 @@ export async function getUser(req, res){
                 left join "college" on "user"."collegeID" = "college"."collegeID"
                 where "user"."userID" = ${ userID };
         `);
-        if(user){
+        if (user) {
             return res.status(200).json({
                 ok: true,
                 user: user[0]
             });
-        }else{
+        } else {
             returnNotFound(res, 'User ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get User');
     }
 }
 
 // Update a User
-export async function updateUser(req, res){
+export async function updateUser(req, res) {
     const { userID } = req.params;
     const {
         nick,
@@ -192,16 +196,16 @@ export async function updateUser(req, res){
         email,
         status
     } = req.body;
-    try{
+    try {
         const dbUser = await User.findOne({
             attributes: ['nick', 'email', 'isActive', 'status', 'registeredDate', 'roleID', 'collegeID', 'personID'],
             where: {
                 userID
             }
         });
-        if(dbUser === null || dbUser === undefined){
+        if (dbUser === null || dbUser === undefined) {
             returnNotFound(res, 'User ID');
-        }else{
+        } else {
             const updateUser = await User.update({
                 nick,
                 email,
@@ -214,46 +218,46 @@ export async function updateUser(req, res){
                     userID
                 }
             });
-            if(updateUser){
+            if (updateUser) {
                 return res.status(200).json({
                     ok: true,
                     message: 'User updated successfully'
                 });
-            }else{
+            } else {
                 returnNotFound(res, 'User ID');
             }
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Update User');
     }
 }
 
 // Delete a user by ID
-export async function deleteUser(req, res){
+export async function deleteUser(req, res) {
     const { userID } = req.params;
-    try{
+    try {
         const countDeleted = await User.destroy({
             where: {
                 userID
             }
         });
-        if(countDeleted > 0){
+        if (countDeleted > 0) {
             return res.status(200).json({
                 ok: true,
                 message: 'User deleted successfully'
             });
-        }else{
+        } else {
             returnNotFound(res, 'User ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Delete User');
     }
 }
 
 // Change activate or inactivate a college
-export async function changeActivationUser(req, res){
+export async function changeActivationUser(req, res) {
     const { userID } = req.params;
     const type = req.query.type;
     let value;
@@ -261,7 +265,7 @@ export async function changeActivationUser(req, res){
     let afirmation = '';
     let negation = '';
     let changeActivationJSON;
-    if(type.toLowerCase() === 'activate'){
+    if (type.toLowerCase() === 'activate') {
         value = true;
         action = 'Activating';
         afirmation = 'active';
@@ -270,8 +274,8 @@ export async function changeActivationUser(req, res){
             isActive: value,
             unregisteredDate: null
         };
-    }else{
-        if(type.toLowerCase() === 'inactivate'){
+    } else {
+        if (type.toLowerCase() === 'inactivate') {
             value = false;
             action = 'Inactivating';
             afirmation = 'inactive';
@@ -280,51 +284,50 @@ export async function changeActivationUser(req, res){
                 isActive: value,
                 unregisteredDate: sequelize.literal('CURRENT_TIMESTAMP')
             };
-        }else{
+        } else {
             return res.status(400).json({
                 ok: false,
                 message: 'Wrong type for the request'
             });
         }
     }
-    try{
+    try {
         const dbUser = await User.findOne({
             attributes: ['userID', 'nick', 'email', 'isActive', 'unregisteredDate', 'registeredDate', 'status'],
             where: {
                 userID
             }
         });
-        if(dbUser){
+        if (dbUser) {
             const changeActivation = await User.update(changeActivationJSON, {
-                    where: {
-                        userID,
-                        isActive: !value
-                    }
+                where: {
+                    userID,
+                    isActive: !value
                 }
-            );
-            if(changeActivation > 0){
+            });
+            if (changeActivation > 0) {
                 return res.status(200).json({
                     ok: true,
                     message: 'User ' + type.toLowerCase() + 'd successfully'
                 });
-            }else{
+            } else {
                 return res.status(404).json({
                     ok: false,
                     message: 'Error while ' + action + ' a User or User already ' + afirmation,
-                        error: 'Error 0'
+                    error: 'Error 0'
                 });
             }
-        }else{
+        } else {
             returnNotFound(res, negation + ' User');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Activating/Inactivating User');
     }
 }
 
 // Create an user from administration mode
-export async function createUser(req, res){
+export async function createUser(req, res) {
     const {
         email,
         pass,
@@ -335,7 +338,30 @@ export async function createUser(req, res){
     } = req.body;
     const salt = bcrypt.genSaltSync();
     let cryptoPass = bcrypt.hashSync(pass, salt);
-    try{
+    let roleDB;
+    let roleArray;
+    try {
+
+        // Validate if the roleID is a SuperAdmin
+        const role = await sequelize.query(`
+                    SELECT  r."roleID"
+                    FROM role r
+                    WHERE r."roleName" = 'Super Administrator';        
+        `);
+        if (role) {
+            roleArray = role[0];
+            roleDB = roleArray[0].roleID;
+        }
+        // If roleID is a Super Administrator, validate the user from request, if is not a Super Administrator, send error response
+        // Onsly a Super Administratro can create a Super Administrator
+        if (roleID === roleDB) {
+            if (roleDB !== req.user.roleID) {
+                return res.status(400).json({
+                    ok: false,
+                    message: 'ERROR! You does not have super powers!'
+                });
+            }
+        }
         let newUser = await User.create({
             email,
             nick,
@@ -348,7 +374,7 @@ export async function createUser(req, res){
             fields: ['email', 'nick', 'pass', 'isActive', 'status', 'registeredDate', 'roleID', 'collegeID', 'personID'],
             returning: ['userID', 'email', 'nick', 'isActive', 'status', 'registeredDate', 'personID', 'collegeID', 'roleID']
         });
-        if(newUser){
+        if (newUser) {
             return res.status(200).json({
                 ok: true,
                 message: 'User created successfully',
@@ -366,20 +392,20 @@ export async function createUser(req, res){
                 }
             });
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Create User from Admin');
     }
 }
 
 // Get users from college with pagination
-export async function getCollegeUser(req, res){
+export async function getCollegeUser(req, res) {
     const { collegeID } = req.params;
     const limit = req.query.limit || 25;
     const from = req.query.from || 0;
     let rows;
     let totalRows;
-    try{
+    try {
         const total = await sequelize.query(`
                 select count (*)
                 from "user"
@@ -424,17 +450,17 @@ export async function getCollegeUser(req, res){
                         limit ${ limit }
                         offset ${ from };
         `);
-        if(users){
+        if (users) {
             return res.status(200).json({
                 ok: true,
                 users: users[0],
                 count: users[1].rowCount,
                 total: totalRows
-            });         
-        }else{
+            });
+        } else {
             returnNotFound(res, 'College ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         return res.status(500).json({ e });
     }

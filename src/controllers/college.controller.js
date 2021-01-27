@@ -1,12 +1,14 @@
 import College from '../models/College';
 import { sequelize } from '../database/database';
 import { returnNotFound, returnError } from './errors';
+import { codeGeneration } from '../helpers/codes';
+import { nonesgaLog } from './log4js';
 
 // Create a college
 export async function createCollege(req, res) {
     const {
         collegeName,
-        collegeCode,
+        //collegeCode,
         collegeShowName,
         detail,
         image,
@@ -17,7 +19,8 @@ export async function createCollege(req, res) {
     try {
         let newCollege = await College.create({
             collegeName,
-            collegeCode,
+            //collegeCode,
+            collegeCode: await codeGeneration('college'),
             collegeShowName,
             detail,
             image,
@@ -26,9 +29,10 @@ export async function createCollege(req, res) {
             description,
             lastChangeDate: sequelize.literal('CURRENT_TIMESTAMP'),
             changeDetail: 'Create',
-            status: 2
+            status: 2,
+            lastChangeUser: req.user.userID
         }, {
-            fields: ['collegeName', 'collegeCode', 'collegeShowName', 'detail', 'image', 'logo', 'flag', 'description', 'lastChangeDate', 'changeDetail', 'status'],
+            fields: ['collegeName', 'collegeCode', 'collegeShowName', 'detail', 'image', 'logo', 'flag', 'description', 'lastChangeDate', 'changeDetail', 'status', 'lastChangeUser'],
             returning: ['collegeID', 'collegeName', 'collegeCode', 'collegeShowName', 'detail', 'image', 'logo', 'flag', 'description', 'isActive', 'registratedDate', 'lastChangeDate', 'changeDetail']
         });
         if (newCollege) {
@@ -40,6 +44,7 @@ export async function createCollege(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Create College', 'error');
         returnError(res, e, 'Create College');
     }
 }
@@ -54,7 +59,10 @@ export async function getColleges(req, res) {
                 'status', 'isActive', 'image', 'logo', 'description', 'registratedDate', 'unregistratedDate', 'lastChangeDate', 'changeDetail', 'lastChangeUser'
             ],
             limit,
-            offset: from
+            offset: from,
+            order: [
+                ['collegeID', 'ASC']
+            ]
         });
         if (colleges.count > 0) {
             return res.status(200).json({
@@ -87,6 +95,8 @@ export async function changeActivationCollege(req, res) {
         changeActivationJSON = {
             isActive: value,
             lastChangeDate: sequelize.literal('CURRENT_TIMESTAMP'),
+            lastChangeUser: req.user.userID,
+            unregistratedDate: null,
             changeDetail: 'Set ' + afirmation
         }
     }
@@ -99,6 +109,7 @@ export async function changeActivationCollege(req, res) {
             isActive: value,
             unregistratedDate: sequelize.literal('CURRENT_TIMESTAMP'),
             lastChangeDate: sequelize.literal('CURRENT_TIMESTAMP'),
+            lastChangeUser: req.user.userID,
             changeDetail: 'Set ' + afirmation
         }
     }
@@ -231,9 +242,9 @@ export async function updateCollege(req, res) {
                 collegeID
             }
         });
-        if(dbCollege === null || dbCollege === undefined){
+        if (dbCollege === null || dbCollege === undefined) {
             returnNotFound(res, 'College ID');
-        }else{
+        } else {
             const updateCollege = await College.update({
                 collegeName,
                 collegeShowName,
@@ -247,7 +258,8 @@ export async function updateCollege(req, res) {
                 logo,
                 description,
                 lastChangeDate: sequelize.literal('CURRENT_TIMESTAMP'),
-                changeDetail: 'Update College'
+                changeDetail: 'Update College',
+                lastChangeUser: req.user.userID
             }, {
                 where: {
                     collegeID
@@ -263,28 +275,29 @@ export async function updateCollege(req, res) {
         }
     } catch (e) {
         console.log('Error:', e);
+        nonesgaLog('Update College', 'error');
         returnError(res, e, 'Update College');
     }
 }
 
 // Delete a college by college id
-export async function deleteCollete(req, res){
+export async function deleteCollete(req, res) {
     const { collegeID } = req.params;
-    try{
+    try {
         const countDeleted = await College.destroy({
             where: {
                 collegeID
             }
         });
-        if(countDeleted > 0){
+        if (countDeleted > 0) {
             return res.status(200).json({
                 ok: true,
                 message: 'College deleted successfully'
             });
-        }else{
+        } else {
             returnNotFound(res, 'College ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Delete Collete');
     }

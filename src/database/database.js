@@ -1,11 +1,13 @@
 import Sequelize from 'sequelize';
 
 export const sequelize = new Sequelize(
-    'nonesga', //esquema
+    /*'nonesga', //esquema
     'postgres', //usuario
-    'admin', //contraseña
-    {
-        hots: 'localhost',
+    'admin', //contraseña*/
+    process.env.DB_Q,
+    process.env.DB_S,
+    process.env.DB_R, {
+        hots: process.env.DB_HOST,
         dialect: 'postgres',
         pool: {
             max: 5,
@@ -16,6 +18,17 @@ export const sequelize = new Sequelize(
         logging: false
     }
 );
+
+async function connection() {
+    try {
+        await sequelize.authenticate();
+        console.log('Database connected successfully...');
+    } catch (error) {
+        console.log('Cannot connect with database:', error);
+    }
+}
+
+connection();
 
 // Production
 /*export const sequelize = new Sequelize(

@@ -10,7 +10,9 @@ import {
     getCourses,
     updateCourse,
     changeActivationCourse,
-    deleteCourse
+    deleteCourse,
+    getAllCoursesCollege,
+    getAllCoursesCollegeActive
 } from '../controllers/course.controller';
 
 // Routes without params
@@ -22,5 +24,8 @@ router.get('/:courseID', mAuth.tokenValidation, getCourse);
 router.put('/:courseID', [mAuth.tokenValidation, mAuth.adminValidation], updateCourse);
 router.post('/:courseID', [mAuth.tokenValidation, mAuth.adminValidation], changeActivationCourse);
 router.delete('/:courseID', [mAuth.tokenValidation, mAuth.superAdminValidation], deleteCourse);
+
+router.get('/college/all', [mAuth.tokenValidation, mAuth.operativeValidation], getAllCoursesCollege);
+router.get('/college/active', [mAuth.tokenValidation, mAuth.operativeValidation], getAllCoursesCollegeActive);
 
 export default router;
