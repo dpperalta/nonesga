@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 
 // PRODUCTION CONFIGURACIONB
-export const sequelize = new Sequelize('postgres://djisvgxhgdftyc:5bbc12f29c192c9d39bb13bd7159f7d7a2312a02a3c1dc74ab25c2ff89cfff36@ec2-34-237-89-96.compute-1.amazonaws.com:5432/dftjdgo4a61ifl', {
+export const sequelize = new Sequelize(process.env.DB_P, {
     dialect: 'postgres',
     protocol: 'postgres',
     dialectOptions: {
