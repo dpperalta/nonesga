@@ -2,6 +2,7 @@ import Teacher from '../models/Teacher';
 import Person from '../models/Person';
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
+import { codeGeneration } from '../helpers/codes';
 
 // Create a new Teacher
 export async function createTeacher(req, res) {
@@ -14,7 +15,7 @@ export async function createTeacher(req, res) {
     } = req.body;
     try {
         const newTeacher = await Teacher.create({
-            teacherCode,
+            teacherCode: await codeGeneration('teacher'),
             status,
             details,
             bio,
@@ -235,13 +236,13 @@ export async function deleteTeacher(req, res) {
 }
 
 // Get teacher by college
-export async function getTeacherByCollege(req, res){
+export async function getTeacherByCollege(req, res) {
     const { collegeID } = req.params;
     const limit = req.query.limit || 25;
     const from = req.query.from || 0;
     let total;
     try {
-         const teachers = await sequelize.query(`
+        const teachers = await sequelize.query(`
             select 	"person"."personID" persona,
                     "user"."userID" usuario,
                     "college"."collegeID" colegio,
@@ -262,16 +263,16 @@ export async function getTeacherByCollege(req, res){
                 offset ${ from };
         `);
         total = parseInt(teachers[1].rowCount)
-        if(total > 0){
+        if (total > 0) {
             return res.status(200).json({
                 ok: true,
                 teachers: teachers[0],
                 total
             });
-        }else{
+        } else {
             returnNotFound(res, 'Any Teacher for this College');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, "Get Teacher by College");
     }

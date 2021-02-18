@@ -2,12 +2,12 @@ import Task from '../models/Task';
 import Subject from '../models/Subject';
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
+import { codeGeneration } from '../helpers/codes';
 
 
 // Crate a new Task
 export async function createTask(req, res) {
     const {
-        taskCode,
         startDate,
         endDate,
         taskName,
@@ -19,7 +19,7 @@ export async function createTask(req, res) {
     } = req.body;
     try {
         const newTask = await Task.create({
-            taskCode,
+            taskCode: await codeGeneration('task'),
             startDate,
             endDate,
             taskName,

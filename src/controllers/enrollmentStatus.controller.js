@@ -1,17 +1,17 @@
 import EnrollmentStatus from '../models/EnrollmentStatus';
 import { sequelize } from '../database/database';
 import { returnError, returnWrongError, returnNotFound } from './errors';
+import { codeGeneration } from '../helpers/codes';
 
 // Create new Enrollment Status
 export async function createEnrollmentStatus(req, res) {
     const {
-        code,
         description,
         detail
     } = req.body;
     try {
         let newEnrollmentStatus = await EnrollmentStatus.create({
-            code,
+            code: await codeGeneration('enrollmentStatus'),
             description,
             detail
         }, {

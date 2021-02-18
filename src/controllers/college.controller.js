@@ -225,7 +225,6 @@ export async function updateCollege(req, res) {
     const {
         collegeName,
         collegeShowName,
-        collegeCode,
         detail,
         flag,
         mainColour,
@@ -248,7 +247,7 @@ export async function updateCollege(req, res) {
             const updateCollege = await College.update({
                 collegeName,
                 collegeShowName,
-                collegeCode,
+                collegeCode: await codeGeneration('college'),
                 detail,
                 flag,
                 mainColour,

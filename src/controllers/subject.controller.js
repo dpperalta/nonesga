@@ -4,6 +4,7 @@ import Teacher from '../models/Teacher';
 import { sequelize } from '../database/database';
 import { returnWrongError, returnError, returnNotFound } from './errors';
 import Person from '../models/Person';
+import { codeGeneration } from '../helpers/codes';
 
 //Create a new Subject
 export async function createSubject(req, res) {
@@ -21,7 +22,7 @@ export async function createSubject(req, res) {
     } = req.body;
     try {
         let newSubject = await Subject.create({
-            subjectCode,
+            subjectCode: await codeGeneration('subject'),
             subjectName,
             description,
             details,

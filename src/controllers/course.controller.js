@@ -2,6 +2,7 @@ import Course from '../models/Course';
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
 import { nonesgaLog } from './log4js';
+import { codeGeneration } from '../helpers/codes';
 
 // Create a new Course
 export async function createCourse(req, res) {
@@ -29,7 +30,7 @@ export async function createCourse(req, res) {
 
     try {
         let newCourse = await Course.create({
-            courseCode,
+            courseCode: await codeGeneration('course'),
             courseName,
             description,
             collegeID: college

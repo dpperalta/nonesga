@@ -2,11 +2,11 @@ import Student from '../models/Student';
 import Person from '../models/Person';
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
+import { codeGeneration } from '../helpers/codes';
 
 // Create a new Student
-export async function createStudent(req, res){
+export async function createStudent(req, res) {
     const {
-        studentCode,
         status,
         previousCourse,
         actualCourse,
@@ -16,9 +16,9 @@ export async function createStudent(req, res){
         bio,
         personID
     } = req.body;
-    try{
+    try {
         const newStudent = await Student.create({
-            studentCode,
+            studentCode: await codeGeneration('student'),
             status,
             previousCourse,
             actualCourse,
@@ -31,14 +31,14 @@ export async function createStudent(req, res){
             fields: ['studentCode', 'status', 'previousCourse', 'actualCourse', 'grade', 'details', 'ratting', 'bio', 'personID'],
             returning: ['studentID', 'studentCode', 'status', 'isActive', 'registeredDate', 'previousCourse', 'actualCourse', 'grade', 'details', 'ratting', 'bio', 'personID']
         });
-        if(newStudent){
+        if (newStudent) {
             return res.status(200).json({
                 ok: true,
                 message: 'Student created successfully',
                 student: newStudent
             });
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Create Student');
     }
@@ -47,7 +47,7 @@ export async function createStudent(req, res){
 export async function getStudents(req, res) {
     const limit = req.query.limit || 25;
     const from = req.query.from || 0;
-    try{
+    try {
         const students = await Student.findAndCountAll({
             attributes: ['studentID', 'studentCode', 'status', 'isActive', 'registeredDate', 'bio', 'details', 'personID', 'ratting', 'grade', 'actualCourse', 'previousCourse'],
             include: [{
@@ -57,22 +57,22 @@ export async function getStudents(req, res) {
             limit,
             offset: from
         });
-        if(students.count > 0){
+        if (students.count > 0) {
             return res.status(200).json({
                 ok: true,
                 students
             });
-        }else{
+        } else {
             returnNotFound(res, 'Any Student');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get Studdents');
     }
 }
 
 // Update a student
-export async function updateStudent(req, res){
+export async function updateStudent(req, res) {
     const { studentID } = req.params;
     const {
         studentCode,
@@ -85,16 +85,16 @@ export async function updateStudent(req, res){
         bio,
         personID
     } = req.body;
-    try{
+    try {
         const dbStudent = await Student.findOne({
             attributes: ['studentID', 'studentCode', 'status', 'isActive', 'registeredDate', 'unregisteredDate', 'previousCourse', 'actualCourse', 'grade', 'bio', 'details', 'ratting', 'personID'],
             where: {
                 studentID
             }
         });
-        if(dbStudent === null || dbStudent === undefined){
+        if (dbStudent === null || dbStudent === undefined) {
             returnNotFound(res, 'Student ID');
-        }else{
+        } else {
             const updatedStudent = await Student.update({
                 studentCode,
                 status,
@@ -110,16 +110,16 @@ export async function updateStudent(req, res){
                     studentID
                 }
             });
-            if(updatedStudent){
+            if (updatedStudent) {
                 return res.status(200).json({
                     ok: true,
                     message: 'Student updated successfully'
                 });
-            }else{
+            } else {
                 returnWrongError(res, 'Student', 'for Update');
             }
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Update Student');
     }
@@ -195,9 +195,9 @@ export async function changeActivationStudent(req, res) {
 }
 
 // Get the information of an Student
-export async function getStuddent(req, res){
+export async function getStuddent(req, res) {
     const { studentID } = req.params;
-    try{
+    try {
         const student = await Student.findOne({
             attributes: ['studentID', 'studentCode', 'status', 'isActive', 'registeredDate', 'unregisteredDate', 'details', 'bio', 'ratting', 'grade', 'previousCourse', 'actualCourse', 'personID'],
             where: {
@@ -208,15 +208,15 @@ export async function getStuddent(req, res){
                 attributes: ['personID', 'completeName']
             }]
         });
-        if(student){
+        if (student) {
             return res.status(200).json({
                 ok: true,
                 student
             });
-        }else{
+        } else {
             returnNotFound(res, 'Student ID');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, 'Get an Student');
     }
@@ -246,13 +246,13 @@ export async function deleteStudent(req, res) {
 }
 
 // Get teacher by college
-export async function getStudentByCollege(req, res){
+export async function getStudentByCollege(req, res) {
     const { collegeID } = req.params;
     const limit = req.query.limit || 25;
     const from = req.query.from || 0;
     let total;
     try {
-         const students = await sequelize.query(`
+        const students = await sequelize.query(`
             SELECT 	"person"."personID" persona,
                     "user"."userID" usuario,
                     "college"."collegeID" colegio,
@@ -273,16 +273,16 @@ export async function getStudentByCollege(req, res){
                 OFFSET ${ from };
         `);
         total = parseInt(students[1].rowCount)
-        if(total > 0){
+        if (total > 0) {
             return res.status(200).json({
                 ok: true,
                 students: students[0],
                 total
             });
-        }else{
+        } else {
             returnNotFound(res, 'Any Student for this College');
         }
-    }catch(e){
+    } catch (e) {
         console.log('Error:', e);
         returnError(res, e, "Get Student by College");
     }

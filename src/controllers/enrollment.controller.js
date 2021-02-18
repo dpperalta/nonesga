@@ -6,12 +6,11 @@ import Student from '../models/Student';
 import Person from '../models/Person';
 import User from '../models/User';
 import Course from '../models/Course';
-import { query } from 'express';
+import { codeGeneration } from '../helpers/codes';
 
 // Create a new Enrollment
 export async function createEnrollment(req, res) {
     const {
-        enrollmentCode,
         studentID,
         userID,
         periodID,
@@ -19,7 +18,7 @@ export async function createEnrollment(req, res) {
     } = req.body;
     try {
         let newEnrollment = await Enrollment.create({
-            enrollmentCode,
+            enrollmentCode: await codeGeneration('enrollment'),
             statusChangeDate: sequelize.literal('CURRENT_TIMESTAMP'),
             statusID: 1,
             studentID,

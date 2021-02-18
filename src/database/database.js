@@ -21,22 +21,21 @@ export const sequelize = new Sequelize('postgres://djisvgxhgdftyc:5bbc12f29c192c
 
 /*  DEVELOPMENT CONFIGURATION */
 /*export const sequelize = new Sequelize(
-    /*'nonesga', //esquema
-    'postgres', //usuario
-    'admin', //contraseña
+    //'nonesga', //esquema
+    //'postgres', //usuario
+    //'admin', //contraseña
     process.env.DB_Q,
     process.env.DB_S,
     process.env.DB_R, {
         hots: process.env.DB_HOST,
         dialect: 'postgres',
         protocol: 'postgres',
-        /*dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
-        },*/
-/*
+        // dialectOptions: {
+        //     ssl: {
+        //         require: true,
+        //         rejectUnauthorized: false
+        //     }
+        // },
         pool: {
             max: 5,
             min: 0,

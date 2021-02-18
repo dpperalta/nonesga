@@ -2,11 +2,11 @@ import Content from '../models/Content'
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
 import Subject from '../models/Subject';
+import { codeGeneration } from '../helpers/codes';
 
 // Create new Content
 export async function createContent(req, res) {
     const {
-        contentCode,
         contentTitle,
         contentDetail,
         image,
@@ -14,7 +14,7 @@ export async function createContent(req, res) {
     } = req.body;
     try {
         const newContent = await Content.create({
-            contentCode,
+            contentCode: await codeGeneration('content'),
             contentTitle,
             contentDetail,
             image,
