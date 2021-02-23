@@ -12,11 +12,12 @@ export async function createDefaultUser(req, res) {
     } = req.body;
     const salt = bcrypt.genSaltSync();
     let cryptoPass = bcrypt.hashSync(pass, salt);
-    console.log('Pass', pass);
-    console.log('CryptoPass:', cryptoPass);
+
     let roleID;
     let roleName;
     let roledb;
+    let collegeID = req.user.collegeID || null;
+
     try {
         const role = await sequelize.query(`
                     SELECT  r."roleID" identificador,
@@ -40,9 +41,10 @@ export async function createDefaultUser(req, res) {
             pass: cryptoPass,
             nick,
             status: 10,
-            roleID
+            roleID,
+            collegeID
         }, {
-            fields: ['email', 'nick', 'pass', 'isActive', 'status', 'registeredDate', 'roleID'],
+            fields: ['email', 'nick', 'pass', 'isActive', 'status', 'registeredDate', 'roleID', 'collegeID'],
             returning: ['userID', 'email', 'nick', 'isActive', 'registeredDate', 'personID', 'collegeID']
         });
         if (newUser) {

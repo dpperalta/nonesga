@@ -222,3 +222,30 @@ export async function deletePhoneOperator(req, res) {
         returnError(res, e, 'Delete Phone Operator');
     }
 }
+
+// Get all Active Phone Operators
+export async function getActivePhoneOperators(req, res) {
+    const limit = req.query.limit || 25;
+    const from = req.query.from || 0;
+    try {
+        const phoneOperators = await PhoneOperator.findAndCountAll({
+            attributes: ['operatorID', 'operatorName', 'detail', 'smsNumber', 'cost', 'observations', 'registeredDate', 'unregisteredDate', 'isActive'],
+            where: {
+                isActive: true
+            },
+            limit,
+            offset: from
+        });
+        if (phoneOperators) {
+            return res.status(200).json({
+                ok: true,
+                phoneOperators
+            });
+        } else {
+            returnNotFound(res, 'Any Phone Operator');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        returnError(res, e, 'Get Phone Operators');
+    }
+}

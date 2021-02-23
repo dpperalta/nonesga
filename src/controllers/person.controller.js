@@ -23,6 +23,7 @@ export async function createPerson(req, res) {
 
     let sexToCreate = '';
     let sexToRead = sex.toLowerCase();
+
     if (sexToRead === 'male' || sexToRead === 'masculino' || sexToRead === 'hombre' || sexToRead === 'hombres' || sexToRead === 'varon' || sexToRead === 'varones') {
         sexToCreate = 'Male'
     } else {
@@ -33,27 +34,46 @@ export async function createPerson(req, res) {
         }
     }
     try {
-        let newPerson = await Person.create({
-            dni,
-            birthdate,
-            names,
-            lastNames,
-            completeName: names + ' ' + lastNames,
-            details,
-            bio,
-            image,
-            sex: sexToCreate,
-            personTypeID
-        }, {
-            fields: ['dni', 'birthdate', 'names', 'lastNames', 'completeName', 'image', 'details', 'bio', 'sex', 'personTypeID'],
-            returning: ['personID', 'dni', 'birthdate', 'names', 'lastNames', 'completeName', 'image', 'details', 'bio', 'isActive', 'registeredDate', 'unregisteredDate', 'votes', 'sex', 'personTypeID']
-        });
-        if (newPerson) {
+        // Verify if person exist, if exists then update information
+        let searchPerson = await sequelize.query(`
+            SELECT *
+            FROM "person"
+            WHERE "person"."dni" = '${ dni }';
+        `);
+
+        let findedPerson = parseInt(searchPerson[1].rowCount);
+        let returnedPerson = searchPerson[0];
+        let personObject = returnedPerson[0];
+
+        if (findedPerson > 0) {
             return res.status(200).json({
                 ok: true,
-                message: 'Person created successfully',
-                newPerson
+                msg: 'Person already exists',
+                person: personObject
             });
+        } else {
+            let newPerson = await Person.create({
+                dni,
+                birthdate,
+                names,
+                lastNames,
+                completeName: names + ' ' + lastNames,
+                details,
+                bio,
+                image,
+                sex: sexToCreate,
+                personTypeID
+            }, {
+                fields: ['dni', 'birthdate', 'names', 'lastNames', 'completeName', 'image', 'details', 'bio', 'sex', 'personTypeID'],
+                returning: ['personID', 'dni', 'birthdate', 'names', 'lastNames', 'completeName', 'image', 'details', 'bio', 'isActive', 'registeredDate', 'unregisteredDate', 'votes', 'sex', 'personTypeID']
+            });
+            if (newPerson) {
+                return res.status(200).json({
+                    ok: true,
+                    message: 'Person created successfully',
+                    person: newPerson
+                });
+            }
         }
     } catch (e) {
         console.log('Error:', e);

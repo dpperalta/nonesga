@@ -14,7 +14,7 @@ const Telephone = sequelize.define('telephone', {
     },
     phoneName: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        //allowNull: true
     },
     detail: {
         type: Sequelize.TEXT

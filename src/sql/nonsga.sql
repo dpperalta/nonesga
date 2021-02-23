@@ -1806,7 +1806,7 @@ CREATE TABLE "telephone"(
  "telephoneID" Integer NOT NULL GENERATED ALWAYS AS IDENTITY 
   (INCREMENT BY 1 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 1 ),
  "number" Character varying(10) NOT NULL,
- "phoneName" Character varying(100) NOT NULL,
+ "phoneName" Character varying(100),
  "detail" Text,
  "isFavourite" Boolean DEFAULT false NOT NULL,
  "isWork" Boolean,

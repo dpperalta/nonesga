@@ -10,12 +10,14 @@ import {
     getPhoneOperator,
     changeActivationPhoneOperator,
     updatePhoneOperator,
-    deletePhoneOperator
+    deletePhoneOperator,
+    getActivePhoneOperators
 } from '../controllers/phoneOperator';
 
 // Routes without params
 router.post('/', [mAuth.tokenValidation, mAuth.superAdminValidation], createPhoneOperator);
 router.get('/', mAuth.tokenValidation, getPhoneOperators);
+router.get('/active', mAuth.tokenValidation, getActivePhoneOperators);
 
 // Routes with params
 router.get('/:operatorID', mAuth.tokenValidation, getPhoneOperator);

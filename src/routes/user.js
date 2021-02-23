@@ -19,14 +19,14 @@ const mAuth = require('../middlewares/authentication');
 
 // Routes without params
 router.post('/', [
-    check('email', 'eMail is invalid').isEmail(),
+    check('email', 'eMail is invalid').isEmail().normalizeEmail(),
     check('pass', 'Pasword must be longer than 6 characters').isLength({ min: 6 }),
     fieldValidation,
-    //mAuth.tokenValidation
+    mAuth.tokenValidation
 ], createDefaultUser);
 router.get('/', mAuth.tokenValidation, getUsers);
 router.post('/create', [
-    check('email', 'eMail is invalid').isEmail(),
+    check('email', 'eMail is invalid').isEmail().normalizeEmail(),
     check('pass', 'Pasword must be longer than 6 characters').isLength({ min: 6 }),
     check('roleID', 'Role is required').not().isEmpty(),
     fieldValidation,

@@ -24,8 +24,8 @@ const router = Router();
 router.post('/', [
     check('names', 'Names are required').not().isEmpty(),
     check('lastNames', 'Lastnames are required').not().isEmpty(),
-    check('sex', 'Sex is invalid').isIn(['Male', 'Female', 'Masculino', 'Femenino', 'M', 'F']),
-    check('birthdate', 'Birthdate is invalid').not().isDate(),
+    check('sex', 'Sex is invalid').isIn(['Male', 'Female', 'Masculino', 'Femenino', 'M', 'F', 'male', 'female']),
+    check('birthdate', 'Birthdate is invalid').isDate(),
     fieldValidation,
     mAuth.tokenValidation
 ], createPerson);
