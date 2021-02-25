@@ -1,5 +1,6 @@
 import express, { json } from 'express';
 import morgan from 'morgan';
+import helmet from 'helmet';
 require('dotenv').config();
 
 // Starts application
@@ -13,10 +14,16 @@ app.use(function(req, res, next) {
     next();
 });
 
+// Helmet
+app.use(helmet());
+
 // Middlewares
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(json()); // Para no utilizar el body parser, si hay errores instalar bodyParser como antes
+
+// Security Configurations
+app.disable('x-powered-by');
 
 // Importing the Routes File
 app.use(require('./routes/index'));

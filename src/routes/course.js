@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { check } from 'express-validator';
 
 import mAuth from '../middlewares/authentication';
 
@@ -14,9 +15,16 @@ import {
     getAllCoursesCollege,
     getAllCoursesCollegeActive
 } from '../controllers/course.controller';
+import { fieldValidation } from '../middlewares/fieldValidation';
 
 // Routes without params
-router.post('/', [mAuth.tokenValidation, mAuth.adminValidation], createCourse);
+router.post('/', [
+    check('courseName', 'Course name is required').not().isEmpty(),
+    check('description', 'Course description is required').not().isEmpty(),
+    fieldValidation,
+    mAuth.tokenValidation,
+    mAuth.adminValidation
+], createCourse);
 router.get('/', mAuth.tokenValidation, getCourses);
 
 // Routes with params

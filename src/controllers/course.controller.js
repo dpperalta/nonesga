@@ -7,18 +7,19 @@ import { codeGeneration } from '../helpers/codes';
 // Create a new Course
 export async function createCourse(req, res) {
     const {
-        courseCode,
         courseName,
         description,
         collegeID
     } = req.body;
     let status = 1;
-    let college;
+    let college = req.user.collegeID || null;
 
-    if (req.role !== 'Super Administrator') {
-        college = req.user.collegeID
-    } else {
-        college = collegeID;
+    if (collegeID) {
+        if (req.role !== 'Super Administrator') {
+            college = req.user.collegeID
+        } else {
+            college = collegeID;
+        }
     }
 
     if (!college) {
@@ -285,7 +286,7 @@ export async function getAllCoursesCollegeActive(req, res) {
         if (active.toString() !== 'false') {
             return res.status(400).json({
                 ok: false,
-                msg: 'Active type invalid, please validate'
+                message: 'Active type invalid, please validate'
             });
         }
     }

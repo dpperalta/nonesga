@@ -48,7 +48,7 @@ export async function createPerson(req, res) {
         if (findedPerson > 0) {
             return res.status(200).json({
                 ok: true,
-                msg: 'Person already exists',
+                message: 'Person already exists',
                 person: personObject
             });
         } else {

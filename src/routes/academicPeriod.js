@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { check } from 'express-validator';
 
 import mAuth from '../middlewares/authentication';
 
@@ -13,8 +14,21 @@ import {
     deleteAcademicPeriod
 } from '../controllers/academicPeriod.controller';
 
+import { fieldValidation } from '../middlewares/fieldValidation';
+
 // Routes without params
-router.post('/', [mAuth.tokenValidation, mAuth.adminValidation], createAcademicPeriod);
+router.post(
+    '/', [
+        check('startPeriod', 'Start period must be a date').isDate(),
+        check('endPeriod', 'End period must be a date').isDate(),
+        check('periodName', 'Period name is required').not().isEmpty(),
+        check('detail', 'Details for academic period are required').not().isEmpty(),
+        fieldValidation,
+        mAuth.tokenValidation,
+        mAuth.adminValidation
+    ],
+    createAcademicPeriod
+);
 router.get('/', mAuth.tokenValidation, getAcademicPeriods);
 
 // Routes with params

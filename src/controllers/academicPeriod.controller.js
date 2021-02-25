@@ -10,6 +10,14 @@ export async function createAcademicPeriod(req, res) {
         periodName,
         detail
     } = req.body;
+
+    if (endPeriod >= startPeriod) {
+        return res.status(400).json({
+            ok: false,
+            message: 'Start and end date of period conflict, please validate'
+        });
+    }
+
     try {
         let newAcademicPeriod = await AcademicPeriod.create({
             startPeriod,
