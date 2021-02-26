@@ -8,7 +8,8 @@ export async function createDefaultUser(req, res) {
     const {
         email,
         pass,
-        nick
+        nick,
+        personID
     } = req.body;
     const salt = bcrypt.genSaltSync();
     let cryptoPass = bcrypt.hashSync(pass, salt);
@@ -42,9 +43,10 @@ export async function createDefaultUser(req, res) {
             nick,
             status: 10,
             roleID,
-            collegeID
+            collegeID,
+            personID
         }, {
-            fields: ['email', 'nick', 'pass', 'isActive', 'status', 'registeredDate', 'roleID', 'collegeID'],
+            fields: ['email', 'nick', 'pass', 'isActive', 'status', 'registeredDate', 'roleID', 'collegeID', 'personID'],
             returning: ['userID', 'email', 'nick', 'isActive', 'registeredDate', 'personID', 'collegeID']
         });
         if (newUser) {

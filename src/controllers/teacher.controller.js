@@ -3,6 +3,7 @@ import Person from '../models/Person';
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
 import { codeGeneration } from '../helpers/codes';
+import { nonesgaLog } from './log4js';
 
 // Create a new Teacher
 export async function createTeacher(req, res) {
@@ -275,5 +276,46 @@ export async function getTeacherByCollege(req, res) {
     } catch (e) {
         console.log('Error:', e);
         returnError(res, e, "Get Teacher by College");
+    }
+}
+
+// Get teacher by personID
+export async function getTeacherByPerson(req, res) {
+    const { personID } = req.params;
+    let total;
+    try {
+        const teachers = await sequelize.query(`
+            SELECT 	"person"."personID" personID,
+                    "user"."userID" userID,
+                    "college"."collegeID" collegeID,
+                    "teacher"."teacherID" teacherID,
+                    "person"."names" firstName,
+                    "person"."lastNames" lastNames,
+                    "person"."completeName" completeName,
+                    "person"."dni" dni,
+                    "college"."collegeName" collegeName,
+                    "user"."email" email
+            FROM "teacher", "college", "person", "user"
+            WHERE "teacher"."personID" = "person"."personID"
+                AND "user"."personID" = "person"."personID"
+                AND "user"."collegeID" = "college"."collegeID"
+                AND "person"."personID" = ${ personID }
+                ORDER BY "person"."lastNames";
+        `);
+        total = parseInt(teachers[1].rowCount)
+        if (total > 0) {
+            let data = teachers[0];
+            return res.status(200).json({
+                ok: true,
+                teacher: data[0],
+                total
+            });
+        } else {
+            returnNotFound(res, 'Any Teacher for this Person');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('Get Teacher by Person', 'error');
+        returnError(res, e, "Get Teacher by Person");
     }
 }

@@ -5,11 +5,11 @@ import { sequelize } from '../database/database';
 import { returnWrongError, returnError, returnNotFound } from './errors';
 import Person from '../models/Person';
 import { codeGeneration } from '../helpers/codes';
+import { nonesgaLog } from './log4js';
 
 //Create a new Subject
 export async function createSubject(req, res) {
     const {
-        subjectCode,
         subjectName,
         description,
         details,
@@ -270,6 +270,81 @@ export async function deleteSubject(req, res) {
 }
 
 // Get subject by college
+
 // Get subject by course
+export async function getCourseSubjects(req, res) {
+    const { courseID } = req.params;
+    const limit = req.query.limit || 100;
+    const from = req.query.from || 0;
+    try {
+        const subjects = await Subject.findAndCountAll({
+            attributes: ['subjectID', 'subjectCode', 'subjectName', 'description', 'details', 'isActive', 'registeredDate', 'unregisteredDate', 'gradeNeeded', 'gradeMinimun', 'gradeMaximun', 'teacherID', 'courseID'],
+            where: {
+                courseID
+            },
+            order: [
+                ['subjectName', 'ASC']
+            ],
+            include: [{
+                model: Teacher,
+                attributes: ['teacherID', 'personID'],
+                include: [{
+                    model: Person,
+                    attributes: ['personID', 'completeName']
+                }]
+            }],
+            limit,
+            offset: from
+        });
+        if (subjects) {
+            return res.status(200).json({
+                ok: true,
+                subjects
+            });
+        } else {
+            returnNotFound(res, 'Any Subject for Course');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('Get Subjects by Course', 'error');
+        returnError(res, e, 'Get Subjects by Course');
+    }
+}
 // Get subject by teacher
+export async function getTeacherSubjects(req, res) {
+    const { teacherID } = req.params;
+    const limit = req.query.limit || 100;
+    const from = req.query.from || 0;
+    try {
+        const subjects = await Subject.findAndCountAll({
+            attributes: ['subjectID', 'subjectCode', 'subjectName', 'description', 'details', 'isActive', 'registeredDate', 'unregisteredDate', 'gradeNeeded', 'gradeMinimun', 'gradeMaximun', 'teacherID', 'courseID'],
+            where: {
+                teacherID
+            },
+            order: [
+                ['subjectName', 'ASC']
+            ],
+            include: [{
+                model: Course,
+                attributes: ['courseID', 'courseName']
+            }],
+            limit,
+            offset: from
+        });
+        if (subjects) {
+            return res.status(200).json({
+                ok: true,
+                subjects
+            });
+        } else {
+            returnNotFound(res, 'Any Subject for Course');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('Get Subjects by Course', 'error');
+        returnError(res, e, 'Get Subjects by Course');
+    }
+}
+
+
 // Get subject by student

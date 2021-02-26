@@ -163,9 +163,10 @@ export async function getPerson(req, res) {
         WHERE pe."personTypeID" = pt."personTypeID"
             AND pe."personID" = ${personID}`);
         if (person) {
+            let data = person[0];
             return res.status(200).json({
                 ok: true,
-                person: person[0],
+                person: data[0],
                 counter: person[1].rowCount
             });
         } else {

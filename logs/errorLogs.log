@@ -300,3 +300,37 @@
 [2021-02-21T11:02:48.376] [ERROR] default - [Unknown]:Create Person
 [2021-02-21T11:05:20.015] [ERROR] default - Create Person
 [2021-02-21T11:05:20.017] [ERROR] default - [Unknown]:Create Person
+[2021-02-25T11:07:05.166] [ERROR] default - Get Subjects by Course
+[2021-02-25T11:07:05.168] [ERROR] default - [Unknown]:Get Subjects by Course
+[2021-02-25T11:09:57.957] [ERROR] default - Get Subjects by Course
+[2021-02-25T11:09:57.957] [ERROR] default - [Unknown]:Get Subjects by Course
+[2021-02-25T11:10:34.198] [ERROR] default - Get Subjects by Course
+[2021-02-25T11:10:34.199] [ERROR] default - [Unknown]:Get Subjects by Course
+[2021-02-25T12:37:28.048] [ERROR] default - Get Subjects by Course
+[2021-02-25T12:37:28.049] [ERROR] default - [Unknown]:Get Subjects by Course
+[2021-02-26T10:56:41.699] [ERROR] default - Get Subjects by Course
+[2021-02-26T10:56:41.718] [ERROR] default - [Unknown]:Get Subjects by Course
+[2021-02-26T10:56:42.501] [ERROR] default - Get Subjects by Course
+[2021-02-26T10:56:42.501] [ERROR] default - [Unknown]:Get Subjects by Course
+[2021-02-26T10:56:42.673] [ERROR] default - Get Subjects by Course
+[2021-02-26T10:56:42.673] [ERROR] default - [Unknown]:Get Subjects by Course
+[2021-02-26T10:57:25.750] [ERROR] default - Get Subjects by Course
+[2021-02-26T10:57:25.750] [ERROR] default - [Unknown]:Get Subjects by Course
+[2021-02-26T16:00:58.910] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:00:58.910] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-02-26T16:40:31.106] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:40:31.110] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-02-26T16:40:38.866] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:40:38.866] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-02-26T16:41:02.277] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:41:02.277] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-02-26T16:42:06.982] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:42:06.982] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-02-26T16:42:15.087] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:42:15.087] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-02-26T16:44:10.209] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:44:10.211] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-02-26T16:45:57.269] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:45:57.269] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-02-26T16:46:23.588] [ERROR] default - Get Teacher by Person
+[2021-02-26T16:46:23.588] [ERROR] default - [Unknown]:Get Teacher by Person
