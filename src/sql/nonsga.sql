@@ -6663,3 +6663,14 @@ ALTER TABLE "auditSession" ADD CONSTRAINT "aud_has_usr_fk" FOREIGN KEY ("userID"
 
 CREATE INDEX "auditSession_user_ix" ON "auditSession" ("userID")
 ;
+
+-- Reference from students to actual course
+ALTER TABLE "student"
+    RENAME "actualCourse" TO "courseID";
+
+ALTER TABLE "student"
+    ADD CONSTRAINT std_has_cou_fk FOREIGN KEY ("courseID")
+    REFERENCES "course" ("courseID") MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;

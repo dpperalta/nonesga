@@ -12,7 +12,9 @@ import {
     deletePerson,
     getPerson,
     findPerson,
-    getPeopleWhitoutUser
+    getPeopleWhitoutUser,
+    getPeopleByPersonType,
+    getPeopleByStudentPersonType
 } from '../controllers/person.controller';
 import { fieldValidation } from '../middlewares/fieldValidation';
 
@@ -43,5 +45,7 @@ router.put('/activate/:personID', mAuth.tokenValidation, activatePerson);
 router.get('/:personID', mAuth.tokenValidation, getPerson);
 router.delete('/:personID', [mAuth.tokenValidation, mAuth.superAdminValidation], deletePerson);
 router.get('/people/find', mAuth.tokenValidation, findPerson);
+router.get('/personType/:personTypeID', [mAuth.tokenValidation, mAuth.adminValidation], getPeopleByPersonType);
+router.get('/student/unassigned/', [mAuth.tokenValidation], getPeopleByStudentPersonType);
 
 export default router;

@@ -10,7 +10,9 @@ import {
     changeActivationStudent,
     getStuddent,
     deleteStudent,
-    getStudentByCollege
+    getStudentByCollege,
+    assignStudentToCourse,
+    getStudentsByTeacher
 } from '../controllers/student.controller';
 
 const router = Router();
@@ -25,5 +27,7 @@ router.post('/:studentID', [mAuth.tokenValidation, mAuth.adminValidation], chang
 router.get('/:studentID', mAuth.tokenValidation, getStuddent);
 router.delete('/:studentID', mAuth.tokenValidation, deleteStudent);
 router.get('/college/:collegeID', [mAuth.tokenValidation, mAuth.adminValidation], getStudentByCollege);
+router.put('/assign/course/:courseID', [mAuth.tokenValidation, mAuth.adminValidation], assignStudentToCourse);
+router.get('/teacher/:teacherID', [mAuth.tokenValidation, mAuth.teacherValidation], getStudentsByTeacher);
 
 export default router;

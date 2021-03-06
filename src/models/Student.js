@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize';
 import { sequelize } from '../database/database';
+import Course from './Course';
 import Person from './Person';
 
 const Student = sequelize.define('student', {
@@ -32,9 +33,6 @@ const Student = sequelize.define('student', {
     previousCourse: {
         type: Sequelize.INTEGER
     },
-    actualCourse: {
-        type: Sequelize.INTEGER
-    },
     grade: {
         type: Sequelize.SMALLINT
     },
@@ -53,7 +51,14 @@ const Student = sequelize.define('student', {
             model: 'person',
             key: 'personID'
         }
-    }
+    },
+    courseID: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'course',
+            key: 'courseID'
+        }
+    },
 }, {
     timestamps: false,
     freezeTableName: true
@@ -61,5 +66,8 @@ const Student = sequelize.define('student', {
 
 Person.hasMany(Student, { foreignKey: { name: 'personID', targetKey: 'personID' } });
 Student.belongsTo(Person, { foreignKey: { name: 'personID', targetKey: 'personID' } });
+
+Course.hasMany(Student, { foreignKey: { name: 'courseID', targetKey: 'courseID' } });
+Student.belongsTo(Course, { foreignKey: { name: 'courseID', targetKey: 'courseID' } });
 
 export default Student;

@@ -334,3 +334,19 @@
 [2021-02-26T16:45:57.269] [ERROR] default - [Unknown]:Get Teacher by Person
 [2021-02-26T16:46:23.588] [ERROR] default - Get Teacher by Person
 [2021-02-26T16:46:23.588] [ERROR] default - [Unknown]:Get Teacher by Person
+[2021-03-01T18:38:42.352] [ERROR] default - Assign Student to a Course
+[2021-03-01T18:38:42.353] [ERROR] default - [Unknown]:Assign Student to a Course
+[2021-03-02T18:31:46.678] [ERROR] default - People without User ID
+[2021-03-02T18:31:46.679] [ERROR] default - [Unknown]:People without User ID
+[2021-03-02T18:32:45.002] [ERROR] default - People without User ID
+[2021-03-02T18:32:45.003] [ERROR] default - [Unknown]:People without User ID
+[2021-03-02T18:33:05.986] [ERROR] default - People without User ID
+[2021-03-02T18:33:05.987] [ERROR] default - [Unknown]:People without User ID
+[2021-03-02T18:33:54.293] [ERROR] default - People without User ID
+[2021-03-02T18:33:54.294] [ERROR] default - [Unknown]:People without User ID
+[2021-03-02T18:34:17.338] [ERROR] default - People without User ID
+[2021-03-02T18:34:17.339] [ERROR] default - [Unknown]:People without User ID
+[2021-03-02T18:35:06.630] [ERROR] default - People without User ID
+[2021-03-02T18:35:06.631] [ERROR] default - [Unknown]:People without User ID
+[2021-03-02T18:38:54.884] [ERROR] default - People without Student ID
+[2021-03-02T18:38:54.885] [ERROR] default - [Unknown]:People without Student ID

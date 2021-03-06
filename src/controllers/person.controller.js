@@ -582,3 +582,157 @@ export async function getPeopleWhitoutUser(req, res) {
         returnError(res, e, 'Get people withouy user');
     }
 }
+
+// Get active people with defined person type and without assignation
+export async function getPeopleByPersonType(req, res) {
+
+    const { personTypeID } = req.params;
+    const type = req.query.type;
+    let query = '';
+
+    if (!type) {
+        return res.status(400).json({
+            ok: false,
+            message: 'Type not found, please send a type'
+        });
+    }
+
+    if (type.toLowerCase() === 'student') {
+        query = `AND "student"."studentID" IS NULL`;
+    }
+    if (type.toLowerCase() === 'parent') {
+        query = `AND "user"."userID" IS NULL`;
+    }
+    if (type.toLowerCase() === 'teacher') {
+        query = `AND "teacher"."teacherID" IS NULL`;
+    }
+
+    if (type.toLowerCase() !== 'student' && type.toLowerCase() !== 'teacher' && type.toLowerCase() !== 'parent') {
+        return res.status(400).json({
+            ok: false,
+            message: 'Invalid type, please contact to your administrator'
+        });
+    }
+
+    try {
+        // TODO: For pagination
+        /*const count = await sequelize.query(`
+            SELECT	COUNT (*)
+            FROM "person"
+            LEFT OUTER JOIN "personType" ON "person"."personTypeID" = "personType"."personTypeID"
+            LEFT OUTER JOIN "user" ON "person"."personID" = "user"."personID"
+            LEFT OUTER JOIN "student" ON "student"."personID" = "user"."personID"
+            LEFT OUTER JOIN "teacher" ON "teacher"."personID" = "person"."personID"
+            WHERE "personType"."personTypeID" = ${ personTypeID }
+            ${ query }
+            AND "person"."isActive" = true;
+        `);*/
+
+        const people = await sequelize.query(`
+            SELECT	"person"."personID" idPersona,
+                    "person"."dni" cedula,
+                    "person"."birthdate" nacimiento,
+                    "person"."names" nombres,
+                    "person"."lastNames" apellidos,
+                    "person"."completeName" nombreCompleto,
+                    "person"."image" foto,
+                    "person"."details" detalles,
+                    "person"."registeredDate" fechaRegistro,
+                    "person"."isActive" activo,
+                    "person"."bio" biografia,
+                    "person"."votes" votos,
+                    "person"."personTypeID" tipoPersonaID,
+                    "person"."sex" sexo,
+                    "personType"."typeName" tipoPersona,
+                    "user"."userID" userID,
+                    "student"."studentID" studentID,
+					"teacher"."teacherID" teacherID
+            FROM "person"
+            LEFT OUTER JOIN "personType" ON "person"."personTypeID" = "personType"."personTypeID"
+            LEFT OUTER JOIN "user" ON "person"."personID" = "user"."personID"
+            LEFT OUTER JOIN "student" ON "student"."personID" = "user"."personID"
+            LEFT OUTER JOIN "teacher" ON "teacher"."personID" = "person"."personID"
+            WHERE "personType"."personTypeID" = ${ personTypeID }
+            ${ query }
+            AND "person"."isActive" = true;
+        `);
+        if (people) {
+            return res.status(200).json({
+                ok: true,
+                people: people[0],
+                total: people[1].rowCount
+            });
+        } else {
+            returnNotFound(res, 'People without User ID');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('People without User ID', 'error');
+        returnError(res, e, 'Find Person by DNI or Names');
+    }
+}
+
+
+// Get active people with defined person type and without assignation
+export async function getPeopleByStudentPersonType(req, res) {
+
+    try {
+
+        const studentType = await sequelize.query(`
+            SELECT	"personTypeID"
+            FROM "personType"
+                WHERE "personType"."typeName" = 'Estudiante'
+                AND "isActive" = true;
+        `);
+
+        if (!studentType) {
+            return res.status(404).json({
+                ok: false,
+                message: 'Any student person type findend, please validate'
+            });
+        }
+
+        let type = studentType[0];
+        let personTypeID = parseInt(type[0].personTypeID);
+
+        const people = await sequelize.query(`
+            SELECT	"person"."personID" idPersona,
+                    "person"."dni" cedula,
+                    "person"."birthdate" nacimiento,
+                    "person"."names" nombres,
+                    "person"."lastNames" apellidos,
+                    "person"."completeName" nombreCompleto,
+                    "person"."image" foto,
+                    "person"."details" detalles,
+                    "person"."registeredDate" fechaRegistro,
+                    "person"."isActive" activo,
+                    "person"."bio" biografia,
+                    "person"."votes" votos,
+                    "person"."personTypeID" tipoPersonaID,
+                    "person"."sex" sexo,
+                    "personType"."typeName" tipoPersona,
+                    "user"."userID" userID,
+                    "student"."studentID" studentID
+            FROM "person"
+            LEFT OUTER JOIN "personType" ON "person"."personTypeID" = "personType"."personTypeID"
+            LEFT OUTER JOIN "user" ON "person"."personID" = "user"."personID"
+            LEFT OUTER JOIN "student" ON "student"."personID" = "user"."personID"
+            WHERE "personType"."personTypeID" = ${ personTypeID }
+            AND "student"."studentID" IS NULL
+            AND "person"."isActive" = true;
+        `);
+        if (people) {
+            return res.status(200).json({
+                ok: true,
+                people: people[0],
+                total: people[1].rowCount
+            });
+        } else {
+            returnNotFound(res, 'People without Student ID');
+        }
+    } catch (e) {
+        console.log('Error:', e);
+        nonesgaLog('People without Student ID', 'error');
+        returnError(res, e, 'Find People without Student ID');
+    }
+}

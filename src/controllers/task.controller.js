@@ -3,7 +3,7 @@ import Subject from '../models/Subject';
 import { sequelize } from '../database/database';
 import { returnError, returnNotFound, returnWrongError } from './errors';
 import { codeGeneration } from '../helpers/codes';
-
+import moment from 'moment';
 
 // Crate a new Task
 export async function createTask(req, res) {
@@ -17,7 +17,13 @@ export async function createTask(req, res) {
         image,
         subjectID
     } = req.body;
+    let delay;
     try {
+        if (permitsDelay === true) {
+            delay = moment(endDate).add(maxDelay, 'days');
+        } else {
+            delay = null
+        }
         const newTask = await Task.create({
             taskCode: await codeGeneration('task'),
             startDate,
@@ -25,7 +31,7 @@ export async function createTask(req, res) {
             taskName,
             taskDetail,
             permitsDelay,
-            maxDelay,
+            maxDelay: delay,
             image,
             subjectID
         }, {
