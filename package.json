@@ -21,7 +21,7 @@
         "@babel/polyfill": "^7.10.4",
         "bcryptjs": "^2.4.3",
         "dotenv": "^8.2.0",
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "express-validator": "^6.9.2",
         "helmet": "^4.4.1",
         "jsonwebtoken": "^8.5.1",
