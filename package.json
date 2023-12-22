@@ -27,7 +27,7 @@
         "jsonwebtoken": "^8.5.1",
         "log4js": "^6.3.0",
         "moment": "^2.27.0",
-        "moment-timezone": "^0.5.31",
+        "moment-timezone": "^0.5.35",
         "morgan": "^1.10.0",
         "node-cron": "^2.0.3",
         "pg": "^8.2.1",
